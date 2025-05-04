@@ -1,0 +1,9 @@
+# Ignore Visual Studio Code settings
+.vscode/
+.vs/
+# Ignore compiled binary files
+bin/
+obj/
+
+# Ignore launch settings file
+Properties/launchSettings.json
