@@ -13,12 +13,57 @@
         <Standard.Background Parameter.SmokeColorFactor="2" Parameter.ParticleOpacity="1.6" />
         <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="382" VerticalAlignment="Bottom" Sprite="General\CharacterCreation\character_creation_background_gradient" />
 
-        <!--Left Side-->
-        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginRight="!RightPanel.Width" DoNotUseCustomScaleAndChildren="true">
-          <Children>
-            <RichTextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Stage.Title.Text" Text="@SelectionText" IsHidden="@AnyItemSelected"/>
-          </Children>
-        </Widget>
+		  <Widget Id="HeroSelectionPanel"
+			WidthSizePolicy="StretchToParent"
+			HeightSizePolicy="CoverChildren"
+			MarginTop="20"
+			MarginRight="!RightPanel.Width"
+			Sprite="SPGeneral\GameMenu\panel_frame"
+			IsHidden="@NotStartAsAnyone"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Center">
+			  <Children>
+				  <!-- Kingdom selector -->
+				  <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" Command.Click="ExecuteMe" UpdateChildrenStates="true"  DoNotUseCustomScaleAndChildren="true">
+					  <Children>
+
+						  <!--Culture Flag-->
+
+
+						  <ImageWidget Id="Qwe" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
+
+						  <TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="181" SuggestedHeight="30" VerticalAlignment="Bottom" PositionYOffset="3" Brush="Culture.Text" Text="Here we are" />
+
+					  </Children>
+				  </ButtonWidget>
+				  
+				  <ListPanel WidthSizePolicy="StretchToParent"
+							 HeightSizePolicy="Fixed"
+							 SuggestedHeight="200"
+							 DataSource="{AvailableKingdoms}"
+							 SelectedItem="@SelectedKingdom"
+							 StackLayout.LayoutMethod="VerticalBottomToTop"
+							 />
+
+				  <!-- Clan selector -->
+				  
+				  <ListPanel WidthSizePolicy="StretchToParent"
+							 HeightSizePolicy="Fixed"
+							 SuggestedHeight="200"
+							 DataSource="{AvailableClans}"
+							 SelectedItem="@SelectedClan"
+							 StackLayout.LayoutMethod="VerticalBottomToTop"/>
+
+				  <!-- Hero selector -->
+				  
+				  <ListPanel WidthSizePolicy="StretchToParent"
+							 HeightSizePolicy="Fixed"
+							 SuggestedHeight="200"
+							 DataSource="@SelectedClan"
+							 SelectedItem="@SelectedHero"
+							 StackLayout.LayoutMethod="VerticalBottomToTop"/>
+			  </Children>
+		  </Widget>
 
         <!-- Right Panel -->
         <Widget Id="RightPanel" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!RightPanel.Width" SuggestedHeight="1080" HorizontalAlignment="Right" Sprite="SPGeneral\GameMenu\panel_frame" VerticalAlignment="Center" DoNotUseCustomScaleAndChildren="true">
@@ -27,7 +72,7 @@
             <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="670" SuggestedHeight="55" HorizontalAlignment="Right" Brush="Stage.Title.Text" PositionYOffset="37" Text="@Title" />
 
             <!--Description-->
-            <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="620" SuggestedHeight="90" HorizontalAlignment="Right" MarginRight="15" MarginTop="100" Brush="Stage.Description.Text" PositionYOffset="37" Text="@Description" />
+            <RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="620" SuggestedHeight="90" HorizontalAlignment="Right" MarginRight="15" MarginTop="100" Brush="Stage.Description.Text"  Text="@Description" />
 
             <Widget Id="InnerPanel" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="573" SuggestedHeight="750" HorizontalAlignment="Center" VerticalAlignment="Center" PositionXOffset="23" PositionYOffset="37">
               <Children>
@@ -35,9 +80,10 @@
                   <Children>
                     
 					  <!--amcukiye-->
-
+                        <!--brom button brushlarını güncelle  çünkü bunlar sik gibi duruyor-->
 					  <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedWidth="400" SuggestedHeight="200" Brush="SPOptions.Checkbox.Empty.Button" ButtonType="Toggle" IsSelected="@StartAsAnyone" ToggleIndicator="ToggleIndicator" UpdateChildrenStates="true">
 						  <Children>
+							  
 							  <ImageWidget Id="ToggleIndicator" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Brush="SPOptions.Checkbox.Full.Button" />
 							  <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Stage.Option.Text" Text="Start as an existing Hero" />
 

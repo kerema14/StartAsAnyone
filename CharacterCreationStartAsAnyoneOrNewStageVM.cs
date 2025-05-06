@@ -1,7 +1,11 @@
+using SandBox.View.CharacterCreation;
 using System;
+using System.Collections.Generic;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Input;
+using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement;
 using TaleWorlds.Core;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
@@ -15,8 +19,11 @@ namespace StartAsAnyone
         private Action<bool> _onStartAsAnyoneSelected;
         private InputKeyItemVM _cancelInputKey;
         private InputKeyItemVM _doneInputKey;
+        
         private bool _isActive;
         private bool _startAsAnyone;
+        
+        private MBBindingList<KingdomItemVM> _kingdoms;
 
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
@@ -39,15 +46,37 @@ namespace StartAsAnyone
                 furthestIndex,
                 goToIndex)
         {
+            
+            
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; //implemet logic for this
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as a random character or create a new one?", null).ToString();
             base.SelectionText = new TextObject("{=start_as_anyone_selection}Character Creation Path", null).ToString();
         }
 
+        public void ExecuteMe()
+        {
+            GameState gm = GameStateManager.Current.ActiveState;
+            CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState)))? (CharacterCreationState)gm:null;
+            List<Hero> kingdomLeaders = new List<Hero>();
+            foreach (Hero hero1 in Hero.AllAliveHeroes)
+            {
+                if (hero1.IsKingdomLeader)
+                {
+                    kingdomLeaders.Add(hero1);
+                }
+            }
+            SubModule.heroToBeSet = kingdomLeaders.GetRandomElement();
+            InformationManager.DisplayMessage(new InformationMessage("Porno"));
+            characterCreationState.FinalizeCharacterCreation();
+            InformationManager.DisplayMessage(new InformationMessage("Finalized Character Creation"));
 
+
+            //this worked!
+        }
         public override void OnNextStage()
         {
+            
             this._affirmativeAction(); //1st
         }
 
@@ -154,6 +183,7 @@ namespace StartAsAnyone
                 // if you need to enable “Advance”:
                 AnyItemSelected = true;
                 OnPropertyChanged(nameof(CanAdvance));
+                
             }
         }
 
@@ -172,7 +202,9 @@ namespace StartAsAnyone
 
                 AnyItemSelected = true;
                 OnPropertyChanged(nameof(CanAdvance));
+                
             }
         }
+        
     }
 } 

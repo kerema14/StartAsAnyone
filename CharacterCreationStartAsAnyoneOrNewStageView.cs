@@ -123,11 +123,7 @@ namespace StartAsAnyone
             this._affirmativeAction();
         }
 
-        private void OnStartAsAnyoneSelected(bool startAsAnyone)
-        {
-            // Handle the selection of starting as anyone or creating new character
-            // This will be implemented based on your specific requirements
-        }
+        
 
         public override void PreviousStage()
         {
