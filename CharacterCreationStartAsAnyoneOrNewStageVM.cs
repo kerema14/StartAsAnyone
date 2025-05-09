@@ -136,17 +136,13 @@ namespace StartAsAnyone
         {
             GameState gm = GameStateManager.Current.ActiveState;
             CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState)))? (CharacterCreationState)gm:null;
-            List<Hero> kingdomLeaders = new List<Hero>();
-            foreach (Hero hero1 in Hero.AllAliveHeroes)
-            {
-                if (hero1.IsKingdomLeader)
-                {
-                    kingdomLeaders.Add(hero1);
-                }
-            }
+
+            Hero hero = CurrentSelectedKingdom.Kingdom.Leader;
             
-            Hero hero = kingdomLeaders.Find(hero => hero.Name.ToString() == "Monchug");
+            
             SAASubModule.heroToBeSet = hero;
+            
+            
             
             characterCreationState.FinalizeCharacterCreation();
             
@@ -160,8 +156,9 @@ namespace StartAsAnyone
         {
             if (StartAsAnyone)
             {
-                ExecuteMe();
                 SAASubModule.startAsAnyone = true;
+                ExecuteMe();
+                
             }
             else
             {
@@ -323,6 +320,7 @@ namespace StartAsAnyone
                 
             }
         }
+
         [DataSourceProperty]
         public MBBindingList<CharacterCreationKingdomVM> Kingdoms
         {

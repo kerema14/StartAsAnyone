@@ -169,7 +169,7 @@ namespace StartAsAnyone
                 {
                     ChangeGovernorAction.RemoveGovernorOf(hero);
                 }
-                Settlement settlement = hero.Clan.HomeSettlement;
+                Settlement settlement = (hero.Clan.Kingdom.Settlements.Contains(hero.HomeSettlement))?hero.HomeSettlement:hero.Clan.Kingdom.FactionMidSettlement;
                 MobileParty result;
                 if (settlement != null && settlement.MapFaction == hero.MapFaction)
                 {
@@ -205,7 +205,7 @@ namespace StartAsAnyone
             ChangePlayerCharacterAction.Apply(hero);
             Campaign.Current.SetPropertyValue("PlayerDefaultFaction", hero.Clan);
             MobileParty.MainParty.ItemRoster.Clear();
-            DestroyClanAction.Apply(originalClan);
+            DestroyClanAction2.Apply(originalClan);
             
 
 
