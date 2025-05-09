@@ -1,12 +1,14 @@
 using SandBox.View.CharacterCreation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Input;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement;
 using TaleWorlds.Core;
+using TaleWorlds.GauntletUI.BaseTypes;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -19,11 +21,16 @@ namespace StartAsAnyone
         private Action<bool> _onStartAsAnyoneSelected;
         private InputKeyItemVM _cancelInputKey;
         private InputKeyItemVM _doneInputKey;
-        
+        private bool _canAdvanceToNextSelection;
         private bool _isActive;
         private bool _startAsAnyone;
-        
-        private MBBindingList<KingdomItemVM> _kingdoms;
+
+        private MBBindingList<CharacterCreationKingdomVM> _kingdoms;
+        private CharacterCreationKingdomVM _currentSelectedKingdom;
+        private bool _canGoBackToPreviousSelection;
+        private int _selectionStageIndex;
+        private int _furthestSelectionStageIndex;
+        private Action<Kingdom> _onKingdomSelected;
 
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
@@ -46,14 +53,85 @@ namespace StartAsAnyone
                 furthestIndex,
                 goToIndex)
         {
-            
-            
+
+            this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; //implemet logic for this
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as a random character or create a new one?", null).ToString();
             base.SelectionText = new TextObject("{=start_as_anyone_selection}Character Creation Path", null).ToString();
-        }
+            _canAdvanceToNextSelection = true;
+            _canGoBackToPreviousSelection = false;
+            _selectionStageIndex = 0;
+            _furthestSelectionStageIndex = 0+1 + 1;
+            
+            foreach (Kingdom kingdom in Kingdom.All)
+            {
+                CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(kingdom, OnKingdomSelection);
+                this.Kingdoms.Add(item);
+            }
+            
+            CharacterCreationKingdomVM characterCreationKingdomVM = this.Kingdoms.First();
+            if (characterCreationKingdomVM != null)
+            {
+                this.OnKingdomSelection(characterCreationKingdomVM);
+            }
 
+            
+        }
+        public void OnKingdomSelection(CharacterCreationKingdomVM selectedKingdom)
+        {
+            // Clear previous selections
+            foreach (CharacterCreationKingdomVM kingdomVM in from k in this.Kingdoms
+                                                             where k.IsSelected
+                                                             select k)
+            {
+                kingdomVM.IsSelected = false;
+            }
+
+            // Set new selection
+            selectedKingdom.IsSelected = true;
+            this.CurrentSelectedKingdom = selectedKingdom;
+            base.AnyItemSelected = true;
+
+            // Update game state
+
+            this.CanAdvanceToNextSelection = true;
+
+            // Notify listeners
+            Action<Kingdom> onKingdomSelected = this._onKingdomSelected;
+            if (onKingdomSelected == null)
+            {
+                return;
+            }
+            onKingdomSelected(selectedKingdom.Kingdom);
+        }
+        public void ExecuteNextSelectionStage()
+        {
+            // Logic for handling the "Next" button click
+            // You can put your implementation here
+            InformationManager.DisplayMessage(new InformationMessage("Wow, congrats, you've clicked a button..."));
+            CanGoBackToPreviousSelection = true;
+            _selectionStageIndex++;
+            if (_selectionStageIndex == _furthestSelectionStageIndex)
+            {
+                CanAdvanceToNextSelection = false;
+            }
+        }
+        public void ExecutePreviousSelectionStage()
+        {
+            // Logic for handling the "Previous" button click
+            // You can put your implementation here
+            
+            
+            _selectionStageIndex--;
+            if ((_selectionStageIndex + 1) == _furthestSelectionStageIndex)
+            {
+                CanAdvanceToNextSelection=true;
+            }
+            if (_selectionStageIndex <1) { CanGoBackToPreviousSelection = false; }
+
+            InformationManager.DisplayMessage(new InformationMessage("Wow, congrats, you've clicked a button... but back"));
+        }
         public void ExecuteMe()
         {
             GameState gm = GameStateManager.Current.ActiveState;
@@ -66,18 +144,31 @@ namespace StartAsAnyone
                     kingdomLeaders.Add(hero1);
                 }
             }
-            SubModule.heroToBeSet = kingdomLeaders.GetRandomElement();
-            InformationManager.DisplayMessage(new InformationMessage("Porno"));
+            
+            Hero hero = kingdomLeaders.Find(hero => hero.Name.ToString() == "Monchug");
+            SAASubModule.heroToBeSet = hero;
+            
             characterCreationState.FinalizeCharacterCreation();
-            InformationManager.DisplayMessage(new InformationMessage("Finalized Character Creation"));
+            
 
 
             //this worked!
         }
+        
+        
         public override void OnNextStage()
         {
+            if (StartAsAnyone)
+            {
+                ExecuteMe();
+                SAASubModule.startAsAnyone = true;
+            }
+            else
+            {
+                this._affirmativeAction(); //1st
+            }
             
-            this._affirmativeAction(); //1st
+            
         }
 
         public override void OnPreviousStage()
@@ -113,6 +204,33 @@ namespace StartAsAnyone
         public void SetDoneInputKey(HotKey hotKey)
         {
             this.DoneInputKey = InputKeyItemVM.CreateFromHotKey(hotKey, true);
+        }
+
+        [DataSourceProperty]
+        public bool CanAdvanceToNextSelection
+        {
+            get { return _canAdvanceToNextSelection; }
+            set
+            {
+                if (_canAdvanceToNextSelection != value)
+                {
+                    _canAdvanceToNextSelection = value;
+                    OnPropertyChanged(nameof(CanAdvanceToNextSelection));
+                }
+            }
+        }
+        [DataSourceProperty]
+        public bool CanGoBackToPreviousSelection
+        {
+            get { return _canGoBackToPreviousSelection; }
+            set
+            {
+                if(_canGoBackToPreviousSelection != value)
+                {
+                    _canGoBackToPreviousSelection = value;
+                    OnPropertyChanged(nameof(CanGoBackToPreviousSelection));
+                }
+            }
         }
 
         [DataSourceProperty]
@@ -183,7 +301,7 @@ namespace StartAsAnyone
                 // if you need to enable “Advance”:
                 AnyItemSelected = true;
                 OnPropertyChanged(nameof(CanAdvance));
-                
+
             }
         }
 
@@ -205,6 +323,38 @@ namespace StartAsAnyone
                 
             }
         }
-        
+        [DataSourceProperty]
+        public MBBindingList<CharacterCreationKingdomVM> Kingdoms
+        {
+            get
+            {
+                return this._kingdoms;
+            }
+            set
+            {
+                if (value != this._kingdoms)
+                {
+                    this._kingdoms = value;
+                    base.OnPropertyChangedWithValue<MBBindingList<CharacterCreationKingdomVM>>(value, "Kingdoms");
+                }
+            }
+        }
+        [DataSourceProperty]
+        public CharacterCreationKingdomVM CurrentSelectedKingdom
+        {
+            get
+            {
+                return this._currentSelectedKingdom;
+            }
+            set
+            {
+                if (value != this._currentSelectedKingdom)
+                {
+                    this._currentSelectedKingdom = value;
+                    base.OnPropertyChangedWithValue<CharacterCreationKingdomVM>(value, "CurrentSelectedKingdom");
+                }
+            }
+        }
+
     }
 } 

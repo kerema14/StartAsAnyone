@@ -22,27 +22,44 @@ using TaleWorlds.MountAndBlade.GauntletUI;
 
 namespace StartAsAnyone
 {
-    public class SubModule : MBSubModuleBase
+    public class SAASubModule : MBSubModuleBase
     {
         private static readonly Harmony _harmony = new Harmony("com.kerema14.startasanyone");
         private static bool _isInitialized = false;
         public static Hero heroToBeSet;
-        
+        public static bool heroInit;
+        public static CampaignTime heroBirthday;
+        public static bool startAsAnyone;
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
             
+            
+            heroInit = false;
             if (!_isInitialized)
             {
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _isInitialized = true;
             }
         }
-
+        public override void OnNewGameCreated(Game game, object initializerObject)
+        {
+            base.OnNewGameCreated(game, initializerObject);
+            CampaignEvents.OnCharacterCreationIsOverEvent.AddNonSerializedListener(this, setHeroAge);
+        }
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
+            
         }
+        public void setHeroAge()
+        {
+            if (heroInit)
+            {
+                Hero.MainHero.SetBirthDay(heroBirthday);
+            }
+        }
+        
     }
 
     [HarmonyPatch(typeof(StoryModeCharacterCreationContent))]
@@ -82,6 +99,7 @@ namespace StartAsAnyone
             return stages;
         }
     }
+    
 
     [HarmonyPatch(typeof(CharacterCreation), nameof(CharacterCreation.ApplyFinalEffects))]
     public static class CharacterCreation_ApplyFinalEffects_Patch
@@ -91,8 +109,12 @@ namespace StartAsAnyone
         {
             try
             {
+                if (SAASubModule.startAsAnyone)
+                {
+                    setPlayerToLord(__instance);
+                }
                 
-                setPlayerToLord(__instance);
+                
             }
             catch (Exception e)
             {
@@ -103,7 +125,8 @@ namespace StartAsAnyone
 
         private static void setPlayerToLord(CharacterCreation cc)
         {
-            Hero hero = SubModule.heroToBeSet;
+            Hero hero = SAASubModule.heroToBeSet;
+            
             
             List<Hero> kingdomLeaders = new List<Hero>();
             List<Hero> factionLeaders = new List<Hero>();
@@ -131,8 +154,16 @@ namespace StartAsAnyone
             {
                 hero = all.GetRandomElement();
             }
+            List<Hero> friendsOfHero = new List<Hero>();
+            foreach (Hero fhero in Hero.AllAliveHeroes)
+            {
+                if (Math.Abs(hero.GetRelation(fhero)) > 0) {  friendsOfHero.Add(fhero);}
+            }
             
-            if(hero.PartyBelongedTo == null) {
+            SAASubModule.heroBirthday = hero.BirthDay;
+            SAASubModule.heroInit = true;
+
+            if (hero.PartyBelongedTo == null) {
                 //HeroSpawnCampaignBehavior.SpawnLordParty
                 if (hero.GovernorOf != null)
                 {
@@ -177,10 +208,9 @@ namespace StartAsAnyone
             DestroyClanAction.Apply(originalClan);
             
 
-            //hero, hero.CO and clan all have HiddinInEncyclopedia properties, but I'd rather get rid of them than hide them
 
-            //unregisters the hero and characterObject objects from the managers
-            //until the clan is removed it will still show the leader hero on its page
+
+
             foreach (Hero hero1 in originalClan.Heroes)
             {
                 //get rid of the hero
@@ -190,9 +220,7 @@ namespace StartAsAnyone
             }
 
             //finally remove the clan
-            
             //there's a banner notification that shows up to notify of the clan being destroyed
-            
             Campaign.Current.CampaignObjectManager.CallMethod("RemoveClan", new object[] { originalClan });
             MapState mapState;
             if ((mapState = GameStateManager.Current.ActiveState as MapState) != null)
@@ -236,9 +264,15 @@ namespace StartAsAnyone
                 heroParty.ItemRoster.AddToCounts(grain, ((int)Math.Sqrt(troopRosterElement.Character.Tier)) * troopcount);
                 heroParty.ItemRoster.AddToCounts(meat, troopcount);
             }
+            foreach(Hero hero3 in friendsOfHero)
+            {
+                hero3.SetHasMet();
+            }
 
             
-            
+
+
+
 
 
         }

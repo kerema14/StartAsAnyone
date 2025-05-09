@@ -78,6 +78,8 @@ namespace StartAsAnyone
             ResourceDepot uiresourceDepot = UIResourceManager.UIResourceDepot;
             this._characterCreationCategory = spriteData.SpriteCategories["ui_charactercreation"];
             this._characterCreationCategory.Load(resourceContext, uiresourceDepot);
+
+
         }
 
         protected override void OnFinalize()
@@ -123,7 +125,12 @@ namespace StartAsAnyone
             this._affirmativeAction();
         }
 
-        
+        private void OnStartAsAnyoneSelected(bool startAsAnyone)
+        {
+            // Handle the selection of starting as anyone or creating new character
+            // This will be implemented based on your specific requirements
+            InformationManager.DisplayMessage(new InformationMessage("Wow you did it"));
+        }
 
         public override void PreviousStage()
         {
