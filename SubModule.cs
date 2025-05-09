@@ -169,7 +169,7 @@ namespace StartAsAnyone
                 {
                     ChangeGovernorAction.RemoveGovernorOf(hero);
                 }
-                Settlement settlement = (hero.Clan.Kingdom.Settlements.Contains(hero.HomeSettlement))?hero.HomeSettlement:hero.Clan.Kingdom.FactionMidSettlement;
+                Settlement settlement = hero.Clan.Kingdom.FactionMidSettlement;
                 MobileParty result;
                 if (settlement != null && settlement.MapFaction == hero.MapFaction)
                 {

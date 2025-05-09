@@ -31,6 +31,9 @@ namespace StartAsAnyone
         private int _selectionStageIndex;
         private int _furthestSelectionStageIndex;
         private Action<Kingdom> _onKingdomSelected;
+        private KingdomInfoPageVM _kingdomInfo;
+        private bool _isKingdomStageActive;
+        private bool _isHeroStageActive;
 
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
@@ -53,8 +56,10 @@ namespace StartAsAnyone
                 furthestIndex,
                 goToIndex)
         {
-
+            this.IsKingdomStage = false;
+            this.IsHeroStage = true;
             this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
+            
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; //implemet logic for this
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as a random character or create a new one?", null).ToString();
@@ -62,7 +67,7 @@ namespace StartAsAnyone
             _canAdvanceToNextSelection = true;
             _canGoBackToPreviousSelection = false;
             _selectionStageIndex = 0;
-            _furthestSelectionStageIndex = 0+1 + 1;
+            _furthestSelectionStageIndex = 0+1;
             
             foreach (Kingdom kingdom in Kingdom.All)
             {
@@ -75,8 +80,10 @@ namespace StartAsAnyone
             {
                 this.OnKingdomSelection(characterCreationKingdomVM);
             }
-
+            this.KingdomInfo = new KingdomInfoPageVM(CurrentSelectedKingdom.Kingdom);
             
+
+
         }
         public void OnKingdomSelection(CharacterCreationKingdomVM selectedKingdom)
         {
@@ -96,6 +103,7 @@ namespace StartAsAnyone
             // Update game state
 
             this.CanAdvanceToNextSelection = true;
+            this.KingdomInfo = new KingdomInfoPageVM(selectedKingdom.Kingdom);
 
             // Notify listeners
             Action<Kingdom> onKingdomSelected = this._onKingdomSelected;
@@ -109,12 +117,17 @@ namespace StartAsAnyone
         {
             // Logic for handling the "Next" button click
             // You can put your implementation here
-            InformationManager.DisplayMessage(new InformationMessage("Wow, congrats, you've clicked a button..."));
+            
             CanGoBackToPreviousSelection = true;
             _selectionStageIndex++;
             if (_selectionStageIndex == _furthestSelectionStageIndex)
             {
                 CanAdvanceToNextSelection = false;
+            }
+            if(_selectionStageIndex == 1)
+            {
+                IsHeroStage = true;
+                IsKingdomStage = false;
             }
         }
         public void ExecutePreviousSelectionStage()
@@ -128,9 +141,13 @@ namespace StartAsAnyone
             {
                 CanAdvanceToNextSelection=true;
             }
-            if (_selectionStageIndex <1) { CanGoBackToPreviousSelection = false; }
-
-            InformationManager.DisplayMessage(new InformationMessage("Wow, congrats, you've clicked a button... but back"));
+            if (_selectionStageIndex <1) { 
+                CanGoBackToPreviousSelection = false; 
+                IsHeroStage = false;
+                IsKingdomStage = true;
+            }
+            
+            
         }
         public void ExecuteMe()
         {
@@ -295,6 +312,7 @@ namespace StartAsAnyone
                 OnPropertyChanged(nameof(NotStartAsAnyone));
                 // if you have a delegate to fire, do it here too:
                 
+                
                 // if you need to enable “Advance”:
                 AnyItemSelected = true;
                 OnPropertyChanged(nameof(CanAdvance));
@@ -314,10 +332,26 @@ namespace StartAsAnyone
 
                 OnPropertyChanged(nameof(NotStartAsAnyone));
                 OnPropertyChanged(nameof(StartAsAnyone));
-
+                
                 AnyItemSelected = true;
                 OnPropertyChanged(nameof(CanAdvance));
                 
+            }
+        }
+        [DataSourceProperty]
+        public KingdomInfoPageVM KingdomInfo
+        {
+            get
+            {
+                return this._kingdomInfo;
+            }
+            set
+            {
+                if (value != this._kingdomInfo)
+                {
+                    this._kingdomInfo = value;
+                    base.OnPropertyChangedWithValue<KingdomInfoPageVM>(value, "KingdomInfo");
+                }
             }
         }
 
@@ -350,9 +384,43 @@ namespace StartAsAnyone
                 {
                     this._currentSelectedKingdom = value;
                     base.OnPropertyChangedWithValue<CharacterCreationKingdomVM>(value, "CurrentSelectedKingdom");
+                    
                 }
             }
         }
 
+        [DataSourceProperty]
+        public bool IsKingdomStage
+        {
+            get
+            {
+                return this._selectionStageIndex == 0;
+            }
+            set
+            {
+                if (value != this._isKingdomStageActive)
+                {
+                    this._isKingdomStageActive = value;
+                    base.OnPropertyChangedWithValue(value,nameof(IsKingdomStage));
+                }
+            }
+        }
+        [DataSourceProperty]
+        public bool IsHeroStage
+        {
+            get
+            {
+                return this._selectionStageIndex == 1;
+            }
+            set
+            {
+                if (value != this._isHeroStageActive)
+                {
+                    this._isHeroStageActive = value;
+                    base.OnPropertyChangedWithValue(value, nameof(IsHeroStage));
+                    
+                }
+            }
+        }
     }
 } 

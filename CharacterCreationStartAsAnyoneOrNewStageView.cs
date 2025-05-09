@@ -78,6 +78,7 @@ namespace StartAsAnyone
             ResourceDepot uiresourceDepot = UIResourceManager.UIResourceDepot;
             this._characterCreationCategory = spriteData.SpriteCategories["ui_charactercreation"];
             this._characterCreationCategory.Load(resourceContext, uiresourceDepot);
+            this._dataSource.IsKingdomStage = true;
 
 
         }
