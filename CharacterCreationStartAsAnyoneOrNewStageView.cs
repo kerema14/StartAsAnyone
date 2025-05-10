@@ -73,6 +73,7 @@ namespace StartAsAnyone
             this._movie = this.GauntletLayer.LoadMovie("CharacterCreationStartAsAnyoneOrNewStage", this._dataSource);
             this._dataSource.SetCancelInputKey(HotKeyManager.GetCategory("GenericPanelGameKeyCategory").GetHotKey("Exit"));
             this._dataSource.SetDoneInputKey(HotKeyManager.GetCategory("GenericPanelGameKeyCategory").GetHotKey("Confirm"));
+            
             SpriteData spriteData = UIResourceManager.SpriteData;
             TwoDimensionEngineResourceContext resourceContext = UIResourceManager.ResourceContext;
             ResourceDepot uiresourceDepot = UIResourceManager.UIResourceDepot;
