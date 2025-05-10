@@ -198,7 +198,7 @@ namespace StartAsAnyone
             
             SAASubModule.heroBirthday = hero.BirthDay;
             SAASubModule.heroInit = true;
-
+            /*
             if (hero.PartyBelongedTo == null) {
                 //HeroSpawnCampaignBehavior.SpawnLordParty
                 if (hero.GovernorOf != null)
@@ -209,6 +209,7 @@ namespace StartAsAnyone
                 MobileParty result;
                 if (settlement != null && settlement.MapFaction == hero.MapFaction)
                 {
+                    
                     result = MobilePartyHelper.SpawnLordParty(hero, settlement);
                 }
                 else if (hero.MapFaction.InitialPosition.IsValid)
@@ -235,6 +236,7 @@ namespace StartAsAnyone
                     }
                 } 
             }
+            */
 
 
             Clan originalClan = Hero.MainHero.Clan;

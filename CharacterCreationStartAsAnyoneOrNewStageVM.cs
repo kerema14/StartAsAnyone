@@ -1,10 +1,14 @@
+using Helpers;
 using SandBox.View.CharacterCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
+using TaleWorlds.CampaignSystem.Party;
+using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Input;
@@ -69,7 +73,7 @@ namespace StartAsAnyone
             
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; //implemet logic for this
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
-            base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as a random character or create a new one?", null).ToString();
+            base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as an existing lord/lady or create a new one?", null).ToString();
             base.SelectionText = new TextObject("{=start_as_anyone_selection}Character Creation Path", null).ToString();
             _canAdvanceToNextSelection = true;
             _canGoBackToPreviousSelection = false;
@@ -230,7 +234,7 @@ namespace StartAsAnyone
             {
                 SAASubModule.heroToBeSet = CurrentSelectedKingdom.Kingdom.Leader;
             }
-            
+            spawnParty(CurrentSelectedHero.Hero);
 
 
             
@@ -294,6 +298,47 @@ namespace StartAsAnyone
         public void SetDoneInputKey(HotKey hotKey)
         {
             this.DoneInputKey = InputKeyItemVM.CreateFromHotKey(hotKey, true);
+        }
+        private void spawnParty(Hero hero)
+        {
+            if (hero.PartyBelongedTo == null)
+            {
+                //HeroSpawnCampaignBehavior.SpawnLordParty
+                if (hero.GovernorOf != null)
+                {
+                    ChangeGovernorAction.RemoveGovernorOf(hero);
+                }
+                Settlement settlement = hero.Clan.Kingdom.FactionMidSettlement;
+                MobileParty result;
+                if (settlement != null && settlement.MapFaction == hero.MapFaction)
+                {
+
+                    result = MobilePartyHelper.SpawnLordParty(hero, settlement);
+                }
+                else if (hero.MapFaction.InitialPosition.IsValid)
+                {
+                    result = MobilePartyHelper.SpawnLordParty(hero, hero.MapFaction.InitialPosition, 30f);
+                }
+                else
+                {
+                    foreach (Settlement settlement2 in Settlement.All)
+                    {
+                        if (settlement2.Culture == hero.Culture)
+                        {
+                            settlement = settlement2;
+                            break;
+                        }
+                    }
+                    if (settlement != null)
+                    {
+                        result = MobilePartyHelper.SpawnLordParty(hero, settlement);
+                    }
+                    else
+                    {
+                        result = MobilePartyHelper.SpawnLordParty(hero, Settlement.All.GetRandomElement<Settlement>());
+                    }
+                }
+            }
         }
 
         [DataSourceProperty]
@@ -422,6 +467,7 @@ namespace StartAsAnyone
                 }
                 else
                 {
+
                     OnPropertyChangedWithValue(false, nameof(CanAdvance));
                 }
 
@@ -560,7 +606,7 @@ namespace StartAsAnyone
                 }
             }
         }
-
+        [DataSourceProperty]
         public string SelectionStageText {
             get
             {
