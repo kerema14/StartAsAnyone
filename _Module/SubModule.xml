@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Module xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/BUTR/Bannerlord.XmlSchemas/master/SubModule.xsd" >
-  <Id value="$moduleid$" />
-  <Name value="$modulename$" />
-  <Version value="v$version$" />
+  <Id value="StartAsAnyone" />
+  <Name value="Start as Anyone" />
+  <Version value="v1.0.0" />
   <DefaultModule value="false" />
   <ModuleCategory value="Singleplayer"/>
   <ModuleType value="Community" />
@@ -29,9 +29,9 @@
   <!-- Community Dependency Metadata -->
   <SubModules>
     <SubModule>
-      <Name value="$modulename$" />
-      <DLLName value="$modulename$.dll" />
-      <SubModuleClassType value="$modulename$.SAASubModule" />
+      <Name value="StartAsAnyone" />
+      <DLLName value="StartAsAnyone.dll" />
+      <SubModuleClassType value="StartAsAnyone.SAASubModule" />
       <Tags />
     </SubModule>
   </SubModules>

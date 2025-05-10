@@ -39,6 +39,7 @@ namespace StartAsAnyone
         private bool _isHeroStageActive;
         private CharacterCreationHeroVM _currentSelectedHero;
         private HeroInfoPageVM _heroInfo;
+        private string _selectionStageText;
 
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
@@ -87,9 +88,9 @@ namespace StartAsAnyone
                 this.OnKingdomSelection(characterCreationKingdomVM);
             }
             this.KingdomInfo = new KingdomInfoPageVM(CurrentSelectedKingdom.Kingdom);
+            this.SelectionStageText = "Select a kingdom to choose your character from.";
 
-            
-            
+
 
 
         }
@@ -124,8 +125,7 @@ namespace StartAsAnyone
 
         private void _onHeroSelected(Hero hero)
         {
-            string message = String.Format("I see...{0}, a Gourmet choice", hero.Name.ToString());
-            InformationManager.DisplayMessage(new InformationMessage(message));
+            OnPropertyChangedWithValue(true, nameof(CanAdvance));
         }
 
         public void OnKingdomSelection(CharacterCreationKingdomVM selectedKingdom)
@@ -196,6 +196,7 @@ namespace StartAsAnyone
                 IsHeroStage = true;
                 IsKingdomStage = false;
             }
+            this.SelectionStageText = "Choose a character to play as.";
         }
         public void ExecutePreviousSelectionStage()
         {
@@ -213,8 +214,9 @@ namespace StartAsAnyone
                 IsHeroStage = false;
                 IsKingdomStage = true;
             }
-            
-            
+            this.SelectionStageText = "Select a kingdom to choose your character from.";
+            OnPropertyChangedWithValue(false, nameof(CanAdvance));
+
         }
         public void ExecuteMe()
         {
@@ -389,7 +391,14 @@ namespace StartAsAnyone
                 
                 // if you need to enable “Advance”:
                 AnyItemSelected = true;
-                OnPropertyChanged(nameof(CanAdvance));
+                if(!_startAsAnyone){
+                    OnPropertyChangedWithValue(true, nameof(CanAdvance));
+
+                }
+                else
+                {
+                    OnPropertyChangedWithValue(false, nameof(CanAdvance));
+                }
 
             }
         }
@@ -408,8 +417,14 @@ namespace StartAsAnyone
                 OnPropertyChanged(nameof(StartAsAnyone));
                 
                 AnyItemSelected = true;
-                OnPropertyChanged(nameof(CanAdvance));
-                
+                if(!_startAsAnyone){
+                    OnPropertyChangedWithValue(true, nameof(CanAdvance));
+                }
+                else
+                {
+                    OnPropertyChangedWithValue(false, nameof(CanAdvance));
+                }
+
             }
         }
         [DataSourceProperty]
@@ -545,6 +560,21 @@ namespace StartAsAnyone
                 }
             }
         }
-        
+
+        public string SelectionStageText {
+            get
+            {
+                return this._selectionStageText;
+            }
+            set
+            {
+                if (value != this._selectionStageText)
+                {
+                    this._selectionStageText = value;
+                    base.OnPropertyChangedWithValue<string>(value, "SelectionStagetext");
+
+                }
+            }
+        }
     }
 } 
