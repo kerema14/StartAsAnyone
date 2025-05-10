@@ -38,6 +38,7 @@ namespace StartAsAnyone
             heroInit = false;
             if (!_isInitialized)
             {
+                CharacterCreationContentPatcher.ApplyPatches(_harmony);
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _isInitialized = true;
             }
@@ -46,6 +47,7 @@ namespace StartAsAnyone
         {
             base.OnNewGameCreated(game, initializerObject);
             CampaignEvents.OnCharacterCreationIsOverEvent.AddNonSerializedListener(this, setHeroAge);
+            
         }
         protected override void OnApplicationTick(float dt)
         {
@@ -62,11 +64,64 @@ namespace StartAsAnyone
         
     }
 
-    [HarmonyPatch(typeof(StoryModeCharacterCreationContent))]
-    [HarmonyPatch("CharacterCreationStages", MethodType.Getter)]
-    public class StoryModeCharacterCreationContentPatches
+    public class CharacterCreationContentPatcher
     {
-        public static IEnumerable<Type> Postfix(IEnumerable<Type> __result)
+        // This method will run when your mod initializes
+        public static void ApplyPatches(Harmony harmony)
+        {
+            // Find all types that inherit from CharacterCreationContentBase
+            var baseType = typeof(CharacterCreationContentBase);
+            var inheritingTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(assembly => {
+                    try
+                    {
+                        return assembly.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        return e.Types.Where(t => t != null);
+                    }
+                    catch
+                    {
+                        return Type.EmptyTypes;
+                    }
+                })
+                .Where(type => type != null && baseType.IsAssignableFrom(type) && type != baseType && !type.IsAbstract);
+
+            // Log the types we found (for debugging purposes)
+            foreach (var type in inheritingTypes)
+            {
+                Console.WriteLine($"Found CharacterCreationContentBase child: {type.FullName}");
+            }
+
+            // Create a method info that points to your patch method
+            var postfixMethod = typeof(CharacterCreationContentPatcher).GetMethod(nameof(CharacterCreationStagesPostfix));
+
+            // Apply the patch to each type
+            foreach (var type in inheritingTypes)
+            {
+                try
+                {
+                    var originalMethod = AccessTools.PropertyGetter(type, "CharacterCreationStages");
+                    if (originalMethod != null)
+                    {
+                        harmony.Patch(originalMethod, postfix: new HarmonyMethod(postfixMethod));
+                        Console.WriteLine($"Successfully patched {type.FullName}.CharacterCreationStages");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Could not find CharacterCreationStages property on {type.FullName}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error patching {type.FullName}: {ex.Message}");
+                }
+            }
+        }
+
+        // This is your actual patch method
+        public static IEnumerable<Type> CharacterCreationStagesPostfix(IEnumerable<Type> __result)
         {
             // Create a new list with our custom stage first
             var stages = new List<Type> { typeof(CharacterCreationStartAsAnyoneOrNewStage) };
@@ -81,25 +136,6 @@ namespace StartAsAnyone
         }
     }
 
-    [HarmonyPatch(typeof(SandboxCharacterCreationContent))]
-    [HarmonyPatch("CharacterCreationStages", MethodType.Getter)]
-    public class SandboxCharacterCreationContentPatches
-    {
-        public static IEnumerable<Type> Postfix(IEnumerable<Type> __result)
-        {
-            // Create a new list with our custom stage first
-            var stages = new List<Type> { typeof(CharacterCreationStartAsAnyoneOrNewStage) };
-
-            // Add all the original stages
-            foreach (var stage in __result)
-            {
-                stages.Add(stage);
-            }
-
-            return stages;
-        }
-    }
-    
 
     [HarmonyPatch(typeof(CharacterCreation), nameof(CharacterCreation.ApplyFinalEffects))]
     public static class CharacterCreation_ApplyFinalEffects_Patch
