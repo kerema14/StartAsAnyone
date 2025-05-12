@@ -95,25 +95,11 @@ namespace StartAsAnyone
             this.Traits.Clear();
             this.NameText = this._hero.Name.ToString();
             string text = GameTexts.FindText("str_missing_info_indicator", null).ToString();
-            EncyclopediaPage pageOf = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Hero));
+            
             this.HasNeutralClan = (this._hero.Clan == null);
             if (!this.IsInformationHidden)
             {
-                for (int i = 0; i < TaleWorlds.CampaignSystem.Extensions.Skills.All.Count; i++)
-                {
-                    SkillObject skill = TaleWorlds.CampaignSystem.Extensions.Skills.All[i];
-                    if (this._hero.GetSkillValue(skill) > 0 && this._hero.GetSkillValue(skill) > 50)
-                    {
-                        this.Skills.Add(new EncyclopediaSkillVM(skill, this._hero.GetSkillValue(skill)));
-                    }
-                }
-                foreach (TraitObject traitObject in CampaignUIHelper.GetHeroTraits())
-                {
-                    if (this._hero.GetTraitLevel(traitObject) != 0)
-                    {
-                        this.Traits.Add(new EncyclopediaTraitItemVM(traitObject, this._hero));
-                    }
-                }
+                
                 if (this._hero.Age >= (float)Campaign.Current.Models.AgeModel.HeroComesOfAge)
                 {
                     for (int j = 0; j < Hero.AllAliveHeroes.Count; j++)
@@ -137,7 +123,7 @@ namespace StartAsAnyone
                 for (int m = 0; m < this._allRelatedHeroes.Count; m++)
                 {
                     Hero hero2 = this._allRelatedHeroes[m];
-                    if (hero2 != null && pageOf.IsValidEncyclopediaItem(hero2))
+                    if (hero2 != null)
                     {
                         this.Family.Add(new CharacterCreationHeroFamilyVM(hero2, this._hero));
                     }
@@ -606,6 +592,23 @@ namespace StartAsAnyone
                 }
             }
         }
+        [DataSourceProperty]
+        public KingdomInfoVM HeroClan
+        {
+            get
+            {
+                return this._clan;
+            }
+            set
+            {
+                if ((value != this._clan))
+                {
+                    this._clan = value;
+                    base.OnPropertyChangedWithValue<KingdomInfoVM>(value, "HeroClan");
+                }
+            }
+        }
+
 
         // Token: 0x17000621 RID: 1569
         // (get) Token: 0x06001272 RID: 4722 RVA: 0x00048C4E File Offset: 0x00046E4E
@@ -1113,5 +1116,6 @@ namespace StartAsAnyone
 
         // Token: 0x040008A6 RID: 2214
         private HintViewModel _pregnantHint;
+        private KingdomInfoVM _clan;
     }
 }

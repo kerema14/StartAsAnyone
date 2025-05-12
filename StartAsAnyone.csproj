@@ -69,10 +69,4 @@
     <PackageReference Include="BUTR.Harmony.Analyzer" Version="1.0.1.50" PrivateAssets="all" IncludeAssets="runtime; build; native; contentfiles; analyzers; buildtransitive" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="GUI\Prefabs\CharacterCreationStartAsAnyoneOrNewStage.xml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
