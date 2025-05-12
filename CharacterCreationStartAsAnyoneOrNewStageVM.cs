@@ -1,20 +1,15 @@
 using Helpers;
-using SandBox.View.CharacterCreation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
-using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Input;
-using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement;
 using TaleWorlds.Core;
-using TaleWorlds.GauntletUI.BaseTypes;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -70,7 +65,7 @@ namespace StartAsAnyone
             this.IsHeroStage = true;
             this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
             this.Heroes = new MBBindingList<CharacterCreationHeroVM>();
-            
+            SAASubModule.startAsAnyone = false;
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; //implemet logic for this
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as an existing lord/lady or create a new one?", null).ToString();

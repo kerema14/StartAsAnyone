@@ -4,6 +4,6 @@
 # Ignore compiled binary files
 bin/
 obj/
-
+modpage/
 # Ignore launch settings file
 Properties/launchSettings.json
