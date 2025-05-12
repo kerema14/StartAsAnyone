@@ -123,7 +123,7 @@ namespace StartAsAnyone
                 for (int m = 0; m < this._allRelatedHeroes.Count; m++)
                 {
                     Hero hero2 = this._allRelatedHeroes[m];
-                    if (hero2 != null)
+                    if (hero2 != null && hero2.CharacterObject != null)
                     {
                         this.Family.Add(new CharacterCreationHeroFamilyVM(hero2, this._hero));
                     }

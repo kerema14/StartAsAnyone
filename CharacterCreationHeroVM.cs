@@ -60,6 +60,7 @@ namespace StartAsAnyone
             if (hero != null)
             {
                 //CharacterCode characterCode = CampaignUIHelper.GetCharacterCode(hero.CharacterObject, useCivilian);
+
                 this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
                 this.ClanBanner = new ImageIdentifierVM(hero.ClanBanner);
                 this.ClanBanner_9 = new ImageIdentifierVM(BannerCode.CreateFrom(hero.ClanBanner), true);
