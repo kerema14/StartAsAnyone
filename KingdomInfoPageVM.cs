@@ -31,8 +31,33 @@ namespace StartAsAnyone
             
             this.RefreshValues();
         }
+        public KingdomInfoPageVM(Clan clan) //small factions implementation
+        {
+            
+            this._clan = clan;
+            this.Enemies = new MBBindingList<KingdomInfoVM>();
+            this.Settlements = new MBBindingList<EncyclopediaSettlementVM>();
+            //check if small factions have different clans
+            this.RefreshValues();
+        }
+        public KingdomInfoPageVM(MBBindingList<CharacterCreationKingdomVM> clans)
+        {
+            this.NameText = "Select Non-Kingdom Clan";
+            this.ClansText = new TextObject("{=bfQLwMUp}Clans", null).ToString();
+            this.Clans = new MBBindingList<KingdomInfoVM>();
+            
+            Hero.MainHero.SetName(new TextObject("No one"),new TextObject("Absolutely no one"));
 
-        
+            this.Leader = new HeroVM(Hero.MainHero, true);
+            foreach (CharacterCreationKingdomVM c in clans)
+            {
+                this.Clans.Add(new KingdomInfoVM(c.Clan));
+            }
+            this.InformationText = "Continue to select non kingdom clans";
+
+        }
+
+
         public override void RefreshValues()
         {
             base.RefreshValues();
@@ -43,10 +68,13 @@ namespace StartAsAnyone
             this.EnemiesText = new TextObject("{=zZlWRZjO}Wars", null).ToString();
             this.SettlementsText = new TextObject("{=LBNzsqyb}Fiefs", null).ToString();
             this.VillagesText = GameTexts.FindText("str_villages", null).ToString();
-            TextObject encyclopediaText = this._faction.EncyclopediaText;
+            TextObject encyclopediaText = (this._faction!=null)? this._faction.EncyclopediaText:(this._clan.EncyclopediaText!=null)? this._clan.EncyclopediaText:new TextObject("Continue to select non kingdom clans");
             this.InformationText = (((encyclopediaText != null) ? encyclopediaText.ToString() : null) ?? string.Empty);
+
+            if (this._faction != null) { this.Refresh(); }
+            else if (this._clan != null) { this.RefreshClan(); }
+            else { this.InitNonFactionButton(); }
             
-            this.Refresh();
         }
 
         
@@ -123,19 +151,85 @@ namespace StartAsAnyone
             
         }
 
-        
-        public string GetName()
+
+        public void RefreshClan()
         {
-            return this._faction.Name.ToString();
+
+            
+            this.Enemies.Clear();
+            this.Settlements.Clear();
+            
+            this.Leader = new HeroVM(this._clan.Leader, false);
+            this.LeaderText = GameTexts.FindText("str_leader", null).ToString();
+            this.NameText = this._clan.Name.ToString();
+            this.DescriptorText = GameTexts.FindText("str_kingdom_clan", null).ToString();
+            int num = 0;
+            float num2 = 0f;
+            EncyclopediaPage pageOf = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Hero));
+            foreach (Hero hero in this._clan.Lords)
+            {
+                if (pageOf.IsValidEncyclopediaItem(hero))
+                {
+                    num += hero.Gold;
+                }
+            }
+            this.Banner = new ImageIdentifierVM(BannerCode.CreateFrom(this._clan.Banner), true);
+            foreach (MobileParty mobileParty in MobileParty.AllLordParties)
+            {
+                if (mobileParty.MapFaction == this._clan && !mobileParty.IsDisbanding)
+                {
+                    num2 += mobileParty.Party.TotalStrength;
+                }
+            }
+            this.ProsperityText = num.ToString();
+            this.StrengthText = num2.ToString();
+            for (int i = Campaign.Current.LogEntryHistory.GameActionLogs.Count - 1; i >= 0; i--)
+            {
+                IEncyclopediaLog encyclopediaLog;
+                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[i] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf<Clan>(this._clan))
+                {
+                    this.History.Add(new EncyclopediaHistoryEventVM(encyclopediaLog));
+                }
+            }
+            EncyclopediaPage pageOf2 = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Clan));
+            using (IEnumerator<IFaction> enumerator3 = (from x in Campaign.Current.Factions
+                                                        orderby !x.IsKingdomFaction
+                                                        select x).ThenBy((IFaction f) => f.Name.ToString()).GetEnumerator())
+            {
+                while (enumerator3.MoveNext())
+                {
+                    IFaction factionObject = enumerator3.Current;
+                    if (pageOf2.IsValidEncyclopediaItem(factionObject) && factionObject != this._clan && !factionObject.IsBanditFaction && FactionManager.IsAtWarAgainstFaction(this._clan, factionObject.MapFaction) && !this.Enemies.Any((KingdomInfoVM x) => x.Faction == factionObject.MapFaction))
+                    {
+                        this.Enemies.Add(new KingdomInfoVM(factionObject.MapFaction));
+                    }
+                }
+            }
+            
+            EncyclopediaPage pageOf3 = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Settlement));
+            foreach (Settlement settlement in from s in Settlement.All
+                                              where s.IsTown || s.IsCastle
+                                              orderby s.IsCastle, s.IsTown
+                                              select s)
+            {
+                if ((settlement.MapFaction == this._clan || (settlement.OwnerClan == this._clan && settlement.OwnerClan.Leader != null)) && pageOf3.IsValidEncyclopediaItem(settlement))
+                {
+                    this.Settlements.Add(new EncyclopediaSettlementVM(settlement));
+                }
+            }
+
         }
 
-        
-        
+        public void InitNonFactionButton()
+        {
 
-        
-        
+        }
 
-        
+
+
+
+
+
         // (get) Token: 0x0600121E RID: 4638 RVA: 0x00047AD4 File Offset: 0x00045CD4
         // (set) Token: 0x0600121F RID: 4639 RVA: 0x00047ADC File Offset: 0x00045CDC
         [DataSourceProperty]
@@ -517,6 +611,8 @@ namespace StartAsAnyone
 
         
         private Kingdom _faction;
+
+        private Clan _clan;
 
         
         private MBBindingList<KingdomInfoVM> _clans;

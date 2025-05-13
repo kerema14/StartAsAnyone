@@ -18,14 +18,17 @@ namespace StartAsAnyone
         {
             this._onSelection = onSelection;
             this.Hero = hero;
-
-            if (hero != null)
+            if (hero.Clan.Kingdom == null)
+            {
+                this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
+            }
+            else if (hero != null && hero.CharacterObject!=null)
             {
                 //CharacterCode characterCode = CampaignUIHelper.GetCharacterCode(hero.CharacterObject, useCivilian);
                 this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
                 this.ClanBanner = new ImageIdentifierVM(hero.ClanBanner);
                 this.ClanBanner_9 = new ImageIdentifierVM(BannerCode.CreateFrom(hero.ClanBanner), true);
-                this.Relation = HeroVM.GetRelation(hero);
+                //this.Relation = HeroVM.GetRelation(hero);
                 this.IsDead = !hero.IsAlive;
                 TextObject textObject;
                 this.IsChild = (!CampaignUIHelper.IsHeroInformationHidden(hero, out textObject) &&
@@ -36,7 +39,7 @@ namespace StartAsAnyone
                 this.ClanName = (hero.Clan != null) ? hero.Clan.Name.ToString() : "";
                 this.KingdomName = (hero.Clan != null && hero.Clan.Kingdom != null) ? hero.Clan.Kingdom.Name.ToString() : "";
                 this.IsLeader = hero.IsKingdomLeader;
-                this.EncyclopediaText = hero.EncyclopediaText.ToString();
+                this.EncyclopediaText = (hero.EncyclopediaText.ToString()!=null)?hero.EncyclopediaText.ToString():"";
             }
             else
             {
@@ -51,6 +54,8 @@ namespace StartAsAnyone
             }
             
             RefreshValues();
+            
+
         }
         public CharacterCreationHeroVM(Hero hero, bool useCivilian = false)
         {

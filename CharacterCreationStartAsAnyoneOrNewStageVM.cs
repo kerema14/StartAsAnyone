@@ -42,7 +42,11 @@ namespace StartAsAnyone
         private HeroInfoPageVM _heroInfo;
         private string _selectionStageText;
         private bool _isStoryMode;
+        private bool _isNonKingdomFactionStage;
+        private bool _NonKingdomFactionSelectionStage;
         private HintViewModel _storyModeDisabledHint;
+        private MBBindingList<CharacterCreationKingdomVM> _nonKingdomFactions;
+        private MBBindingList<CharacterCreationKingdomVM> _savedKingdoms;
 
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
@@ -68,6 +72,7 @@ namespace StartAsAnyone
             this.IsKingdomStage = false;
             this.IsHeroStage = true;
             this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
+            this.NonKingdomFactions = new MBBindingList<CharacterCreationKingdomVM>();
             this.Heroes = new MBBindingList<CharacterCreationHeroVM>();
             SAASubModule.startAsAnyone = false;
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; 
@@ -85,7 +90,16 @@ namespace StartAsAnyone
                 CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(kingdom, OnKingdomSelection);
                 this.Kingdoms.Add(item);
             }
-            
+            var clansWithoutKingdom = Clan.All.Where(clan => clan.Kingdom == null && clan.Leader != null && clan.Leader != Hero.MainHero);
+            foreach (Clan clan in clansWithoutKingdom)
+            {
+                CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(clan,OnKingdomSelection);
+                this.NonKingdomFactions.Add(item);
+            }
+
+            this.Kingdoms.Add(new CharacterCreationKingdomVM(OnKingdomSelection));
+            this._savedKingdoms = Kingdoms;
+
             CharacterCreationKingdomVM characterCreationKingdomVM = this.Kingdoms.First();
             if (characterCreationKingdomVM != null)
             {
@@ -137,7 +151,6 @@ namespace StartAsAnyone
 
         public void OnKingdomSelection(CharacterCreationKingdomVM selectedKingdom)
         {
-            // Clear previous selections
             foreach (CharacterCreationKingdomVM kingdomVM in from k in this.Kingdoms
                                                              where k.IsSelected
                                                              select k)
@@ -145,14 +158,45 @@ namespace StartAsAnyone
                 kingdomVM.IsSelected = false;
             }
 
-            // Set new selection
+
             selectedKingdom.IsSelected = true;
             this.CurrentSelectedKingdom = selectedKingdom;
+            this.CanAdvanceToNextSelection = true;
+            if (this.CurrentSelectedKingdom.Kingdom == null && this.CurrentSelectedKingdom.Clan == null)
+            {
+                this._isNonKingdomFactionStage = true;
+                OnNonKingdomFactionSelection();
+                return; 
+            }
+            else if(this.CurrentSelectedKingdom.Clan != null)
+            {
+
+                this.KingdomInfo = new KingdomInfoPageVM(this.CurrentSelectedKingdom.Clan);
+                this.CurrentSelectedHero = new CharacterCreationHeroVM(this.CurrentSelectedKingdom.Clan.Leader, OnHeroSelection);
+                this.HeroInfo = new HeroInfoPageVM(CurrentSelectedHero.Hero);
+                Action<Clan> onClanSelected = this._onClanSelected;
+                if (onClanSelected == null)
+                {
+                    return;
+                }
+                onClanSelected(selectedKingdom.Clan);
+                return;
+            }
+            else
+            {
+                this._isNonKingdomFactionStage = false;
+            }
+            
+            // Clear previous selections
+            
+
+            // Set new selection
+            
             base.AnyItemSelected = true;
 
             // Update game state
 
-            this.CanAdvanceToNextSelection = true;
+            
             this.KingdomInfo = new KingdomInfoPageVM(selectedKingdom.Kingdom);
             this.CurrentSelectedHero = new CharacterCreationHeroVM(selectedKingdom.Kingdom.Leader, OnHeroSelection);
             this.HeroInfo = new HeroInfoPageVM(selectedKingdom.Kingdom.Leader);
@@ -164,6 +208,39 @@ namespace StartAsAnyone
                 return;
             }
             onKingdomSelected(selectedKingdom.Kingdom);
+        }
+
+        public void OnNonKingdomFactionSelection()
+        {
+            foreach (CharacterCreationKingdomVM kingdomVM in from k in this.NonKingdomFactions
+                                                             where k.IsSelected
+                                                             select k)
+            {
+                kingdomVM.IsSelected = false;
+            }
+
+            this.NonKingdomFactions.First().IsSelected = true;
+            
+            this.KingdomInfo = new KingdomInfoPageVM(NonKingdomFactions);
+            
+        }
+        private void _onClanSelected(Clan clan)
+        {
+            this.Heroes.Clear();
+
+
+            List<Hero> aliveHeroes = clan.Heroes
+                .Where(hero => hero.IsAlive &&
+                              hero.HeroState == Hero.CharacterStates.Active &&
+                              hero.IsLord)
+                .GroupBy(hero => hero.Id)
+                .Select(group => group.First())
+                .ToList();
+            
+            foreach (Hero hero in aliveHeroes)
+            {
+                this.Heroes.Add(new CharacterCreationHeroVM(hero, OnHeroSelection));
+            }
         }
 
         private void _onKingdomSelected(Kingdom kingdom)
@@ -191,7 +268,26 @@ namespace StartAsAnyone
         {
             // Logic for handling the "Next" button click
             // You can put your implementation here
-            
+            if (this._isNonKingdomFactionStage && _selectionStageIndex == 0)
+            {
+                this.Kingdoms = NonKingdomFactions;
+                this.KingdomInfo = new KingdomInfoPageVM(NonKingdomFactions.First().Clan);
+                this.CurrentSelectedKingdom = this.Kingdoms.FirstOrDefault();
+                
+                this.CurrentSelectedHero = new CharacterCreationHeroVM(this.CurrentSelectedKingdom.Clan.Leader, OnHeroSelection);
+                this.HeroInfo = new HeroInfoPageVM(CurrentSelectedHero.Hero);
+                Action<Clan> onClanSelected = this._onClanSelected;
+                if (onClanSelected == null)
+                {
+                    return;
+                }
+                onClanSelected(CurrentSelectedHero.Hero.Clan);
+
+                this._isNonKingdomFactionStage = false;
+                this._NonKingdomFactionSelectionStage = true;
+                CanGoBackToPreviousSelection = true;
+                return;
+            }
             CanGoBackToPreviousSelection = true;
             _selectionStageIndex++;
             if (_selectionStageIndex == _furthestSelectionStageIndex)
@@ -209,6 +305,14 @@ namespace StartAsAnyone
         {
             // Logic for handling the "Previous" button click
             // You can put your implementation here
+            if(this._NonKingdomFactionSelectionStage && _selectionStageIndex == 0)
+            {
+                this.Kingdoms = this._savedKingdoms;
+                OnKingdomSelection(Kingdoms.First());
+                this._NonKingdomFactionSelectionStage = false;
+                CanGoBackToPreviousSelection = false;
+                return;
+            }
             
             
             _selectionStageIndex--;
@@ -217,7 +321,8 @@ namespace StartAsAnyone
                 CanAdvanceToNextSelection=true;
             }
             if (_selectionStageIndex <1) { 
-                CanGoBackToPreviousSelection = false; 
+                CanGoBackToPreviousSelection = this._NonKingdomFactionSelectionStage; 
+                
                 IsHeroStage = false;
                 IsKingdomStage = true;
             }
@@ -319,6 +424,17 @@ namespace StartAsAnyone
                     ChangeGovernorAction.RemoveGovernorOf(hero);
                 }
                 Settlement settlement = hero.Clan.Kingdom.FactionMidSettlement;
+                if(hero.Clan.Kingdom == null)
+                {
+                    foreach(Hero allyhero in hero.Clan.Heroes)
+                    {
+                        if((allyhero.PartyBelongedTo != null))
+                        {
+                            MobilePartyHelper.SpawnLordParty(hero, allyhero.PartyBelongedTo.Position2D, 30f);
+                            return;
+                        }
+                    }
+                }
                 MobileParty result;
                 if (settlement != null && settlement.MapFaction == hero.MapFaction)
                 {
@@ -566,6 +682,23 @@ namespace StartAsAnyone
                 }
             }
         }
+        [DataSourceProperty]
+        public MBBindingList<CharacterCreationKingdomVM> NonKingdomFactions
+        {
+            get
+            {
+                return this._nonKingdomFactions;
+            }
+            set
+            {
+                if(value != this._nonKingdomFactions)
+                {
+                    this._nonKingdomFactions = value;
+                    base.OnPropertyChangedWithValue<MBBindingList<CharacterCreationKingdomVM>>(value, "NonKingdomFactions");
+                }
+            }
+        }
+
         [DataSourceProperty]
         public CharacterCreationKingdomVM CurrentSelectedKingdom
         {

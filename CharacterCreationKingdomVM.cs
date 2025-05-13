@@ -9,11 +9,12 @@ namespace StartAsAnyone
     {
         // Property to get the Kingdom object
         public Kingdom Kingdom { get; }
-        
+        public Clan Clan { get; }
 
         // Constructor for the class
         public CharacterCreationKingdomVM(Kingdom kingdom, Action<CharacterCreationKingdomVM> onSelection)
         {
+            
             this._onSelection = onSelection;
             this.Kingdom = kingdom;
             this.Name = kingdom.Name.ToString();
@@ -23,6 +24,24 @@ namespace StartAsAnyone
             this.RulerName = ((kingdom != null && kingdom.Leader != null) ? kingdom.Leader.Name.ToString() : "");
             this.Banner = (kingdom?.Banner);
             this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(kingdom.Banner),true);
+            RefreshValues();
+        }
+        public CharacterCreationKingdomVM(Action<CharacterCreationKingdomVM> onSelection)
+        {
+            this._onSelection = onSelection;
+            this.Name = "Non-kingdom clans";
+            this.RulerName = "?";
+            this.Banner = Banner.CreateRandomBanner();
+            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(Banner), true);
+            RefreshValues();
+        }
+        public CharacterCreationKingdomVM(Clan clan,Action<CharacterCreationKingdomVM>onSelection) {
+            this.Clan = clan;
+            this._onSelection = onSelection;
+            this.Name = clan.Name.ToString();
+            this.RulerName = (clan.Leader != null) ? clan.Leader.Name.ToString() : "";
+            this.Banner = clan.Banner;
+            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(clan.Banner), true);
             RefreshValues();
         }
 
