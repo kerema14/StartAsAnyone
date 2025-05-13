@@ -1,4 +1,5 @@
 using Helpers;
+using StoryMode.CharacterCreationContent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Input;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.InputSystem;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
@@ -39,6 +41,8 @@ namespace StartAsAnyone
         private CharacterCreationHeroVM _currentSelectedHero;
         private HeroInfoPageVM _heroInfo;
         private string _selectionStageText;
+        private bool _isStoryMode;
+        private HintViewModel _storyModeDisabledHint;
 
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
@@ -66,7 +70,7 @@ namespace StartAsAnyone
             this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
             this.Heroes = new MBBindingList<CharacterCreationHeroVM>();
             SAASubModule.startAsAnyone = false;
-            this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; //implemet logic for this
+            this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; 
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as an existing lord/lady or create a new one?", null).ToString();
             base.SelectionText = new TextObject("{=start_as_anyone_selection}Character Creation Path", null).ToString();
@@ -74,6 +78,7 @@ namespace StartAsAnyone
             _canGoBackToPreviousSelection = false;
             _selectionStageIndex = 0;
             _furthestSelectionStageIndex = 0+1;
+            //yellow model chick, yellow bottle sippin'
             
             foreach (Kingdom kingdom in Kingdom.All)
             {
@@ -89,8 +94,11 @@ namespace StartAsAnyone
             this.KingdomInfo = new KingdomInfoPageVM(CurrentSelectedKingdom.Kingdom);
             this.SelectionStageText = "Select a kingdom to choose your character from.";
 
-
-
+            isStoryMode = getCharacterCreationState().CurrentCharacterCreationContent is StoryModeCharacterCreationContent;
+            
+            TextObject empty = TextObject.Empty;
+            TextObject storyModeDisabledText = new TextObject("This option is disabled for story mode, play SandBox mode");
+            this.StoryModeDisabledHint = new HintViewModel((isStoryMode)?storyModeDisabledText:empty, null);
 
         }
         public void OnHeroSelection(CharacterCreationHeroVM selectedHero)
@@ -217,11 +225,18 @@ namespace StartAsAnyone
             OnPropertyChangedWithValue(false, nameof(CanAdvance));
 
         }
-        public void ExecuteMe()
+        private CharacterCreationState getCharacterCreationState()
         {
             GameState gm = GameStateManager.Current.ActiveState;
-            CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState)))? (CharacterCreationState)gm:null;
-
+            CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState))) ? (CharacterCreationState)gm : null;
+            return characterCreationState;
+        }
+        
+        public void ExecuteMe()
+        {
+            
+            CharacterCreationState characterCreationState = getCharacterCreationState();
+            
             if(CurrentSelectedHero != null)
             {
                 SAASubModule.heroToBeSet = CurrentSelectedHero.Hero;
@@ -443,13 +458,14 @@ namespace StartAsAnyone
             }
         }
 
-        // Expose the opposite option as read-only:
+        
         [DataSourceProperty]
         public bool NotStartAsAnyone
         {
             get => !_startAsAnyone;
             set
             {
+                if(isStoryMode) { return; }
                 if (value ==  !_startAsAnyone) return;
                 _startAsAnyone = !value;
 
@@ -617,5 +633,40 @@ namespace StartAsAnyone
                 }
             }
         }
+
+        [DataSourceProperty]
+        public bool isStoryMode
+        {
+            get
+            {
+                return this._isStoryMode;
+            }
+            set
+            {
+                if (value != this._isStoryMode)
+                {
+                    this._isStoryMode = value;
+                    base.OnPropertyChangedWithValue(value, "isStoryMode");
+                }
+            }
+        }
+        [DataSourceProperty]
+        public HintViewModel StoryModeDisabledHint
+        {
+            get
+            {
+                return this._storyModeDisabledHint;
+            }
+            set
+            {
+                if (value != this._storyModeDisabledHint)
+                {
+                    this._storyModeDisabledHint = value;
+                    base.OnPropertyChangedWithValue<HintViewModel>(value, "StoryModeDisabledHint");
+                }
+            }
+        }
+
+
     }
 } 
