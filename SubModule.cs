@@ -68,7 +68,7 @@ namespace StartAsAnyone
         {
             if (heroInit)
             {
-                InformationManager.DisplayMessage(new InformationMessage("what?"));
+                
                 Hero.MainHero.SetBirthDay(heroBirthday);
             }
         }
@@ -106,7 +106,8 @@ namespace StartAsAnyone
             }
 
             // Create a method info that points to your patch method
-            var postfixMethod = typeof(CharacterCreationContentPatcher).GetMethod(nameof(CharacterCreationStagesPostfix));
+            var characterCreationStagesPostfix = typeof(CharacterCreationContentPatcher).GetMethod(nameof(CharacterCreationStagesPostfix));
+
 
             // Apply the patch to each type
             foreach (var type in inheritingTypes)
@@ -116,7 +117,7 @@ namespace StartAsAnyone
                     var originalMethod = AccessTools.PropertyGetter(type, "CharacterCreationStages");
                     if (originalMethod != null)
                     {
-                        harmony.Patch(originalMethod, postfix: new HarmonyMethod(postfixMethod));
+                        harmony.Patch(originalMethod, postfix: new HarmonyMethod(characterCreationStagesPostfix));
                         Console.WriteLine($"Successfully patched {type.FullName}.CharacterCreationStages");
                     }
                     else
@@ -129,9 +130,51 @@ namespace StartAsAnyone
                     Console.WriteLine($"Error patching {type.FullName}: {ex.Message}");
                 }
             }
+
+            var onCharacterCreationFinalizedPrefix = typeof(CharacterCreationContentPatcher).GetMethod(nameof(OnCharacterCreationFinalizedPrefix));
+            foreach (var type in inheritingTypes)
+            {
+                try
+                {
+                    var originalMethod = AccessTools.Method(type, "OnCharacterCreationFinalized");
+                    if (originalMethod != null)
+                    {
+                        harmony.Patch(originalMethod, prefix: new HarmonyMethod(onCharacterCreationFinalizedPrefix));
+                        Console.WriteLine($"Successfully patched {type.FullName}.OnCharacterCreationFinalized");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Could not find OnCharacterCreationFinalized property on {type.FullName}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error patching {type.FullName}: {ex.Message}");
+                }
+            }
         }
 
-        // This is your actual patch method
+        public static bool OnCharacterCreationFinalizedPrefix()
+        {
+
+            if (SAASubModule.startAsAnyone)
+            {
+
+                MapState mapState;
+                bool flag2 = (mapState = (GameStateManager.Current.ActiveState as MapState)) != null;
+                if (flag2)
+                {
+                    mapState.Handler.ResetCamera(true, true);
+                    mapState.Handler.TeleportCameraToMainParty();
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        
         public static IEnumerable<Type> CharacterCreationStagesPostfix(IEnumerable<Type> __result)
         {
             // Create a new list with our custom stage first
@@ -146,6 +189,7 @@ namespace StartAsAnyone
             return stages;
         }
     }
+    
 
 
     [HarmonyPatch(typeof(CharacterCreation), nameof(CharacterCreation.ApplyFinalEffects))]
@@ -173,6 +217,7 @@ namespace StartAsAnyone
         private static void setPlayerToLord(CharacterCreation cc)
         {
             Hero hero = SAASubModule.heroToBeSet;
+            
             
             
             

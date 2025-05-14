@@ -357,8 +357,8 @@ namespace StartAsAnyone
             
             
             characterCreationState.FinalizeCharacterCreation();
-            
 
+            
 
             //this worked!
         }
@@ -423,7 +423,7 @@ namespace StartAsAnyone
                 {
                     ChangeGovernorAction.RemoveGovernorOf(hero);
                 }
-                Settlement settlement = hero.Clan.Kingdom.FactionMidSettlement;
+                Settlement settlement = hero.HomeSettlement;
                 if(hero.Clan.Kingdom == null)
                 {
                     foreach(Hero allyhero in hero.Clan.Heroes)
