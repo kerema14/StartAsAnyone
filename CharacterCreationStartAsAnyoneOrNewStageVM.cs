@@ -3,6 +3,7 @@ using StoryMode.CharacterCreationContent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
@@ -33,6 +34,7 @@ namespace StartAsAnyone
         private CharacterCreationKingdomVM _currentSelectedKingdom;
         private bool _canGoBackToPreviousSelection;
         private int _selectionStageIndex;
+        private int _stageIndex;
         private int _furthestSelectionStageIndex;
         
         private KingdomInfoPageVM _kingdomInfo;
@@ -47,7 +49,7 @@ namespace StartAsAnyone
         private HintViewModel _storyModeDisabledHint;
         private MBBindingList<CharacterCreationKingdomVM> _nonKingdomFactions;
         private MBBindingList<CharacterCreationKingdomVM> _savedKingdoms;
-
+        private int _totalStagesCount;
         public CharacterCreationStartAsAnyoneOrNewStageVM(
             CharacterCreation characterCreation,
             Action affirmativeAction,
@@ -69,6 +71,10 @@ namespace StartAsAnyone
                 furthestIndex,
                 goToIndex)
         {
+            this._totalStagesCount = totalStagesCount;
+            this._goToIndex = goToIndex;
+            this._furthestIndex = furthestIndex;
+            this._stageIndex = currentStageIndex;
             this.IsKingdomStage = false;
             this.IsHeroStage = true;
             this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
@@ -340,7 +346,7 @@ namespace StartAsAnyone
         public void ExecuteMe()
         {
             
-            CharacterCreationState characterCreationState = getCharacterCreationState();
+            
             
             if(CurrentSelectedHero != null)
             {
@@ -350,13 +356,14 @@ namespace StartAsAnyone
                 SAASubModule.heroToBeSet = CurrentSelectedKingdom.Kingdom.Leader;
             }
             spawnParty(CurrentSelectedHero.Hero);
+            SetMainHeroCharacterObject();
 
 
             
             
             
             
-            characterCreationState.FinalizeCharacterCreation();
+            
 
             
 
@@ -369,8 +376,28 @@ namespace StartAsAnyone
             if (StartAsAnyone)
             {
                 SAASubModule.startAsAnyone = true;
-                ExecuteMe();
                 
+                CharacterCreationState ccs = getCharacterCreationState();
+                ExecuteMe();
+
+                Type characterStateType = ccs.GetType();
+
+                // Get the private field _stageIndex
+                FieldInfo stageIndexField = characterStateType.GetField("_stageIndex",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+
+                if (stageIndexField != null)
+                {
+                    // Set the new value
+                    stageIndexField.SetValue(ccs, this._totalStagesCount);
+                }
+                
+
+                ccs.PreviousStage();
+
+
+
+
             }
             else
             {
@@ -379,7 +406,11 @@ namespace StartAsAnyone
             
             
         }
-
+        
+        public void ExecuteGoToIndex(int index)
+        {
+            this._goToIndex(index);
+        }
         public override void OnPreviousStage()
         {
             this._negativeAction();
@@ -464,6 +495,50 @@ namespace StartAsAnyone
                         result = MobilePartyHelper.SpawnLordParty(hero, Settlement.All.GetRandomElement<Settlement>());
                     }
                 }
+            }
+        }
+        public void SetMainHeroCharacterObject()
+        {
+            // Get the type of Hero.MainHero
+            Type heroType = Hero.MainHero.GetType();
+    
+            // Get the CharacterObject field/property info
+            // If it's a field:
+            FieldInfo characterObjectField = heroType.GetField("CharacterObject", 
+                BindingFlags.Public | BindingFlags.Instance);
+    
+            // If it's a property with a backing field (more likely case)
+            FieldInfo characterObjectBackingField = heroType.GetField("<CharacterObject>k__BackingField", 
+                BindingFlags.NonPublic | BindingFlags.Instance);
+    
+            // Try setting the field or backing field
+            if (characterObjectField != null)
+            {
+                characterObjectField.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.CharacterObject);
+            }
+            else if (characterObjectBackingField != null)
+            {
+                characterObjectBackingField.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.CharacterObject);
+            }
+            else
+            {
+                // If neither approach works, we need to look for the backing field with a different naming convention
+                // Loop through all private fields to find one that might hold the CharacterObject
+                FieldInfo[] fields = heroType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+                bool fieldFound = false;
+        
+                foreach (FieldInfo field in fields)
+                {
+                    if (field.FieldType == typeof(CharacterObject) || 
+                        field.Name.Contains("CharacterObject"))
+                    {
+                        field.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.CharacterObject);
+                        fieldFound = true;
+                        break;
+                    }
+                }
+        
+                
             }
         }
 
@@ -716,6 +791,9 @@ namespace StartAsAnyone
                 }
             }
         }
+
+        private Action<int> _goToIndex;
+        private int _furthestIndex;
 
         [DataSourceProperty]
         public bool IsKingdomStage

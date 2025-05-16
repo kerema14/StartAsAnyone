@@ -83,7 +83,10 @@ namespace StartAsAnyone
 
 
         }
-
+        public override void GoToIndex(int index)
+        {
+            this._goToIndexAction(index);
+        }
         protected override void OnFinalize()
         {
             base.OnFinalize();
@@ -130,7 +133,7 @@ namespace StartAsAnyone
         private void OnStartAsAnyoneSelected(bool startAsAnyone)
         {
             // Handle the selection of starting as anyone or creating new character
-            // This will be implemented based on your specific requirements
+           
             InformationManager.DisplayMessage(new InformationMessage("Wow you did it"));
         }
 

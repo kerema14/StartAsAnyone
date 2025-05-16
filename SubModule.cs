@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Helpers;
+using SandBox.GauntletUI.CharacterCreation;
 using StoryMode.CharacterCreationContent;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ using TaleWorlds.CampaignSystem.GameState;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation.OptionsStage;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Clans;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Decisions;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Policies;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Settlements;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
@@ -338,6 +341,65 @@ namespace StartAsAnyone
 
         
     }
+
+    [HarmonyPatch(typeof(CharacterCreationOptionsStageView), "PreviousStage")]
+    public class CharacterCreationOptionsStageViewPatch
+    {
+        // This is a prefix patch that completely replaces the original method
+        static bool Prefix(CharacterCreationOptionsStageView __instance)
+        {
+            // Call the RemoveMount method from the original class
+            MethodInfo removeMount = AccessTools.Method(typeof(CharacterCreationOptionsStageView), "RemoveMount");
+            removeMount.Invoke(__instance, null);
+
+            // Add your custom condition
+            if (SAASubModule.startAsAnyone)
+            {
+                CharacterCreationState ccs = getCharacterCreationState();
+                Type characterStateType = ccs.GetType();
+
+                // Get the private field _stageIndex
+                FieldInfo stageIndexField = characterStateType.GetField("_stageIndex",
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+
+                if (stageIndexField != null)
+                {
+                    // Set the new value
+                    stageIndexField.SetValue(ccs, 1);
+                }
+
+
+                ccs.PreviousStage();
+            }
+            else
+            {
+                // Access the private _negativeAction field using reflection
+                FieldInfo negativeActionField = AccessTools.Field(typeof(CharacterCreationOptionsStageView), "_negativeAction");
+                ControlCharacterCreationStage negativeAction = (ControlCharacterCreationStage)negativeActionField.GetValue(__instance);
+                negativeAction?.Invoke();
+            }
+
+            // Return false to skip the original method
+            return false;
+        }
+        private static CharacterCreationState getCharacterCreationState()
+        {
+            GameState gm = GameStateManager.Current.ActiveState;
+            CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState))) ? (CharacterCreationState)gm : null;
+            return characterCreationState;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
     [HarmonyPatch(typeof(KingdomDecision), "IsPlayerParticipant", MethodType.Getter)]
     public static class KingdomDecisions_IsPlayerParticipant_Patch
     {
