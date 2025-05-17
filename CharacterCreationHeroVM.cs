@@ -39,6 +39,7 @@ namespace StartAsAnyone
                 this.ClanName = (hero.Clan != null) ? hero.Clan.Name.ToString() : "";
                 this.KingdomName = (hero.Clan != null && hero.Clan.Kingdom != null) ? hero.Clan.Kingdom.Name.ToString() : "";
                 this.IsLeader = hero.IsKingdomLeader;
+                this.IsClanLeader = hero.IsClanLeader;
                 this.EncyclopediaText = (hero.EncyclopediaText.ToString()!=null)?hero.EncyclopediaText.ToString():"";
             }
             else
@@ -179,6 +180,27 @@ namespace StartAsAnyone
                     base.OnPropertyChangedWithValue(value, "IsLeader");
                 }
             }
+        }
+
+        private bool _isClanLeader;
+        [DataSourceProperty]
+        public bool IsClanLeader
+        {
+            get => this._isClanLeader;
+            set
+            {
+                if (value != this._isClanLeader)
+                {
+                    this._isClanLeader = value;
+                    base.OnPropertyChangedWithValue(value, "IsClanLeader");
+                }
+            }
+        }
+
+        [DataSourceProperty]
+        public bool IsMinorFactionLeader
+        {
+            get => this.Hero.Clan != null && this.Hero.Clan.Kingdom == null && this.Hero.IsClanLeader;
         }
 
         // Hero name property
@@ -353,6 +375,8 @@ namespace StartAsAnyone
 
         // Relation property
         private int _relation;
+        
+
         [DataSourceProperty]
         public int Relation
         {

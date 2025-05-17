@@ -96,7 +96,7 @@ namespace StartAsAnyone
                 CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(kingdom, OnKingdomSelection);
                 this.Kingdoms.Add(item);
             }
-            var clansWithoutKingdom = Clan.All.Where(clan => clan.Kingdom == null && clan.Leader != null && clan.Leader != Hero.MainHero);
+            var clansWithoutKingdom = Clan.All.Where(clan => clan.Kingdom == null && clan.Leader != null && clan.Leader != Hero.MainHero && clan.Heroes.Count()>0);
             foreach (Clan clan in clansWithoutKingdom)
             {
                 CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(clan,OnKingdomSelection);
@@ -262,12 +262,14 @@ namespace StartAsAnyone
                 .Select(group => group.First())
                 .ToList();
             List<Hero> sortedHeroes = aliveHeroes
-                .OrderByDescending(hero => hero.Power)
+                .OrderByDescending(hero => hero.EncyclopediaText.ToString().Length)
                 .ToList();
             foreach (Hero hero in sortedHeroes)
             {
                 this.Heroes.Add(new CharacterCreationHeroVM(hero,OnHeroSelection));
+                
             }
+
         }
 
         public void ExecuteNextSelectionStage()
@@ -356,8 +358,11 @@ namespace StartAsAnyone
                 SAASubModule.heroToBeSet = CurrentSelectedKingdom.Kingdom.Leader;
             }
             spawnParty(CurrentSelectedHero.Hero);
+            SetMainHeroMount();
             SetMainHeroCharacterObject();
+            
 
+            
 
             
             
@@ -496,6 +501,30 @@ namespace StartAsAnyone
                     }
                 }
             }
+        }
+        public void SetMainHeroMount()
+        {
+            
+
+            if (!CurrentSelectedHero.Hero.CharacterObject.HasMount())
+            {
+                return;
+            }
+            
+            Type heroObjectType = Hero.MainHero.GetType();
+
+            // Try to get the property info for "_battleEquipment"
+            PropertyInfo propInfo = heroObjectType.GetProperty("_battleEquipment", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (propInfo != null && propInfo.CanWrite)
+            {
+                propInfo.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.BattleEquipment.Clone());
+            }
+
+
+
+
+
         }
         public void SetMainHeroCharacterObject()
         {
