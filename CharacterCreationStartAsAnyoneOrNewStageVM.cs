@@ -36,7 +36,7 @@ namespace StartAsAnyone
         private int _selectionStageIndex;
         private int _stageIndex;
         private int _furthestSelectionStageIndex;
-        
+
         private KingdomInfoPageVM _kingdomInfo;
         private bool _isKingdomStageActive;
         private bool _isHeroStageActive;
@@ -82,25 +82,25 @@ namespace StartAsAnyone
             this.Heroes = new MBBindingList<CharacterCreationHeroVM>();
             SAASubModule.startAsAnyone = false;
             SAASubModule.heroInit = false;
-            this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; 
+            this._onStartAsAnyoneSelected = onStartAsAnyoneSelected;
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as an existing lord/lady or create a new one?", null).ToString();
             base.SelectionText = new TextObject("{=start_as_anyone_selection}Character Creation Path", null).ToString();
             _canAdvanceToNextSelection = true;
             _canGoBackToPreviousSelection = false;
             _selectionStageIndex = 0;
-            _furthestSelectionStageIndex = 0+1;
+            _furthestSelectionStageIndex = 0 + 1;
             //yellow model chick, yellow bottle sippin'
-            
+
             foreach (Kingdom kingdom in Kingdom.All)
             {
                 CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(kingdom, OnKingdomSelection);
                 this.Kingdoms.Add(item);
             }
-            var clansWithoutKingdom = Clan.All.Where(clan => clan.Kingdom == null && clan.Leader != null && clan.Leader != Hero.MainHero && clan.Heroes.Count()>0);
+            var clansWithoutKingdom = Clan.All.Where(clan => clan.Kingdom == null && clan.Leader != null && clan.Leader != Hero.MainHero && clan.Heroes.Count() > 0);
             foreach (Clan clan in clansWithoutKingdom)
             {
-                CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(clan,OnKingdomSelection);
+                CharacterCreationKingdomVM item = new CharacterCreationKingdomVM(clan, OnKingdomSelection);
                 this.NonKingdomFactions.Add(item);
             }
 
@@ -113,13 +113,13 @@ namespace StartAsAnyone
                 this.OnKingdomSelection(characterCreationKingdomVM);
             }
             this.KingdomInfo = new KingdomInfoPageVM(CurrentSelectedKingdom.Kingdom);
-            this.SelectionStageText = "Select a kingdom to choose your character from.";
+            this.SelectionStageText = new TextObject("{=KKt69IHkk}Select a kingdom to choose your character from.").ToString();
 
             isStoryMode = getCharacterCreationState().CurrentCharacterCreationContent is StoryModeCharacterCreationContent;
-            
+
             TextObject empty = TextObject.Empty;
-            TextObject storyModeDisabledText = new TextObject("This option is disabled for story mode, play SandBox mode");
-            this.StoryModeDisabledHint = new HintViewModel((isStoryMode)?storyModeDisabledText:empty, null);
+            TextObject storyModeDisabledText = new TextObject("{=IX1nIsFTe}This option is disabled for story mode, play SandBox mode");
+            this.StoryModeDisabledHint = new HintViewModel((isStoryMode) ? storyModeDisabledText : empty, null);
 
         }
         public void OnHeroSelection(CharacterCreationHeroVM selectedHero)
@@ -173,9 +173,9 @@ namespace StartAsAnyone
             {
                 this._isNonKingdomFactionStage = true;
                 OnNonKingdomFactionSelection();
-                return; 
+                return;
             }
-            else if(this.CurrentSelectedKingdom.Clan != null)
+            else if (this.CurrentSelectedKingdom.Clan != null)
             {
 
                 this.KingdomInfo = new KingdomInfoPageVM(this.CurrentSelectedKingdom.Clan);
@@ -193,17 +193,17 @@ namespace StartAsAnyone
             {
                 this._isNonKingdomFactionStage = false;
             }
-            
+
             // Clear previous selections
-            
+
 
             // Set new selection
-            
+
             base.AnyItemSelected = true;
 
             // Update game state
 
-            
+
             this.KingdomInfo = new KingdomInfoPageVM(selectedKingdom.Kingdom);
             this.CurrentSelectedHero = new CharacterCreationHeroVM(selectedKingdom.Kingdom.Leader, OnHeroSelection);
             this.HeroInfo = new HeroInfoPageVM(selectedKingdom.Kingdom.Leader);
@@ -227,9 +227,9 @@ namespace StartAsAnyone
             }
 
             this.NonKingdomFactions.First().IsSelected = true;
-            
+
             this.KingdomInfo = new KingdomInfoPageVM(NonKingdomFactions);
-            
+
         }
         private void _onClanSelected(Clan clan)
         {
@@ -243,7 +243,7 @@ namespace StartAsAnyone
                 .GroupBy(hero => hero.Id)
                 .Select(group => group.First())
                 .ToList();
-            
+
             foreach (Hero hero in aliveHeroes)
             {
                 this.Heroes.Add(new CharacterCreationHeroVM(hero, OnHeroSelection));
@@ -254,7 +254,7 @@ namespace StartAsAnyone
         {
             this.Heroes.Clear();
 
-            
+
             List<Hero> aliveHeroes = kingdom.Heroes
                 .Where(hero => hero.IsAlive &&
                               hero.HeroState == Hero.CharacterStates.Active &&
@@ -267,8 +267,8 @@ namespace StartAsAnyone
                 .ToList();
             foreach (Hero hero in sortedHeroes)
             {
-                this.Heroes.Add(new CharacterCreationHeroVM(hero,OnHeroSelection));
-                
+                this.Heroes.Add(new CharacterCreationHeroVM(hero, OnHeroSelection));
+
             }
 
         }
@@ -282,7 +282,7 @@ namespace StartAsAnyone
                 this.Kingdoms = NonKingdomFactions;
                 this.KingdomInfo = new KingdomInfoPageVM(NonKingdomFactions.First().Clan);
                 this.CurrentSelectedKingdom = this.Kingdoms.FirstOrDefault();
-                
+
                 this.CurrentSelectedHero = new CharacterCreationHeroVM(this.CurrentSelectedKingdom.Clan.Leader, OnHeroSelection);
                 this.HeroInfo = new HeroInfoPageVM(CurrentSelectedHero.Hero);
                 Action<Clan> onClanSelected = this._onClanSelected;
@@ -303,18 +303,18 @@ namespace StartAsAnyone
             {
                 CanAdvanceToNextSelection = false;
             }
-            if(_selectionStageIndex == 1)
+            if (_selectionStageIndex == 1)
             {
                 IsHeroStage = true;
                 IsKingdomStage = false;
             }
-            this.SelectionStageText = "Choose a character to play as.";
+            this.SelectionStageText = new TextObject("{=Fa7kegZKb}Choose a character to play as.").ToString();
         }
         public void ExecutePreviousSelectionStage()
         {
             // Logic for handling the "Previous" button click
             // You can put your implementation here
-            if(this._NonKingdomFactionSelectionStage && _selectionStageIndex == 0)
+            if (this._NonKingdomFactionSelectionStage && _selectionStageIndex == 0)
             {
                 this.Kingdoms = this._savedKingdoms;
                 OnKingdomSelection(Kingdoms.First());
@@ -322,20 +322,21 @@ namespace StartAsAnyone
                 CanGoBackToPreviousSelection = false;
                 return;
             }
-            
-            
+
+
             _selectionStageIndex--;
             if ((_selectionStageIndex + 1) == _furthestSelectionStageIndex)
             {
-                CanAdvanceToNextSelection=true;
+                CanAdvanceToNextSelection = true;
             }
-            if (_selectionStageIndex <1) { 
-                CanGoBackToPreviousSelection = this._NonKingdomFactionSelectionStage; 
-                
+            if (_selectionStageIndex < 1)
+            {
+                CanGoBackToPreviousSelection = this._NonKingdomFactionSelectionStage;
+
                 IsHeroStage = false;
                 IsKingdomStage = true;
             }
-            this.SelectionStageText = "Select a kingdom to choose your character from.";
+            this.SelectionStageText = new TextObject("{=KKt69IHkk}Select a kingdom to choose your character from.").ToString();
             OnPropertyChangedWithValue(false, nameof(CanAdvance));
 
         }
@@ -345,44 +346,45 @@ namespace StartAsAnyone
             CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState))) ? (CharacterCreationState)gm : null;
             return characterCreationState;
         }
-        
+
         public void ExecuteMe()
         {
-            
-            
-            
-            if(CurrentSelectedHero != null)
+
+
+
+            if (CurrentSelectedHero != null)
             {
                 SAASubModule.heroToBeSet = CurrentSelectedHero.Hero;
-            } else if(CurrentSelectedKingdom != null)
+            }
+            else if (CurrentSelectedKingdom != null)
             {
                 SAASubModule.heroToBeSet = CurrentSelectedKingdom.Kingdom.Leader;
             }
             spawnParty(CurrentSelectedHero.Hero);
             SetMainHeroMount();
-            
-            
 
-            
 
-            
-            
-            
-            
-            
 
-            
+
+
+
+
+
+
+
+
+
 
             //this worked!
         }
-        
-        
+
+
         public override void OnNextStage()
         {
             if (StartAsAnyone)
             {
                 SAASubModule.startAsAnyone = true;
-                
+
                 CharacterCreationState ccs = getCharacterCreationState();
                 ExecuteMe();
 
@@ -397,7 +399,7 @@ namespace StartAsAnyone
                     // Set the new value
                     stageIndexField.SetValue(ccs, this._totalStagesCount);
                 }
-                
+
 
                 ccs.PreviousStage();
 
@@ -409,10 +411,10 @@ namespace StartAsAnyone
             {
                 this._affirmativeAction(); //1st
             }
-            
-            
+
+
         }
-        
+
         public void ExecuteGoToIndex(int index)
         {
             this._goToIndex(index);
@@ -461,11 +463,11 @@ namespace StartAsAnyone
                     ChangeGovernorAction.RemoveGovernorOf(hero);
                 }
                 Settlement settlement = hero.HomeSettlement;
-                if(hero.Clan.Kingdom == null)
+                if (hero.Clan.Kingdom == null)
                 {
-                    foreach(Hero allyhero in hero.Clan.Heroes)
+                    foreach (Hero allyhero in hero.Clan.Heroes)
                     {
-                        if((allyhero.PartyBelongedTo != null))
+                        if ((allyhero.PartyBelongedTo != null))
                         {
                             MobilePartyHelper.SpawnLordParty(hero, allyhero.PartyBelongedTo.Position2D, 30f);
                             return;
@@ -505,13 +507,13 @@ namespace StartAsAnyone
         }
         public void SetMainHeroMount()
         {
-            
+
 
             if (!CurrentSelectedHero.Hero.CharacterObject.HasMount())
             {
                 return;
             }
-            
+
             Type heroObjectType = Hero.MainHero.GetType();
 
             // Try to get the property info for "_battleEquipment"
@@ -527,7 +529,7 @@ namespace StartAsAnyone
 
 
         }
-        
+
         [DataSourceProperty]
         public bool CanAdvanceToNextSelection
         {
@@ -547,7 +549,7 @@ namespace StartAsAnyone
             get { return _canGoBackToPreviousSelection; }
             set
             {
-                if(_canGoBackToPreviousSelection != value)
+                if (_canGoBackToPreviousSelection != value)
                 {
                     _canGoBackToPreviousSelection = value;
                     OnPropertyChanged(nameof(CanGoBackToPreviousSelection));
@@ -619,11 +621,12 @@ namespace StartAsAnyone
                 OnPropertyChanged(nameof(StartAsAnyone));
                 OnPropertyChanged(nameof(NotStartAsAnyone));
                 // if you have a delegate to fire, do it here too:
-                
-                
+
+
                 // if you need to enable “Advance”:
                 AnyItemSelected = true;
-                if(!_startAsAnyone){
+                if (!_startAsAnyone)
+                {
                     OnPropertyChangedWithValue(true, nameof(CanAdvance));
 
                 }
@@ -635,22 +638,23 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         [DataSourceProperty]
         public bool NotStartAsAnyone
         {
             get => !_startAsAnyone;
             set
             {
-                if(isStoryMode) { return; }
-                if (value ==  !_startAsAnyone) return;
+                if (isStoryMode) { return; }
+                if (value == !_startAsAnyone) return;
                 _startAsAnyone = !value;
 
                 OnPropertyChanged(nameof(NotStartAsAnyone));
                 OnPropertyChanged(nameof(StartAsAnyone));
-                
+
                 AnyItemSelected = true;
-                if(!_startAsAnyone){
+                if (!_startAsAnyone)
+                {
                     OnPropertyChangedWithValue(true, nameof(CanAdvance));
                 }
                 else
@@ -752,7 +756,7 @@ namespace StartAsAnyone
             }
             set
             {
-                if(value != this._nonKingdomFactions)
+                if (value != this._nonKingdomFactions)
                 {
                     this._nonKingdomFactions = value;
                     base.OnPropertyChangedWithValue<MBBindingList<CharacterCreationKingdomVM>>(value, "NonKingdomFactions");
@@ -773,7 +777,7 @@ namespace StartAsAnyone
                 {
                     this._currentSelectedKingdom = value;
                     base.OnPropertyChangedWithValue<CharacterCreationKingdomVM>(value, "CurrentSelectedKingdom");
-                    
+
                 }
             }
         }
@@ -793,7 +797,7 @@ namespace StartAsAnyone
                 if (value != this._isKingdomStageActive)
                 {
                     this._isKingdomStageActive = value;
-                    base.OnPropertyChangedWithValue(value,nameof(IsKingdomStage));
+                    base.OnPropertyChangedWithValue(value, nameof(IsKingdomStage));
                 }
             }
         }
@@ -810,12 +814,13 @@ namespace StartAsAnyone
                 {
                     this._isHeroStageActive = value;
                     base.OnPropertyChangedWithValue(value, nameof(IsHeroStage));
-                    
+
                 }
             }
         }
         [DataSourceProperty]
-        public string SelectionStageText {
+        public string SelectionStageText
+        {
             get
             {
                 return this._selectionStageText;
@@ -863,7 +868,14 @@ namespace StartAsAnyone
                 }
             }
         }
+        [DataSourceProperty]
+        public string StrCreateNewCharacter => new TextObject("{=CJFeItmnG}Create New Character").ToString();
 
+        [DataSourceProperty]
+        public string StrStartAsExisting => new TextObject("{=AHA80TyDA}Start as an existing Hero").ToString();
+
+        [DataSourceProperty]
+        public string StrNext => new TextObject("{=xWS4WB54I}Next").ToString();
 
     }
-} 
+}

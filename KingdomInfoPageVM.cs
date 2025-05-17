@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encyclopedia;
@@ -16,11 +15,11 @@ using TaleWorlds.Localization;
 
 namespace StartAsAnyone
 {
-    
+
     [EncyclopediaViewModel(typeof(Kingdom))]
     public class KingdomInfoPageVM : ViewModel
     {
-        
+
         public KingdomInfoPageVM(Kingdom kingdom)
         {
             this._faction = kingdom;
@@ -28,12 +27,12 @@ namespace StartAsAnyone
             this.Enemies = new MBBindingList<KingdomInfoVM>();
             this.Settlements = new MBBindingList<EncyclopediaSettlementVM>();
             this.History = new MBBindingList<EncyclopediaHistoryEventVM>();
-            
+
             this.RefreshValues();
         }
         public KingdomInfoPageVM(Clan clan) //small factions implementation
         {
-            
+
             this._clan = clan;
             this.Enemies = new MBBindingList<KingdomInfoVM>();
             this.Settlements = new MBBindingList<EncyclopediaSettlementVM>();
@@ -42,18 +41,18 @@ namespace StartAsAnyone
         }
         public KingdomInfoPageVM(MBBindingList<CharacterCreationKingdomVM> clans)
         {
-            this.NameText = "Select Non-Kingdom Clan";
+            this.NameText = new TextObject("{=ZY12x7dTU}Select Non-Kingdom Clan").ToString();
             this.ClansText = new TextObject("{=bfQLwMUp}Clans", null).ToString();
             this.Clans = new MBBindingList<KingdomInfoVM>();
-            
-            Hero.MainHero.SetName(new TextObject("No one"),new TextObject("Absolutely no one"));
+
+            Hero.MainHero.SetName(new TextObject("{=zNtAJNcNF}No one"), new TextObject("{=rMvK6r195}Absolutely no one"));
 
             this.Leader = new HeroVM(Hero.MainHero, true);
             foreach (CharacterCreationKingdomVM c in clans)
             {
                 this.Clans.Add(new KingdomInfoVM(c.Clan));
             }
-            this.InformationText = "Continue to select non kingdom clans";
+            this.InformationText = new TextObject("{=nYUmgcTKc}Continue to select non kingdom clans").ToString();
 
         }
 
@@ -68,19 +67,19 @@ namespace StartAsAnyone
             this.EnemiesText = new TextObject("{=zZlWRZjO}Wars", null).ToString();
             this.SettlementsText = new TextObject("{=LBNzsqyb}Fiefs", null).ToString();
             this.VillagesText = GameTexts.FindText("str_villages", null).ToString();
-            TextObject encyclopediaText = (this._faction!=null)? this._faction.EncyclopediaText:(this._clan.EncyclopediaText!=null)? this._clan.EncyclopediaText:new TextObject("Continue to select non kingdom clans");
+            TextObject encyclopediaText = (this._faction != null) ? this._faction.EncyclopediaText : (this._clan.EncyclopediaText != null) ? this._clan.EncyclopediaText : new TextObject("{=OTxI8CVPp}Continue to select non kingdom clans");
             this.InformationText = (((encyclopediaText != null) ? encyclopediaText.ToString() : null) ?? string.Empty);
 
             if (this._faction != null) { this.Refresh(); }
             else if (this._clan != null) { this.RefreshClan(); }
             else { this.InitNonFactionButton(); }
-            
+
         }
 
-        
+
         public void Refresh()
         {
-            
+
             this.Clans.Clear();
             this.Enemies.Clear();
             this.Settlements.Clear();
@@ -148,17 +147,17 @@ namespace StartAsAnyone
                     this.Settlements.Add(new EncyclopediaSettlementVM(settlement));
                 }
             }
-            
+
         }
 
 
         public void RefreshClan()
         {
 
-            
+
             this.Enemies.Clear();
             this.Settlements.Clear();
-            
+
             this.Leader = new HeroVM(this._clan.Leader, false);
             this.LeaderText = GameTexts.FindText("str_leader", null).ToString();
             this.NameText = this._clan.Name.ToString();
@@ -205,7 +204,7 @@ namespace StartAsAnyone
                     }
                 }
             }
-            
+
             EncyclopediaPage pageOf3 = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Settlement));
             foreach (Settlement settlement in from s in Settlement.All
                                               where s.IsTown || s.IsCastle
@@ -249,7 +248,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001220 RID: 4640 RVA: 0x00047AFA File Offset: 0x00045CFA
         // (set) Token: 0x06001221 RID: 4641 RVA: 0x00047B02 File Offset: 0x00045D02
         [DataSourceProperty]
@@ -269,7 +268,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001222 RID: 4642 RVA: 0x00047B20 File Offset: 0x00045D20
         // (set) Token: 0x06001223 RID: 4643 RVA: 0x00047B28 File Offset: 0x00045D28
         [DataSourceProperty]
@@ -289,7 +288,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001224 RID: 4644 RVA: 0x00047B46 File Offset: 0x00045D46
         // (set) Token: 0x06001225 RID: 4645 RVA: 0x00047B4E File Offset: 0x00045D4E
         [DataSourceProperty]
@@ -309,7 +308,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001226 RID: 4646 RVA: 0x00047B6C File Offset: 0x00045D6C
         // (set) Token: 0x06001227 RID: 4647 RVA: 0x00047B74 File Offset: 0x00045D74
         [DataSourceProperty]
@@ -329,7 +328,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001228 RID: 4648 RVA: 0x00047B92 File Offset: 0x00045D92
         // (set) Token: 0x06001229 RID: 4649 RVA: 0x00047B9A File Offset: 0x00045D9A
         [DataSourceProperty]
@@ -349,7 +348,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x0600122A RID: 4650 RVA: 0x00047BB8 File Offset: 0x00045DB8
         // (set) Token: 0x0600122B RID: 4651 RVA: 0x00047BC0 File Offset: 0x00045DC0
         [DataSourceProperty]
@@ -369,7 +368,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x0600122C RID: 4652 RVA: 0x00047BE3 File Offset: 0x00045DE3
         // (set) Token: 0x0600122D RID: 4653 RVA: 0x00047BEB File Offset: 0x00045DEB
         [DataSourceProperty]
@@ -389,7 +388,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x0600122E RID: 4654 RVA: 0x00047C0E File Offset: 0x00045E0E
         // (set) Token: 0x0600122F RID: 4655 RVA: 0x00047C16 File Offset: 0x00045E16
         [DataSourceProperty]
@@ -409,7 +408,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001230 RID: 4656 RVA: 0x00047C39 File Offset: 0x00045E39
         // (set) Token: 0x06001231 RID: 4657 RVA: 0x00047C41 File Offset: 0x00045E41
         [DataSourceProperty]
@@ -429,7 +428,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001232 RID: 4658 RVA: 0x00047C64 File Offset: 0x00045E64
         // (set) Token: 0x06001233 RID: 4659 RVA: 0x00047C6C File Offset: 0x00045E6C
         [DataSourceProperty]
@@ -449,7 +448,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001234 RID: 4660 RVA: 0x00047C8F File Offset: 0x00045E8F
         // (set) Token: 0x06001235 RID: 4661 RVA: 0x00047C97 File Offset: 0x00045E97
         [DataSourceProperty]
@@ -469,7 +468,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001236 RID: 4662 RVA: 0x00047CBA File Offset: 0x00045EBA
         // (set) Token: 0x06001237 RID: 4663 RVA: 0x00047CC2 File Offset: 0x00045EC2
         [DataSourceProperty]
@@ -489,7 +488,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001238 RID: 4664 RVA: 0x00047CE5 File Offset: 0x00045EE5
         // (set) Token: 0x06001239 RID: 4665 RVA: 0x00047CED File Offset: 0x00045EED
         [DataSourceProperty]
@@ -509,7 +508,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x0600123A RID: 4666 RVA: 0x00047D10 File Offset: 0x00045F10
         // (set) Token: 0x0600123B RID: 4667 RVA: 0x00047D18 File Offset: 0x00045F18
         [DataSourceProperty]
@@ -529,7 +528,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x0600123C RID: 4668 RVA: 0x00047D3B File Offset: 0x00045F3B
         // (set) Token: 0x0600123D RID: 4669 RVA: 0x00047D43 File Offset: 0x00045F43
         [DataSourceProperty]
@@ -549,7 +548,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x0600123E RID: 4670 RVA: 0x00047D66 File Offset: 0x00045F66
         // (set) Token: 0x0600123F RID: 4671 RVA: 0x00047D6E File Offset: 0x00045F6E
         [DataSourceProperty]
@@ -569,7 +568,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001240 RID: 4672 RVA: 0x00047D91 File Offset: 0x00045F91
         // (set) Token: 0x06001241 RID: 4673 RVA: 0x00047D99 File Offset: 0x00045F99
         [DataSourceProperty]
@@ -589,7 +588,7 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         // (get) Token: 0x06001242 RID: 4674 RVA: 0x00047DB7 File Offset: 0x00045FB7
         // (set) Token: 0x06001243 RID: 4675 RVA: 0x00047DBF File Offset: 0x00045FBF
         [DataSourceProperty]
@@ -609,66 +608,66 @@ namespace StartAsAnyone
             }
         }
 
-        
+
         private Kingdom _faction;
 
         private Clan _clan;
 
-        
+
         private MBBindingList<KingdomInfoVM> _clans;
 
-        
+
         private MBBindingList<KingdomInfoVM> _enemies;
 
-        
+
         private MBBindingList<EncyclopediaSettlementVM> _settlements;
 
-        
+
         private MBBindingList<EncyclopediaHistoryEventVM> _history;
 
-        
+
         private HeroVM _leader;
 
-        
+
         private ImageIdentifierVM _banner;
 
-        
+
         private string _membersText;
 
-        
+
         private string _enemiesText;
 
-        
+
         private string _clansText;
 
-        
+
         private string _settlementsText;
 
-        
+
         private string _villagesText;
 
-        
+
         private string _leaderText;
 
-        
+
         private string _descriptorText;
 
-        
+
         private string _prosperityText;
 
-        
+
         private string _strengthText;
 
-        
+
         private string _informationText;
 
-        
+
         private HintViewModel _prosperityHint;
 
-        
+
         private HintViewModel _strengthHint;
 
-        
+
         private string _nameText;
     }
 }

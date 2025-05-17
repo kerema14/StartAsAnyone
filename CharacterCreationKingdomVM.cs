@@ -2,6 +2,7 @@
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
+using TaleWorlds.Localization;
 
 namespace StartAsAnyone
 {
@@ -14,7 +15,7 @@ namespace StartAsAnyone
         // Constructor for the class
         public CharacterCreationKingdomVM(Kingdom kingdom, Action<CharacterCreationKingdomVM> onSelection)
         {
-            
+
             this._onSelection = onSelection;
             this.Kingdom = kingdom;
             this.Name = kingdom.Name.ToString();
@@ -23,19 +24,20 @@ namespace StartAsAnyone
             this.KingdomColor2 = Color.FromUint((kingdom != null) ? kingdom.Color2 : Color.Black.ToUnsignedInteger());
             this.RulerName = ((kingdom != null && kingdom.Leader != null) ? kingdom.Leader.Name.ToString() : "");
             this.Banner = (kingdom?.Banner);
-            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(kingdom.Banner),true);
+            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(kingdom.Banner), true);
             RefreshValues();
         }
         public CharacterCreationKingdomVM(Action<CharacterCreationKingdomVM> onSelection)
         {
             this._onSelection = onSelection;
-            this.Name = "Non-kingdom clans";
+            this.Name = new TextObject("{=zxdITReik}Non-kingdom clans").ToString();
             this.RulerName = "?";
             this.Banner = Banner.CreateRandomBanner();
             this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(Banner), true);
             RefreshValues();
         }
-        public CharacterCreationKingdomVM(Clan clan,Action<CharacterCreationKingdomVM>onSelection) {
+        public CharacterCreationKingdomVM(Clan clan, Action<CharacterCreationKingdomVM> onSelection)
+        {
             this.Clan = clan;
             this._onSelection = onSelection;
             this.Name = clan.Name.ToString();
@@ -199,7 +201,7 @@ namespace StartAsAnyone
                 }
             }
         }
-        
+
 
 
         // Fields

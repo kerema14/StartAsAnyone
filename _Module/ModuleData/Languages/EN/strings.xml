@@ -1,0 +1,24 @@
+
+<base>
+    <tags>
+        <tag language="English" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="Choose Your Path" />
+        <string id="start_as_anyone_description" text="Would you like to start as an existing lord/lady or create a new one?" />
+        <string id="start_as_anyone_selection" text="Character Creation Path" />
+        <string id="IX1nIsFTe" text="This option is disabled for story mode, play SandBox mode" />
+        <string id="KKt69IHkk" text="Select a kingdom to choose your character from." />
+        <string id="Fa7kegZKb" text="Choose a character to play as." />
+        <string id="zH5vlEtWS" text="You know this fella very well" />
+        <string id="ZY12x7dTU" text="Select Non-Kingdom Clan" />
+        <string id="zxdITReik" text="Non-kingdom clans" />
+        <string id="zNtAJNcNF" text="No one" />
+        <string id="rMvK6r195" text="Absolutely no one" /> <!-- practically not used -->
+        <string id="nYUmgcTKc" text="Continue to select non kingdom clans" />
+        <string id="=OTxI8CVPp" text="Continue to select non kingdom clans" />
+        <string id="CJFeItmnG" text="Create a New Character" />
+        <string id="AHA80TyDA" text="Start as an existing Hero" />
+        <string id="xWS4WB54I" text="Next" />
+    </strings>
+</base>

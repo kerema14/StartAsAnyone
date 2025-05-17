@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Helpers;
 using System.Collections.Generic;
-using Helpers;
 using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.Encyclopedia;
-using TaleWorlds.CampaignSystem.Extensions;
 using TaleWorlds.CampaignSystem.LogEntries;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
@@ -24,14 +21,14 @@ namespace StartAsAnyone
     public class HeroInfoPageVM : ViewModel
     {
         // Token: 0x06001245 RID: 4677 RVA: 0x00047DF0 File Offset: 0x00045FF0
-        public HeroInfoPageVM(Hero hero) 
+        public HeroInfoPageVM(Hero hero)
         {
             this._hero = hero;
             this._relationAscendingComparer = new HeroRelationComparer(this._hero, true);
             this._relationDescendingComparer = new HeroRelationComparer(this._hero, false);
             TextObject infoHiddenReasonText;
             this.IsInformationHidden = false;
-            this._infoHiddenReasonText = new TextObject("You know this fella very well");
+            this._infoHiddenReasonText = new TextObject("{=zH5vlEtWS}You know this fella very well");
             this._allRelatedHeroes = new List<Hero>
             {
                 this._hero.Father,
@@ -53,7 +50,7 @@ namespace StartAsAnyone
             this.Stats = new MBBindingList<StringPairItemVM>();
             this.Traits = new MBBindingList<EncyclopediaTraitItemVM>();
             this.HeroCharacter = new HeroViewModel(CharacterViewModel.StanceTypes.EmphasizeFace);
-            
+
             this.Faction = new EncyclopediaFactionVM(this._hero.Clan);
             this.RefreshValues();
         }
@@ -74,7 +71,7 @@ namespace StartAsAnyone
             this.SkillsText = GameTexts.FindText("str_skills", null).ToString();
             this.InfoText = GameTexts.FindText("str_info", null).ToString();
             this.PregnantHint = new HintViewModel(GameTexts.FindText("str_pregnant", null), null);
-            
+
             this.UpdateInformationText();
             this.Refresh();
         }
@@ -82,7 +79,7 @@ namespace StartAsAnyone
         // Token: 0x06001247 RID: 4679 RVA: 0x000480D4 File Offset: 0x000462D4
         public void Refresh()
         {
-            
+
             this.Settlements.Clear();
             this.Dwellings.Clear();
             this.Allies.Clear();
@@ -95,11 +92,11 @@ namespace StartAsAnyone
             this.Traits.Clear();
             this.NameText = this._hero.Name.ToString();
             string text = GameTexts.FindText("str_missing_info_indicator", null).ToString();
-            
+
             this.HasNeutralClan = (this._hero.Clan == null);
             if (!this.IsInformationHidden)
             {
-                
+
                 if (this._hero.Age >= (float)Campaign.Current.Models.AgeModel.HeroComesOfAge)
                 {
                     for (int j = 0; j < Hero.AllAliveHeroes.Count; j++)
@@ -110,7 +107,7 @@ namespace StartAsAnyone
                     {
                         this.AddHeroToRelatedVMList(Hero.DeadOrDisabledHeroes[k]);
                     }
-                    
+
                 }
                 if (this._hero.Clan != null && this._hero == this._hero.Clan.Leader)
                 {
@@ -171,7 +168,7 @@ namespace StartAsAnyone
                 string definition3 = GameTexts.FindText("str_enc_sf_occupation", null).ToString();
                 this.Stats.Add(new StringPairItemVM(definition3, this.IsInformationHidden ? text : heroOccupationName, null));
             }
-            
+
             this.LastSeenText = ((this._hero == Hero.MainHero) ? "" : HeroHelper.GetLastSeenText(this._hero).ToString());
             this.HeroCharacter.FillFrom(this._hero, -1, this._hero.IsNotable, true);
             this.HeroCharacter.SetEquipment(EquipmentIndex.ArmorItemEndSlot, default(EquipmentElement));
@@ -186,7 +183,7 @@ namespace StartAsAnyone
             }
             this.IsPregnant = this._hero.IsPregnant;
             this.IsDead = !this._hero.IsAlive;
-            
+
         }
 
         // Token: 0x06001248 RID: 4680 RVA: 0x0004877C File Offset: 0x0004697C
@@ -229,7 +226,7 @@ namespace StartAsAnyone
         }
 
         // Token: 0x0600124C RID: 4684 RVA: 0x00048864 File Offset: 0x00046A64
-        
+
 
         // Token: 0x0600124D RID: 4685 RVA: 0x000488C9 File Offset: 0x00046AC9
         public void ExecuteLink(string link)
@@ -238,7 +235,7 @@ namespace StartAsAnyone
         }
 
         // Token: 0x0600124E RID: 4686 RVA: 0x000488DC File Offset: 0x00046ADC
-        
+
 
         // Token: 0x0600124F RID: 4687 RVA: 0x0004892C File Offset: 0x00046B2C
         public override void OnFinalize()
