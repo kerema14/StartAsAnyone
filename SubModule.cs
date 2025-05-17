@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
@@ -55,6 +56,7 @@ namespace StartAsAnyone
         public override void OnNewGameCreated(Game game, object initializerObject)
         {
             base.OnNewGameCreated(game, initializerObject);
+            SAASubModule.heroToBeSet = Hero.MainHero;
             CampaignEvents.OnCharacterCreationIsOverEvent.AddNonSerializedListener(this, setHeroAge);
             
         }
@@ -341,6 +343,53 @@ namespace StartAsAnyone
 
         
     }
+
+    [HarmonyPatch(typeof(CharacterCreationOptionsStageView), "AddCharacterEntity")]
+    public static class CharacterCreationOptionsStageView_AddCharacterEntity_Patch
+    {
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            // We're going to look for the sequence:
+            //    call   Hero::get_MainHero()
+            //    callvirt Character::get_CharacterObject()
+            //
+            // And replace it with:
+            //    ldsfld SAASubModule::heroToBeSet
+            //    callvirt Character::get_CharacterObject()
+            var codes = new List<CodeInstruction>(instructions);
+            
+                
+            var getMainHero = AccessTools.PropertyGetter(typeof(Hero), nameof(Hero.MainHero));
+            var getCharObj = AccessTools.PropertyGetter(typeof(Hero), nameof(Hero.CharacterObject))
+                                ?? AccessTools.PropertyGetter(typeof(CharacterObject), ""); // adjust type if needed
+            var fieldHeroToBeSet = AccessTools.Field(typeof(SAASubModule), nameof(SAASubModule.heroToBeSet));
+
+            for (int i = 0; i < codes.Count - 1; i++)
+            {
+                // match: call Hero.get_MainHero()
+                if (codes[i].opcode == OpCodes.Call && codes[i].operand as MethodInfo == getMainHero)
+                {
+                    // and next: callvirt Hero.get_CharacterObject()
+                    if (codes[i + 1].opcode == OpCodes.Callvirt && codes[i + 1].operand as MethodInfo == getCharObj)
+                    {
+                        // replace both instructions:
+                        //   codes[i]   = ldsfld SAASubModule.heroToBeSet
+                        //   codes[i+1] = callvirt CharacterObject get_CharacterObject()
+                        codes[i] = new CodeInstruction(OpCodes.Ldsfld, fieldHeroToBeSet);
+                        codes[i + 1] = new CodeInstruction(OpCodes.Callvirt, getCharObj);
+                        i++; // skip ahead
+                    }
+                }
+            }
+
+                
+            
+            return codes;
+
+            
+        }
+    }
+
 
     [HarmonyPatch(typeof(CharacterCreationOptionsStageView), "PreviousStage")]
     public class CharacterCreationOptionsStageViewPatch

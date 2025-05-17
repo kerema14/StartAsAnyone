@@ -27,6 +27,7 @@ namespace StartAsAnyone
         private GauntletLayer GauntletLayer;
         private CharacterCreationStartAsAnyoneOrNewStageVM _dataSource;
         private SpriteCategory _characterCreationCategory;
+        private SpriteCategory _espriteCategory;
         private readonly CharacterCreation _characterCreation;
         private EscapeMenuVM _escapeMenuDatasource;
         private IGauntletMovie _escapeMenuMovie;
@@ -79,6 +80,8 @@ namespace StartAsAnyone
             ResourceDepot uiresourceDepot = UIResourceManager.UIResourceDepot;
             this._characterCreationCategory = spriteData.SpriteCategories["ui_charactercreation"];
             this._characterCreationCategory.Load(resourceContext, uiresourceDepot);
+            this._espriteCategory = spriteData.SpriteCategories["ui_encyclopedia"];
+            this._espriteCategory.Load(resourceContext, uiresourceDepot);
             this._dataSource.IsKingdomStage = true;
 
 
@@ -98,6 +101,7 @@ namespace StartAsAnyone
             }
             this._dataSource = null;
             this._characterCreationCategory.Unload();
+            this._espriteCategory?.Unload();
         }
 
         private void HandleLayerInput()

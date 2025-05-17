@@ -81,6 +81,7 @@ namespace StartAsAnyone
             this.NonKingdomFactions = new MBBindingList<CharacterCreationKingdomVM>();
             this.Heroes = new MBBindingList<CharacterCreationHeroVM>();
             SAASubModule.startAsAnyone = false;
+            SAASubModule.heroInit = false;
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected; 
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as an existing lord/lady or create a new one?", null).ToString();
@@ -359,7 +360,7 @@ namespace StartAsAnyone
             }
             spawnParty(CurrentSelectedHero.Hero);
             SetMainHeroMount();
-            SetMainHeroCharacterObject();
+            
             
 
             
@@ -526,51 +527,7 @@ namespace StartAsAnyone
 
 
         }
-        public void SetMainHeroCharacterObject()
-        {
-            // Get the type of Hero.MainHero
-            Type heroType = Hero.MainHero.GetType();
-    
-            // Get the CharacterObject field/property info
-            // If it's a field:
-            FieldInfo characterObjectField = heroType.GetField("CharacterObject", 
-                BindingFlags.Public | BindingFlags.Instance);
-    
-            // If it's a property with a backing field (more likely case)
-            FieldInfo characterObjectBackingField = heroType.GetField("<CharacterObject>k__BackingField", 
-                BindingFlags.NonPublic | BindingFlags.Instance);
-    
-            // Try setting the field or backing field
-            if (characterObjectField != null)
-            {
-                characterObjectField.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.CharacterObject);
-            }
-            else if (characterObjectBackingField != null)
-            {
-                characterObjectBackingField.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.CharacterObject);
-            }
-            else
-            {
-                // If neither approach works, we need to look for the backing field with a different naming convention
-                // Loop through all private fields to find one that might hold the CharacterObject
-                FieldInfo[] fields = heroType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
-                bool fieldFound = false;
         
-                foreach (FieldInfo field in fields)
-                {
-                    if (field.FieldType == typeof(CharacterObject) || 
-                        field.Name.Contains("CharacterObject"))
-                    {
-                        field.SetValue(Hero.MainHero, CurrentSelectedHero.Hero.CharacterObject);
-                        fieldFound = true;
-                        break;
-                    }
-                }
-        
-                
-            }
-        }
-
         [DataSourceProperty]
         public bool CanAdvanceToNextSelection
         {
