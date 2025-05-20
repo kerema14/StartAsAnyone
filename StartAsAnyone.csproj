@@ -82,6 +82,9 @@
     <None Update="_Module\ModuleData\Languages\EN\strings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="_Module\SubModule.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     
   </ItemGroup>
 

@@ -363,8 +363,9 @@ namespace StartAsAnyone
         {
             
 
-            clan.Color = clan.Banner.GetPrimaryColor();
+            clan.Color = clan.Banner.GetSecondaryColor();
             clan.Color2 = clan.Banner.GetFirstIconColor();
+            
             clan.AlternativeColor = clan.Banner.GetFirstIconColor();
             clan.AlternativeColor2 = clan.Banner.GetPrimaryColor();
 
