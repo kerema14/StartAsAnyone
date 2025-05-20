@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Helpers;
+using SandBox.CampaignBehaviors;
 using SandBox.GauntletUI.CharacterCreation;
 using StoryMode.CharacterCreationContent;
 using System;
@@ -18,7 +19,9 @@ using TaleWorlds.CampaignSystem.GameState;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Roster;
 using TaleWorlds.CampaignSystem.Settlements;
+using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation.OptionsStage;
+using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Clans;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Decisions;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Policies;
@@ -40,9 +43,12 @@ namespace StartAsAnyone
         public static bool heroInit;
         public static CampaignTime heroBirthday;
         public static bool startAsAnyone;
+        
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
+
+            
             
             
             heroInit = false;
@@ -60,15 +66,21 @@ namespace StartAsAnyone
             CampaignEvents.OnCharacterCreationIsOverEvent.AddNonSerializedListener(this, setHeroAge);
             
         }
-        
 
-        
+        public override void OnGameLoaded(Game game, object initializerObject)
+        {
+            base.OnGameLoaded(game, initializerObject);
+            
+        }
+
+       
 
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
             
         }
+        
         public void setHeroAge()
         {
             if (heroInit)
@@ -262,12 +274,20 @@ namespace StartAsAnyone
             SAASubModule.heroInit = true;
            
 
-
+            Hero.MainHero.Culture = hero.Culture;
             Clan originalClan = Hero.MainHero.Clan;
             ChangePlayerCharacterAction.Apply(hero);
             Campaign.Current.SetPropertyValue("PlayerDefaultFaction", hero.Clan);
             MobileParty.MainParty.ItemRoster.Clear();
             DestroyClanAction2.Apply(originalClan);
+
+            try
+            {
+                setClanColors(Hero.MainHero.Clan);
+            } catch (Exception e) { }
+            
+
+            
             //IsUnderMercenaryService
 
 
@@ -339,9 +359,21 @@ namespace StartAsAnyone
 
 
         }
+        public static void setClanColors(Clan clan)
+        {
+            
+
+            clan.Color = clan.Banner.GetPrimaryColor();
+            clan.Color2 = clan.Banner.GetFirstIconColor();
+            clan.AlternativeColor = clan.Banner.GetFirstIconColor();
+            clan.AlternativeColor2 = clan.Banner.GetPrimaryColor();
+
+            
+
+        }
 
 
-        
+
     }
 
     [HarmonyPatch(typeof(CharacterCreationOptionsStageView), "AddCharacterEntity")]
@@ -356,14 +388,11 @@ namespace StartAsAnyone
             // And replace it with:
             //    ldsfld SAASubModule::heroToBeSet
             //    callvirt Character::get_CharacterObject()
-            var codes = new List<CodeInstruction>(instructions);
-            
-                
+            var codes = new List<CodeInstruction>(instructions);               
             var getMainHero = AccessTools.PropertyGetter(typeof(Hero), nameof(Hero.MainHero));
             var getCharObj = AccessTools.PropertyGetter(typeof(Hero), nameof(Hero.CharacterObject))
                                 ?? AccessTools.PropertyGetter(typeof(CharacterObject), ""); // adjust type if needed
             var fieldHeroToBeSet = AccessTools.Field(typeof(SAASubModule), nameof(SAASubModule.heroToBeSet));
-
             for (int i = 0; i < codes.Count - 1; i++)
             {
                 // match: call Hero.get_MainHero()
@@ -380,13 +409,51 @@ namespace StartAsAnyone
                         i++; // skip ahead
                     }
                 }
+            }            
+            return codes;
+        }
+    }
+
+    
+
+    // Step 2: Patch the GetHeirApparents method using Harmony
+    [HarmonyPatch(typeof(Clan), "GetHeirApparents")]
+    public static class GetHeirApparentsPatch
+    {
+        public static bool Prefix(ref Dictionary<Hero, int> __result, Clan __instance)
+        {
+            // Check if Hero.MainHero.Clan is this and Hero.MainHero != this.Leader
+            if (Hero.MainHero.Clan == __instance && Hero.MainHero != __instance.Leader)
+            {
+                // Call your custom method
+                __result = CustomGetHeirApparents();
+                return false; // Skip the original method
             }
 
-                
-            
-            return codes;
-
-            
+            // Proceed with the original method if the condition isn't met
+            return true;
+        }
+        public static Dictionary<Hero, int> CustomGetHeirApparents()
+        {
+            Clan mainClan = Hero.MainHero.Clan;
+            Dictionary<Hero, int> dictionary = new Dictionary<Hero, int>();
+            int heroComesOfAge = Campaign.Current.Models.AgeModel.HeroComesOfAge;
+            Hero leader = mainClan.Leader;
+            foreach (Hero hero in mainClan.Heroes)
+            {
+                if (hero == mainClan.Leader && hero.IsAlive && hero.DeathMark == KillCharacterAction.KillCharacterActionDetail.None && !hero.IsNotSpawned && !hero.IsDisabled && !hero.IsWanderer && !hero.IsNotable && hero.Age >= (float)heroComesOfAge)
+                {
+                    int value = Campaign.Current.Models.HeirSelectionCalculationModel.CalculateHeirSelectionPoint(hero, mainClan.Leader, ref leader);
+                    dictionary.Add(hero, value);
+                }
+            }
+            if (leader != mainClan.Leader)
+            {
+                Dictionary<Hero, int> dictionary2 = dictionary;
+                Hero key = leader;
+                dictionary2[key] += Campaign.Current.Models.HeirSelectionCalculationModel.HighestSkillPoint;
+            }
+            return dictionary;
         }
     }
 
@@ -454,12 +521,21 @@ namespace StartAsAnyone
     {
         static void Postfix(ref bool __result)
         {
-            // Modify the return value based on your condition
+            
             
             
              __result = __result && Hero.MainHero.IsClanLeader;
             
 
+        }
+    }
+
+    [HarmonyPatch(typeof(KingdomManagementVM), "IsKingdomActionEnabled",MethodType.Getter)]
+    public static class KingdomManagementVm_IsKingdomActionEnabled_Patch
+    {
+        static void Postfix(ref bool __result)
+        {
+            __result = __result && Hero.MainHero.IsClanLeader;
         }
     }
 

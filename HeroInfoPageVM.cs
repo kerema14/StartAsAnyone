@@ -170,10 +170,15 @@ namespace StartAsAnyone
             }
 
             this.LastSeenText = ((this._hero == Hero.MainHero) ? "" : HeroHelper.GetLastSeenText(this._hero).ToString());
-            this.HeroCharacter.FillFrom(this._hero, -1, this._hero.IsNotable, true);
-            this.HeroCharacter.SetEquipment(EquipmentIndex.ArmorItemEndSlot, default(EquipmentElement));
-            this.HeroCharacter.SetEquipment(EquipmentIndex.HorseHarness, default(EquipmentElement));
-            this.HeroCharacter.SetEquipment(EquipmentIndex.NumAllWeaponSlots, default(EquipmentElement));
+            
+            
+            {
+                this.HeroCharacter.FillFrom(this._hero.CharacterObject);
+                this.HeroCharacter.SetEquipment(EquipmentIndex.ArmorItemEndSlot, default(EquipmentElement));
+                this.HeroCharacter.SetEquipment(EquipmentIndex.HorseHarness, default(EquipmentElement));
+                this.HeroCharacter.SetEquipment(EquipmentIndex.NumAllWeaponSlots, default(EquipmentElement));
+            }
+            
             this.IsCompanion = (this._hero.CompanionOf != null);
             if (this.IsCompanion)
             {
