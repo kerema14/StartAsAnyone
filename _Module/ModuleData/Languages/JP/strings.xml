@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="Japanese" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="あなたの道を選ぶ" />
+        <string id="start_as_anyone_description" text="既存の領主/レディとして始めるか、新しいキャラクターを作成しますか？" />
+        <string id="start_as_anyone_selection" text="キャラクター作成パス" />
+        <string id="IX1nIsFTe" text="このオプションはストーリーモードでは無効です。サンドボックスモードでプレイしてください" />
+        <string id="KKt69IHkk" text="キャラクターを選択する王国を選んでください。" />
+        <string id="Fa7kegZKb" text="プレイするキャラクターを選んでください。" />
+        <string id="zH5vlEtWS" text="このキャラクターをよく知っています" />
+        <string id="ZY12x7dTU" text="非王国クランを選択" />
+        <string id="zxdITReik" text="非王国クラン" />
+        <string id="zNtAJNcNF" text="誰もいない" />
+        <string id="rMvK6r195" text="完全に誰もいない" />
+        <string id="nYUmgcTKc" text="非王国クランの選択を続ける" />
+        <string id="=OTxI8CVPp" text="非王国クランの選択を続ける" />
+        <string id="CJFeItmnG" text="新しいキャラクターを作成" />
+        <string id="AHA80TyDA" text="既存のヒーローとして始める" />
+        <string id="xWS4WB54I" text="次へ" />
+    </strings>
+</base> 

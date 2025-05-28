@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="Turkish" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="Yolunu Seç" />
+        <string id="start_as_anyone_description" text="Mevcut bir lord/lady olarak mı başlamak istersiniz yoksa yeni bir tane mi oluşturmak istersiniz?" />
+        <string id="start_as_anyone_selection" text="Karakter Oluşturma Yolu" />
+        <string id="IX1nIsFTe" text="Bu seçenek hikaye modunda devre dışı, Sandbox modunda oynayın" />
+        <string id="KKt69IHkk" text="Karakterinizi seçmek için bir krallık seçin." />
+        <string id="Fa7kegZKb" text="Oynamak için bir karakter seçin." />
+        <string id="zH5vlEtWS" text="Bu karakteri çok iyi tanıyorsunuz" />
+        <string id="ZY12x7dTU" text="Krallık Dışı Klan Seç" />
+        <string id="zxdITReik" text="Krallık dışı klanlar" />
+        <string id="zNtAJNcNF" text="Kimse" />
+        <string id="rMvK6r195" text="Kesinlikle kimse" />
+        <string id="nYUmgcTKc" text="Krallık dışı klanları seçmeye devam et" />
+        <string id="=OTxI8CVPp" text="Krallık dışı klanları seçmeye devam et" />
+        <string id="CJFeItmnG" text="Yeni Karakter Oluştur" />
+        <string id="AHA80TyDA" text="Mevcut Bir Kahraman Olarak Başla" />
+        <string id="xWS4WB54I" text="İleri" />
+    </strings>
+</base> 

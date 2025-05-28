@@ -385,7 +385,7 @@
 						<!--Title-->
 						<RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="626" SuggestedHeight="55" HorizontalAlignment="Right" Brush="Stage.Title.Text" PositionYOffset="37" Text="@Title" />
 						<!--Description-->
-						<RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="576" SuggestedHeight="90" HorizontalAlignment="Right" MarginRight="15" MarginTop="100" Brush="Stage.Description.Text"  Text="@Description" />
+						<RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="576" SuggestedHeight="90" HorizontalAlignment="Right" MarginRight="25" MarginTop="100" Brush="Stage.Description.Text"  Text="@Description" />
 						<Widget Id="InnerPanel" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="573" SuggestedHeight="750" HorizontalAlignment="Center" VerticalAlignment="Center" PositionXOffset="23" PositionYOffset="37">
 							<Children>
 								<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginRight="15" StackLayout.LayoutMethod="VerticalBottomToTop">
@@ -399,7 +399,7 @@
 														<ImageWidget MarginLeft="15" SuggestedHeight="64" SuggestedWidth="64" HorizontalAlignment="Left" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" VerticalAlignment="Center" Brush="SPOptions.Checkbox.Empty.Button" IsVisible="@NotStartAsAnyone"/>
 														
 														<ImageWidget MarginLeft="15" SuggestedHeight="64" SuggestedWidth="64" HorizontalAlignment="Left" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" VerticalAlignment="Center" Brush="SPOptions.Checkbox.Full.Button" IsVisible="@StartAsAnyone"/>
-														<TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Stage.Option.Text" Text="@StrStartAsExisting" />
+														<TextWidget WidthSizePolicy="CoverChildren" MarginLeft="100" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="Stage.Option.Text" Text="@StrStartAsExisting" />
 													</Children>
 												</ButtonWidget>
 											</Children>
@@ -409,7 +409,7 @@
 												<ImageWidget MarginLeft="15" SuggestedHeight="64" SuggestedWidth="64" HorizontalAlignment="Left" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" VerticalAlignment="Center" Brush="SPOptions.Checkbox.Empty.Button" IsVisible="@StartAsAnyone"/>
 											
 												<ImageWidget MarginLeft="15" SuggestedHeight="64" SuggestedWidth="64" HorizontalAlignment="Left" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" VerticalAlignment="Center" Brush="SPOptions.Checkbox.Full.Button" IsVisible="@NotStartAsAnyone"/>
-												<TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Stage.Option.Text" Text="@StrCreateNewCharacter" />
+												<TextWidget WidthSizePolicy="CoverChildren" MarginLeft="100" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="Stage.Option.Text" Text="@StrCreateNewCharacter" />
 											</Children>
 										</ButtonWidget>
 										

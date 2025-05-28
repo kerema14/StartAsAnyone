@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="繁體中文" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="選擇你的道路" />
+        <string id="start_as_anyone_description" text="你想以現有的領主/女士身份開始，還是創建一個新的？" />
+        <string id="start_as_anyone_selection" text="角色創建路徑" />
+        <string id="IX1nIsFTe" text="此選項在故事模式中禁用，請玩沙盒模式" />
+        <string id="KKt69IHkk" text="選擇一個王國來選擇你的角色。" />
+        <string id="Fa7kegZKb" text="選擇一個角色來扮演。" />
+        <string id="zH5vlEtWS" text="你非常了解這個角色" />
+        <string id="ZY12x7dTU" text="選擇非王國氏族" />
+        <string id="zxdITReik" text="非王國氏族" />
+        <string id="zNtAJNcNF" text="沒有人" />
+        <string id="rMvK6r195" text="絕對沒有人" />
+        <string id="nYUmgcTKc" text="繼續選擇非王國氏族" />
+        <string id="=OTxI8CVPp" text="繼續選擇非王國氏族" />
+        <string id="CJFeItmnG" text="創建新角色" />
+        <string id="AHA80TyDA" text="以現有英雄身份開始" />
+        <string id="xWS4WB54I" text="下一步" />
+    </strings>
+</base> 

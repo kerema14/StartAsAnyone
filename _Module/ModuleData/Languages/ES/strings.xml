@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="Español (LA)" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="Elige tu camino" />
+        <string id="start_as_anyone_description" text="¿Quieres comenzar como un señor/señora existente o crear uno nuevo?" />
+        <string id="start_as_anyone_selection" text="Camino de creación de personaje" />
+        <string id="IX1nIsFTe" text="Esta opción está deshabilitada para el modo historia, juega en modo sandbox" />
+        <string id="KKt69IHkk" text="Selecciona un reino para elegir tu personaje." />
+        <string id="Fa7kegZKb" text="Elige un personaje para jugar." />
+        <string id="zH5vlEtWS" text="Conoces muy bien a este personaje" />
+        <string id="ZY12x7dTU" text="Seleccionar clan fuera del reino" />
+        <string id="zxdITReik" text="Clanes fuera del reino" />
+        <string id="zNtAJNcNF" text="Nadie" />
+        <string id="rMvK6r195" text="Absolutamente nadie" />
+        <string id="nYUmgcTKc" text="Continuar seleccionando clanes fuera del reino" />
+        <string id="=OTxI8CVPp" text="Continuar seleccionando clanes fuera del reino" />
+        <string id="CJFeItmnG" text="Crear nuevo personaje" />
+        <string id="AHA80TyDA" text="Comenzar como héroe existente" />
+        <string id="xWS4WB54I" text="Siguiente" />
+    </strings>
+</base> 

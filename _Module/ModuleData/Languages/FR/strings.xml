@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="French" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="Choisissez votre chemin" />
+        <string id="start_as_anyone_description" text="Voulez-vous commencer en tant que seigneur/dame existant ou en créer un nouveau ?" />
+        <string id="start_as_anyone_selection" text="Chemin de création de personnage" />
+        <string id="IX1nIsFTe" text="Cette option est désactivée pour le mode histoire, jouez en mode bac à sable" />
+        <string id="KKt69IHkk" text="Sélectionnez un royaume pour choisir votre personnage." />
+        <string id="Fa7kegZKb" text="Choisissez un personnage pour jouer." />
+        <string id="zH5vlEtWS" text="Vous connaissez très bien ce personnage" />
+        <string id="ZY12x7dTU" text="Sélectionner un clan hors royaume" />
+        <string id="zxdITReik" text="Clans hors royaume" />
+        <string id="zNtAJNcNF" text="Personne" />
+        <string id="rMvK6r195" text="Absolument personne" />
+        <string id="nYUmgcTKc" text="Continuer à sélectionner des clans hors royaume" />
+        <string id="=OTxI8CVPp" text="Continuer à sélectionner des clans hors royaume" />
+        <string id="CJFeItmnG" text="Créer un nouveau personnage" />
+        <string id="AHA80TyDA" text="Commencer en tant que héros existant" />
+        <string id="xWS4WB54I" text="Suivant" />
+    </strings>
+</base> 

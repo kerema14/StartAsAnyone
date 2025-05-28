@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="Deutsch" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="Wähle deinen Weg" />
+        <string id="start_as_anyone_description" text="Möchtest du als existierender Lord/Lady beginnen oder einen neuen erstellen?" />
+        <string id="start_as_anyone_selection" text="Charaktererstellungspfad" />
+        <string id="IX1nIsFTe" text="Diese Option ist im Geschichtsmodus deaktiviert, spiele im Sandbox-Modus" />
+        <string id="KKt69IHkk" text="Wähle ein Königreich, um deinen Charakter auszuwählen." />
+        <string id="Fa7kegZKb" text="Wähle einen Charakter zum Spielen." />
+        <string id="zH5vlEtWS" text="Du kennst diesen Charakter sehr gut" />
+        <string id="ZY12x7dTU" text="Nicht-Königreich-Clan auswählen" />
+        <string id="zxdITReik" text="Nicht-Königreich-Clans" />
+        <string id="zNtAJNcNF" text="Niemand" />
+        <string id="rMvK6r195" text="Absolut niemand" />
+        <string id="nYUmgcTKc" text="Weiter zur Auswahl von Nicht-Königreich-Clans" />
+        <string id="=OTxI8CVPp" text="Weiter zur Auswahl von Nicht-Königreich-Clans" />
+        <string id="CJFeItmnG" text="Neuen Charakter erstellen" />
+        <string id="AHA80TyDA" text="Als existierender Held beginnen" />
+        <string id="xWS4WB54I" text="Weiter" />
+    </strings>
+</base> 

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<base>
+    <tags>
+        <tag language="Russian" />
+    </tags>
+    <strings>
+        <string id="start_as_anyone_title" text="Выберите свой путь" />
+        <string id="start_as_anyone_description" text="Хотите начать как существующий лорд/леди или создать нового?" />
+        <string id="start_as_anyone_selection" text="Путь создания персонажа" />
+        <string id="IX1nIsFTe" text="Эта опция отключена для режима истории, играйте в режиме песочницы" />
+        <string id="KKt69IHkk" text="Выберите королевство, чтобы выбрать персонажа." />
+        <string id="Fa7kegZKb" text="Выберите персонажа для игры." />
+        <string id="zH5vlEtWS" text="Вы хорошо знаете этого персонажа" />
+        <string id="ZY12x7dTU" text="Выбрать клан вне королевства" />
+        <string id="zxdITReik" text="Кланы вне королевства" />
+        <string id="zNtAJNcNF" text="Никто" />
+        <string id="rMvK6r195" text="Абсолютно никто" />
+        <string id="nYUmgcTKc" text="Продолжить выбор кланов вне королевства" />
+        <string id="=OTxI8CVPp" text="Продолжить выбор кланов вне королевства" />
+        <string id="CJFeItmnG" text="Создать нового персонажа" />
+        <string id="AHA80TyDA" text="Начать как существующий герой" />
+        <string id="xWS4WB54I" text="Далее" />
+    </strings>
+</base> 
