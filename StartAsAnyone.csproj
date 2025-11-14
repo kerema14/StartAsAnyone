@@ -11,52 +11,39 @@
     <ModuleId>StartAsAnyone</ModuleId>
     <ModuleName>StartAsAnyone</ModuleName>
     <ModuleUrl></ModuleUrl>
-    <GameFolder>G:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <GameFolder>$(BANNERLORD_GAME_DIR)</GameFolder>
     <GameBinariesFolder Condition="Exists('$(GameFolder)\bin\Win64_Shipping_Client\Bannerlord.exe')">Win64_Shipping_Client</GameBinariesFolder>
     <GameBinariesFolder Condition="Exists('$(GameFolder)\bin\Gaming.Desktop.x64_Shipping_Client\Bannerlord.exe')">Gaming.Desktop.x64_Shipping_Client</GameBinariesFolder>
     <Title>Start as Anyone</Title>
   </PropertyGroup>
+	
 
   <PropertyGroup Condition="$(TargetFramework) == 'net472'">
     <BuildForWindows>true</BuildForWindows>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="$(GameFolder)\bin\$(GameBinariesFolder)\Newtonsoft.Json.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    
-	  
-    <Reference Include="$(GameFolder)\bin\$(GameBinariesFolder)\TaleWorlds.*.dll" Exclude="$(GameFolder)\bin\$(GameBinariesFolder)\TaleWorlds.Native.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="$(GameFolder)\Modules\Native\bin\$(GameBinariesFolder)\*.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="$(GameFolder)\Modules\SandBox\bin\$(GameBinariesFolder)\*.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="$(GameFolder)\Modules\SandBoxCore\bin\$(GameBinariesFolder)\*.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="$(GameFolder)\Modules\StoryMode\bin\$(GameBinariesFolder)\*.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="$(GameFolder)\Modules\CustomBattle\bin\$(GameBinariesFolder)\*.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="$(GameFolder)\Modules\BirthAndDeath\bin\$(GameBinariesFolder)\*.dll">
-      <HintPath>%(Identity)</HintPath>
-      <Private>False</Private>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll" Exclude="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.Native.dll">
+			<HintPath>%(Identity)</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\*.dll">
+			<HintPath>%(Identity)</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\*.dll">
+			<HintPath>%(Identity)</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="$(GameFolder)\Modules\SandBoxCore\bin\Win64_Shipping_Client\*.dll">
+			<HintPath>%(Identity)</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="$(GameFolder)\Modules\StoryMode\bin\Win64_Shipping_Client\*.dll">
+			<HintPath>%(Identity)</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
 
   <ItemGroup>
     <Compile Remove="CharacterCreationKingdomVisualBrushWidget.cs" />
