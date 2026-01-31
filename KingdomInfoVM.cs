@@ -1,6 +1,7 @@
 ﻿using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -20,12 +21,12 @@ namespace StartAsAnyone
             this.Faction = faction;
             if (faction != null)
             {
-                this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(faction.Banner), true);
+                this.ImageIdentifier = new BannerImageIdentifierVM(faction.Banner, true); 
                 this.IsDestroyed = faction.IsEliminated;
             }
             else
             {
-                this.ImageIdentifier = new ImageIdentifierVM(ImageIdentifierType.Null);
+                this.ImageIdentifier = new BannerImageIdentifierVM(Banner.CreateRandomBanner()); //new ImageIdentifierVM(ImageIdentifierType.Null);
                 this.IsDestroyed = false;
             }
             this.RefreshValues();
@@ -56,7 +57,7 @@ namespace StartAsAnyone
         // (get) Token: 0x060013A0 RID: 5024 RVA: 0x0004BA10 File Offset: 0x00049C10
         // (set) Token: 0x060013A1 RID: 5025 RVA: 0x0004BA18 File Offset: 0x00049C18
         [DataSourceProperty]
-        public ImageIdentifierVM ImageIdentifier
+        public BannerImageIdentifierVM ImageIdentifier
         {
             get
             {
@@ -113,7 +114,7 @@ namespace StartAsAnyone
         }
 
         
-        private ImageIdentifierVM _imageIdentifier;
+        private BannerImageIdentifierVM _imageIdentifier;
 
         
         private string _nameText;

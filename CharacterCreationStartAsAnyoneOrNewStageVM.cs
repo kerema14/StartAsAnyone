@@ -1,11 +1,14 @@
+using HarmonyLib;
 using Helpers;
-using StoryMode.CharacterCreationContent;
+using StoryMode;
+using StoryMode.GameComponents.CampaignBehaviors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Actions;
+using TaleWorlds.CampaignSystem.CampaignBehaviors;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -49,9 +52,10 @@ namespace StartAsAnyone
         private HintViewModel _storyModeDisabledHint;
         private MBBindingList<CharacterCreationKingdomVM> _nonKingdomFactions;
         private MBBindingList<CharacterCreationKingdomVM> _savedKingdoms;
+        private CharacterCreationManager _characterCreationManager;
         private int _totalStagesCount;
         public CharacterCreationStartAsAnyoneOrNewStageVM(
-            CharacterCreation characterCreation,
+            CharacterCreationManager characterCreationManager,
             Action affirmativeAction,
             TextObject affirmativeActionText,
             Action negativeAction,
@@ -61,16 +65,13 @@ namespace StartAsAnyone
             int furthestIndex,
             Action<int> goToIndex,
             Action<bool> onStartAsAnyoneSelected) : base(
-                characterCreation,
+                characterCreationManager,
                 affirmativeAction,
                 affirmativeActionText,
                 negativeAction,
-                negativeActionText,
-                currentStageIndex,
-                totalStagesCount,
-                furthestIndex,
-                goToIndex)
+                negativeActionText)
         {
+            this._characterCreationManager = characterCreationManager;
             this._totalStagesCount = totalStagesCount;
             this._goToIndex = goToIndex;
             this._furthestIndex = furthestIndex;
@@ -80,8 +81,8 @@ namespace StartAsAnyone
             this.Kingdoms = new MBBindingList<CharacterCreationKingdomVM>();
             this.NonKingdomFactions = new MBBindingList<CharacterCreationKingdomVM>();
             this.Heroes = new MBBindingList<CharacterCreationHeroVM>();
-            SAASubModule.startAsAnyone = false;
-            SAASubModule.heroInit = false;
+            SubModule.startAsAnyone = false;
+            SubModule.heroInit = false;
             this._onStartAsAnyoneSelected = onStartAsAnyoneSelected;
             base.Title = new TextObject("{=start_as_anyone_title}Choose Your Path", null).ToString();
             base.Description = new TextObject("{=start_as_anyone_description}Would you like to start as an existing lord/lady or create a new one?", null).ToString();
@@ -114,10 +115,10 @@ namespace StartAsAnyone
             }
             this.KingdomInfo = new KingdomInfoPageVM(CurrentSelectedKingdom.Kingdom);
             this.SelectionStageText = new TextObject("{=KKt69IHkk}Select a kingdom to choose your character from.").ToString();
-
-            isStoryMode = getCharacterCreationState().CurrentCharacterCreationContent is StoryModeCharacterCreationContent;
-
-            TextObject empty = TextObject.Empty;
+            
+            isStoryMode = Game.Current.GameType is CampaignStoryMode;
+            InformationManager.DisplayMessage(new InformationMessage("Game type is " + Game.Current.GameType.ToString() + isStoryMode.ToString()));
+            TextObject empty = TextObject.GetEmpty();
             TextObject storyModeDisabledText = new TextObject("{=IX1nIsFTe}This option is disabled for story mode, play SandBox mode");
             this.StoryModeDisabledHint = new HintViewModel((isStoryMode) ? storyModeDisabledText : empty, null);
 
@@ -136,7 +137,7 @@ namespace StartAsAnyone
             selectedHero.IsSelected = true;
             this.CurrentSelectedHero = selectedHero;
             this.AnyItemSelected = true;
-
+            
             // Update game state
 
             this.HeroInfo = new HeroInfoPageVM(selectedHero.Hero);
@@ -347,6 +348,8 @@ namespace StartAsAnyone
             return characterCreationState;
         }
 
+        
+
         public void ExecuteMe()
         {
 
@@ -354,14 +357,15 @@ namespace StartAsAnyone
 
             if (CurrentSelectedHero != null)
             {
-                SAASubModule.heroToBeSet = CurrentSelectedHero.Hero;
+                SubModule.heroToBeSet = CurrentSelectedHero.Hero;
             }
             else if (CurrentSelectedKingdom != null)
             {
-                SAASubModule.heroToBeSet = CurrentSelectedKingdom.Kingdom.Leader;
+                SubModule.heroToBeSet = CurrentSelectedKingdom.Kingdom.Leader;
             }
             spawnParty(CurrentSelectedHero.Hero);
             SetMainHeroMount();
+            SetMainHeroCharacterObject(CurrentSelectedHero.Hero);
 
 
 
@@ -383,26 +387,14 @@ namespace StartAsAnyone
         {
             if (StartAsAnyone)
             {
-                SAASubModule.startAsAnyone = true;
+                SubModule.startAsAnyone = true;
 
                 CharacterCreationState ccs = getCharacterCreationState();
                 ExecuteMe();
 
-                Type characterStateType = ccs.GetType();
-
-                // Get the private field _stageIndex
-                FieldInfo stageIndexField = characterStateType.GetField("_stageIndex",
-                    BindingFlags.NonPublic | BindingFlags.Instance);
-
-                if (stageIndexField != null)
-                {
-                    // Set the new value
-                    stageIndexField.SetValue(ccs, this._totalStagesCount);
-                }
-
-
-                ccs.PreviousStage();
-
+                int totalStagesCount = ccs.CharacterCreationManager.GetTotalStagesCount();
+                
+                ccs.CharacterCreationManager.GoToStage(totalStagesCount-1);
 
 
 
@@ -469,7 +461,7 @@ namespace StartAsAnyone
                     {
                         if ((allyhero.PartyBelongedTo != null))
                         {
-                            MobilePartyHelper.SpawnLordParty(hero, allyhero.PartyBelongedTo.Position2D, 30f);
+                            MobilePartyHelper.SpawnLordParty(hero, allyhero.PartyBelongedTo.Position, 30f);
                             return;
                         }
                     }
@@ -480,9 +472,9 @@ namespace StartAsAnyone
 
                     result = MobilePartyHelper.SpawnLordParty(hero, settlement);
                 }
-                else if (hero.MapFaction.InitialPosition.IsValid)
+                else if (hero.MapFaction.FactionMidSettlement != null)
                 {
-                    result = MobilePartyHelper.SpawnLordParty(hero, hero.MapFaction.InitialPosition, 30f);
+                    result = MobilePartyHelper.SpawnLordParty(hero, hero.MapFaction.FactionMidSettlement);
                 }
                 else
                 {
@@ -504,6 +496,16 @@ namespace StartAsAnyone
                     }
                 }
             }
+        }
+        public void SetMainHeroCharacterObject(Hero hero)
+        {
+            CharacterObject character = CharacterObject.CreateFrom(hero.CharacterObject, null);
+            var method = AccessTools.Method(typeof(Hero), "SetCharacterObject");
+            method.Invoke(Hero.MainHero, new object[] { character });
+
+            Hero.MainHero.StaticBodyProperties = hero.StaticBodyProperties;
+            
+            
         }
         public void SetMainHeroMount()
         {

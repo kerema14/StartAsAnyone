@@ -24,8 +24,8 @@ namespace StartAsAnyone
         public HeroInfoPageVM(Hero hero)
         {
             this._hero = hero;
-            this._relationAscendingComparer = new HeroRelationComparer(this._hero, true);
-            this._relationDescendingComparer = new HeroRelationComparer(this._hero, false);
+            this._relationAscendingComparer = new HeroRelationComparer(this._hero, true,true);
+            this._relationDescendingComparer = new HeroRelationComparer(this._hero, false,true);
             TextObject infoHiddenReasonText;
             this.IsInformationHidden = false;
             this._infoHiddenReasonText = new TextObject("{=zH5vlEtWS}You know this fella very well");

@@ -2,7 +2,7 @@
 using Helpers;
 using SandBox.CampaignBehaviors;
 using SandBox.GauntletUI.CharacterCreation;
-using StoryMode.CharacterCreationContent;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,14 +28,17 @@ using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Policies;
 using TaleWorlds.CampaignSystem.ViewModelCollection.KingdomManagement.Settlements;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
+using TaleWorlds.Engine.Screens;
+using TaleWorlds.Engine;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 using TaleWorlds.MountAndBlade;
 using TaleWorlds.MountAndBlade.GauntletUI;
+using TaleWorlds.MountAndBlade.View;
 
 namespace StartAsAnyone
 {
-    public class SAASubModule : MBSubModuleBase
+    public class SubModule : MBSubModuleBase
     {
         private static readonly Harmony _harmony = new Harmony("com.kerema14.startasanyone");
         private static bool _isInitialized = false;
@@ -43,18 +46,24 @@ namespace StartAsAnyone
         public static bool heroInit;
         public static CampaignTime heroBirthday;
         public static bool startAsAnyone;
-        
+        internal static float heroWeight;
+        internal static float heroBuild;
+        internal static StaticBodyProperties heroStaticBodyProperties;
+
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
+            //InformationManager.DisplayMessage(new InformationMessage("Start As Anyone has been loaded"));
+            
+            
+            Harmony.DEBUG = true;
 
-            
-            
-            
+
+
             heroInit = false;
             if (!_isInitialized)
             {
-                CharacterCreationContentPatcher.ApplyPatches(_harmony);
+
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _isInitialized = true;
             }
@@ -62,9 +71,14 @@ namespace StartAsAnyone
         public override void OnNewGameCreated(Game game, object initializerObject)
         {
             base.OnNewGameCreated(game, initializerObject);
-            SAASubModule.heroToBeSet = Hero.MainHero;
+            SubModule.heroToBeSet = Hero.MainHero;
             CampaignEvents.OnCharacterCreationIsOverEvent.AddNonSerializedListener(this, setHeroAge);
-            
+            CampaignEvents.OnCharacterCreationInitializedEvent.AddNonSerializedListener(this, addSAAStageAction);
+        }
+
+        private void addSAAStageAction(CharacterCreationManager manager)
+        {
+            manager.AddStage(new CharacterCreationStartAsAnyoneOrNewStage());
         }
 
         public override void OnGameLoaded(Game game, object initializerObject)
@@ -80,146 +94,67 @@ namespace StartAsAnyone
             base.OnApplicationTick(dt);
             
         }
-        
+        protected override void InitializeGameStarter(Game game, IGameStarter starterObject)
+        {
+            base.InitializeGameStarter(game, starterObject);
+            
+        }
+
         public void setHeroAge()
         {
             if (heroInit)
             {
                 
                 Hero.MainHero.SetBirthDay(heroBirthday);
+                Hero.MainHero.Weight = heroWeight;
+                Hero.MainHero.Build = heroBuild;
+                Hero.MainHero.StaticBodyProperties = heroStaticBodyProperties;
             }
         }
         
     }
 
-    public class CharacterCreationContentPatcher
+    
+    [HarmonyPatch(typeof(CharacterCreationManager), nameof(CharacterCreationManager.GoToStage))]
+    public static class GoToStage_SimplePatch
     {
-        // This method will run when your mod initializes
-        public static void ApplyPatches(Harmony harmony)
+        [HarmonyPrefix]
+        public static void Prefix(CharacterCreationManager __instance, int stageIndex)
         {
-            // Find all types that inherit from CharacterCreationContentBase
-            var baseType = typeof(CharacterCreationContentBase);
-            var inheritingTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => {
-                    try
-                    {
-                        return assembly.GetTypes();
-                    }
-                    catch (ReflectionTypeLoadException e)
-                    {
-                        return e.Types.Where(t => t != null);
-                    }
-                    catch
-                    {
-                        return Type.EmptyTypes;
-                    }
-                })
-                .Where(type => type != null && baseType.IsAssignableFrom(type) && type != baseType && !type.IsAbstract);
-
-            // Log the types we found (for debugging purposes)
-            foreach (var type in inheritingTypes)
+            // Temporarily set _furthestStageIndex to allow any stage
+            if(SubModule.startAsAnyone)
             {
-                Console.WriteLine($"Found CharacterCreationContentBase child: {type.FullName}");
-            }
-
-            // Create a method info that points to your patch method
-            var characterCreationStagesPostfix = typeof(CharacterCreationContentPatcher).GetMethod(nameof(CharacterCreationStagesPostfix));
-
-
-            // Apply the patch to each type
-            foreach (var type in inheritingTypes)
-            {
-                try
+                var furthestField = Traverse.Create(__instance).Field<int>("_furthestStageIndex");
+                if (stageIndex > furthestField.Value)
                 {
-                    var originalMethod = AccessTools.PropertyGetter(type, "CharacterCreationStages");
-                    if (originalMethod != null)
-                    {
-                        harmony.Patch(originalMethod, postfix: new HarmonyMethod(characterCreationStagesPostfix));
-                        Console.WriteLine($"Successfully patched {type.FullName}.CharacterCreationStages");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Could not find CharacterCreationStages property on {type.FullName}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error patching {type.FullName}: {ex.Message}");
+                    furthestField.Value = stageIndex;
                 }
             }
-
-            var onCharacterCreationFinalizedPrefix = typeof(CharacterCreationContentPatcher).GetMethod(nameof(OnCharacterCreationFinalizedPrefix));
-            foreach (var type in inheritingTypes)
-            {
-                try
-                {
-                    var originalMethod = AccessTools.Method(type, "OnCharacterCreationFinalized");
-                    if (originalMethod != null)
-                    {
-                        harmony.Patch(originalMethod, prefix: new HarmonyMethod(onCharacterCreationFinalizedPrefix));
-                        Console.WriteLine($"Successfully patched {type.FullName}.OnCharacterCreationFinalized");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Could not find OnCharacterCreationFinalized property on {type.FullName}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error patching {type.FullName}: {ex.Message}");
-                }
-            }
-        }
-
-        public static bool OnCharacterCreationFinalizedPrefix()
-        {
-
-            if (SAASubModule.startAsAnyone)
-            {
-
-                MapState mapState;
-                bool flag2 = (mapState = (GameStateManager.Current.ActiveState as MapState)) != null;
-                if (flag2)
-                {
-                    mapState.Handler.ResetCamera(true, true);
-                    mapState.Handler.TeleportCameraToMainParty();
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
-        
-        public static IEnumerable<Type> CharacterCreationStagesPostfix(IEnumerable<Type> __result)
-        {
-            // Create a new list with our custom stage first
-            var stages = new List<Type> { typeof(CharacterCreationStartAsAnyoneOrNewStage) };
-
-            // Add all the original stages
-            foreach (var stage in __result)
-            {
-                stages.Add(stage);
-            }
-
-            return stages;
+            
         }
     }
     
-
-
-    [HarmonyPatch(typeof(CharacterCreation), nameof(CharacterCreation.ApplyFinalEffects))]
+    [HarmonyPatch(typeof(CharacterCreationManager), nameof(CharacterCreationManager.ApplyFinalEffects))]
     public static class CharacterCreation_ApplyFinalEffects_Patch
     {
         // Postfix runs after the original ApplyFinalEffects finishes
-        static void Postfix(CharacterCreation __instance)
+        static bool Prefix(CharacterCreationManager __instance)
         {
             try
             {
-                if (SAASubModule.startAsAnyone)
+                if (SubModule.startAsAnyone)
                 {
                     setPlayerToLord(__instance);
+                    MapState mapState;
+                    if ((mapState = (GameStateManager.Current.ActiveState as MapState)) != null)
+                    {
+                        mapState.Handler.ResetCamera(true, true);
+                        mapState.Handler.TeleportCameraToMainParty();
+                    }
+                    return false;
+                } else
+                {
+                    return true;
                 }
                 
                 
@@ -229,11 +164,9 @@ namespace StartAsAnyone
                 throw e;
             }
         }
-
-
-        private static void setPlayerToLord(CharacterCreation cc)
+        private static void setPlayerToLord(CharacterCreationManager cc)
         {
-            Hero hero = SAASubModule.heroToBeSet;
+            Hero hero = SubModule.heroToBeSet;
             
             
             
@@ -270,9 +203,11 @@ namespace StartAsAnyone
                 if (Math.Abs(hero.GetRelation(fhero)) > 0) {  friendsOfHero.Add(fhero);}
             }
             
-            SAASubModule.heroBirthday = hero.BirthDay;
-            SAASubModule.heroInit = true;
-           
+            SubModule.heroBirthday = hero.BirthDay;
+            SubModule.heroWeight = hero.Weight;
+            SubModule.heroBuild = hero.Build;            
+            SubModule.heroStaticBodyProperties = hero.StaticBodyProperties;
+            SubModule.heroInit = true;
 
             Hero.MainHero.Culture = hero.Culture;
             Clan originalClan = Hero.MainHero.Clan;
@@ -314,28 +249,27 @@ namespace StartAsAnyone
                 mapState.Handler.TeleportCameraToMainParty();
             }
             MobileParty heroParty = MobileParty.MainParty;
-            float num = (254f + Campaign.AverageDistanceBetweenTwoFortifications * 4.54f) / 2f;
+
             foreach (Settlement settlement1 in Campaign.Current.Settlements)
             {
                 if (settlement1.IsVillage)
                 {
-                    float num2 = heroParty.Position2D.Distance(settlement1.Position2D);
-                    if (num2 < num)
+                    float num2 = heroParty.Position.Distance(settlement1.Position);
+                    
+                    foreach (ValueTuple<ItemObject, float> valueTuple in settlement1.Village.VillageType.Productions)
                     {
-                        foreach (ValueTuple<ItemObject, float> valueTuple in settlement1.Village.VillageType.Productions)
+                        ItemObject item = valueTuple.Item1;
+                        float item2 = valueTuple.Item2;
+                        float num3 = (item.ItemType == ItemObject.ItemTypeEnum.Horse && item.HorseComponent.IsRideable && !item.HorseComponent.IsPackAnimal) ? 7f : (item.IsFood ? 0.1f : 0f);
+                        float num4 = ((float)heroParty.MemberRoster.TotalManCount + 2f) / 200f;
+                        float num5 = 0.5f;
+                        int num6 = MBRandom.RoundRandomized(num3 * item2 * num5 * num4);
+                        if (num6 > 0)
                         {
-                            ItemObject item = valueTuple.Item1;
-                            float item2 = valueTuple.Item2;
-                            float num3 = (item.ItemType == ItemObject.ItemTypeEnum.Horse && item.HorseComponent.IsRideable && !item.HorseComponent.IsPackAnimal) ? 7f : (item.IsFood ? 0.1f : 0f);
-                            float num4 = ((float)heroParty.MemberRoster.TotalManCount + 2f) / 200f;
-                            float num5 = 1f - num2 / num;
-                            int num6 = MBRandom.RoundRandomized(num3 * item2 * num5 * num4);
-                            if (num6 > 0)
-                            {
-                                heroParty.ItemRoster.AddToCounts(item, num6);
-                            }
+                            heroParty.ItemRoster.AddToCounts(item, num6);
                         }
                     }
+                    
                 }
             }
             
@@ -366,56 +300,16 @@ namespace StartAsAnyone
             clan.Color = clan.Banner.GetSecondaryColor();
             clan.Color2 = clan.Banner.GetFirstIconColor();
             
-            clan.AlternativeColor = clan.Banner.GetFirstIconColor();
-            clan.AlternativeColor2 = clan.Banner.GetPrimaryColor();
+            //clan.color = clan.Banner.GetFirstIconColor();
+            //clan.AlternativeColor2 = clan.Banner.GetPrimaryColor();
 
             
 
         }
 
-
-
     }
 
-    [HarmonyPatch(typeof(CharacterCreationOptionsStageView), "AddCharacterEntity")]
-    public static class CharacterCreationOptionsStageView_AddCharacterEntity_Patch
-    {
-        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
-        {
-            // We're going to look for the sequence:
-            //    call   Hero::get_MainHero()
-            //    callvirt Character::get_CharacterObject()
-            //
-            // And replace it with:
-            //    ldsfld SAASubModule::heroToBeSet
-            //    callvirt Character::get_CharacterObject()
-            var codes = new List<CodeInstruction>(instructions);               
-            var getMainHero = AccessTools.PropertyGetter(typeof(Hero), nameof(Hero.MainHero));
-            var getCharObj = AccessTools.PropertyGetter(typeof(Hero), nameof(Hero.CharacterObject))
-                                ?? AccessTools.PropertyGetter(typeof(CharacterObject), ""); // adjust type if needed
-            var fieldHeroToBeSet = AccessTools.Field(typeof(SAASubModule), nameof(SAASubModule.heroToBeSet));
-            for (int i = 0; i < codes.Count - 1; i++)
-            {
-                // match: call Hero.get_MainHero()
-                if (codes[i].opcode == OpCodes.Call && codes[i].operand as MethodInfo == getMainHero)
-                {
-                    // and next: callvirt Hero.get_CharacterObject()
-                    if (codes[i + 1].opcode == OpCodes.Callvirt && codes[i + 1].operand as MethodInfo == getCharObj)
-                    {
-                        // replace both instructions:
-                        //   codes[i]   = ldsfld SAASubModule.heroToBeSet
-                        //   codes[i+1] = callvirt CharacterObject get_CharacterObject()
-                        codes[i] = new CodeInstruction(OpCodes.Ldsfld, fieldHeroToBeSet);
-                        codes[i + 1] = new CodeInstruction(OpCodes.Callvirt, getCharObj);
-                        i++; // skip ahead
-                    }
-                }
-            }            
-            return codes;
-        }
-    }
 
-    
 
     // Step 2: Patch the GetHeirApparents method using Harmony
     [HarmonyPatch(typeof(Clan), "GetHeirApparents")]
@@ -470,30 +364,16 @@ namespace StartAsAnyone
             removeMount.Invoke(__instance, null);
 
             // Add your custom condition
-            if (SAASubModule.startAsAnyone)
+            if (SubModule.startAsAnyone)
             {
                 CharacterCreationState ccs = getCharacterCreationState();
-                Type characterStateType = ccs.GetType();
+                ccs.CharacterCreationManager.GoToStage(0);
 
-                // Get the private field _stageIndex
-                FieldInfo stageIndexField = characterStateType.GetField("_stageIndex",
-                    BindingFlags.NonPublic | BindingFlags.Instance);
-
-                if (stageIndexField != null)
-                {
-                    // Set the new value
-                    stageIndexField.SetValue(ccs, 1);
-                }
-
-
-                ccs.PreviousStage();
+                
             }
             else
             {
-                // Access the private _negativeAction field using reflection
-                FieldInfo negativeActionField = AccessTools.Field(typeof(CharacterCreationOptionsStageView), "_negativeAction");
-                ControlCharacterCreationStage negativeAction = (ControlCharacterCreationStage)negativeActionField.GetValue(__instance);
-                negativeAction?.Invoke();
+                return true;
             }
 
             // Return false to skip the original method

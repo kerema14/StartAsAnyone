@@ -29,7 +29,8 @@
 
 																<ButtonWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  HorizontalAlignment="Center" VerticalAlignment="Top" MarginLeft="14" MarginTop="14" IsSelected="@IsSelected" Sprite="Encyclopedia\banner"  Command.Click="ExecuteSelectKingdom" UpdateChildrenStates="true" DoNotPassEventsToChildren="true">
 																	<Children>
-																		<MaskedTextureWidget DoNotAcceptEvents="true" DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  AdditionalArgs="@AdditionalArgs" ImageId="@Id"  ImageTypeCode="@ImageTypeCode"  Brush="Culture.Banner.Icon" Brush.GlobalColorFactor="0.65" Bursh.GlobalAlphaFactor="1.75" CircularClipEnabled="true" CircularClipRadius="162" CircularClipSmoothingRadius="1" />
+																		<MaskedTextureWidget DoNotAcceptEvents="true" DataSource="{ImageIdentifier}" Brush="Culture.Banner.Icon" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  Brush.GlobalColorFactor="0.65" Bursh.GlobalAlphaFactor="1.75" CircularClipEnabled="true" CircularClipRadius="162" CircularClipSmoothingRadius="1" AdditionalArgs="@AdditionalArgs" HideWhenNull="false" ImageId="@Id" TextureProviderName="@TextureProviderName"/>
+																		
 																		<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="185" SuggestedWidth="222" PositionXOffset="0" HorizontalAlignment="Center" MarginLeft="0" PositionYOffset="-10" Sprite="General\CharacterCreation\culture_flag_small_selection" IsVisible="@IsSelected" />
 																	</Children>
 																</ButtonWidget>
@@ -167,7 +168,7 @@
 																		<ButtonWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="14" IsSelected="@IsSelected" Brush="CharacterCreation.Culture.Banner.SoundBrush"  Command.Click="ExecuteSelectHero" UpdateChildrenStates="true" DoNotPassEventsToChildren="true">
 																			<Children>
 																				
-																				<ImageIdentifierWidget DoNotAcceptEvents="true" DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  AdditionalArgs="@AdditionalArgs" ImageId="@Id"  ImageTypeCode="@ImageTypeCode"  Brush="Encyclopedia.SubPage.Element" CircularClipEnabled="true" CircularClipRadius="88" CircularClipSmoothingRadius="1" />
+																				<ImageIdentifierWidget DoNotAcceptEvents="true" DataSource="{ImageIdentifier}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName"  Brush="Encyclopedia.SubPage.Element" CircularClipEnabled="true" CircularClipRadius="88" CircularClipSmoothingRadius="1" />
 																				<Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="185" SuggestedWidth="222" PositionXOffset="0" HorizontalAlignment="Center" MarginLeft="0" PositionYOffset="-10" Sprite="General\CharacterCreation\culture_flag_small_selection" IsVisible="@IsSelected" />
 																				
 																			</Children>
@@ -217,7 +218,7 @@
 														<Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Top" HorizontalAlignment="Center">
 															<Children>
 																
-																<ImageIdentifierWidget DoNotAcceptEvents="true" DataSource="{ImageIdentifier}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="350" SuggestedHeight="230" VerticalAlignment="Top" HorizontalAlignment="Center" AdditionalArgs="@AdditionalArgs" ImageId="@Id"  ImageTypeCode="@ImageTypeCode" />	
+																<ImageIdentifierWidget DoNotAcceptEvents="true" DataSource="{ImageIdentifier}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="350" SuggestedHeight="230" VerticalAlignment="Top" HorizontalAlignment="Center" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />	
 															</Children>
 														</Widget>
 													</Children>

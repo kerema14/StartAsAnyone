@@ -3,15 +3,18 @@ using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.Encyclopedia;
 using TaleWorlds.CampaignSystem.LogEntries;
+using TaleWorlds.CampaignSystem.MapEvents;
 using TaleWorlds.CampaignSystem.Party;
 using TaleWorlds.CampaignSystem.Settlements;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Items;
 using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Pages;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
+using TaleWorlds.MountAndBlade;
 
 namespace StartAsAnyone
 {
@@ -91,19 +94,26 @@ namespace StartAsAnyone
             int num = 0;
             float num2 = 0f;
             EncyclopediaPage pageOf = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Hero));
-            foreach (Hero hero in this._faction.Lords)
+            foreach (Hero hero in this._faction.AliveLords)
             {
                 if (pageOf.IsValidEncyclopediaItem(hero))
                 {
                     num += hero.Gold;
                 }
             }
-            this.Banner = new ImageIdentifierVM(BannerCode.CreateFrom(this._faction.Banner), true);
+            foreach (Hero hero in this._faction.DeadLords)
+            {
+                if (pageOf.IsValidEncyclopediaItem(hero))
+                {
+                    num += hero.Gold;
+                }
+            }
+            this.Banner = new BannerImageIdentifierVM(this._faction.Banner, true);
             foreach (MobileParty mobileParty in MobileParty.AllLordParties)
             {
                 if (mobileParty.MapFaction == this._faction && !mobileParty.IsDisbanding)
                 {
-                    num2 += mobileParty.Party.TotalStrength;
+                    num2 += mobileParty.Party.GetCustomStrength(BattleSideEnum.Attacker, MapEvent.PowerCalculationContext.PlainBattle);
                 }
             }
             this.ProsperityText = num.ToString();
@@ -165,19 +175,26 @@ namespace StartAsAnyone
             int num = 0;
             float num2 = 0f;
             EncyclopediaPage pageOf = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Hero));
-            foreach (Hero hero in this._clan.Lords)
+            foreach (Hero hero in this._clan.AliveLords)
             {
                 if (pageOf.IsValidEncyclopediaItem(hero))
                 {
                     num += hero.Gold;
                 }
             }
-            this.Banner = new ImageIdentifierVM(BannerCode.CreateFrom(this._clan.Banner), true);
+            foreach (Hero hero in this._clan.DeadLords)
+            {
+                if (pageOf.IsValidEncyclopediaItem(hero))
+                {
+                    num += hero.Gold;
+                }
+            }
+            this.Banner = new BannerImageIdentifierVM(this._clan.Banner, true); 
             foreach (MobileParty mobileParty in MobileParty.AllLordParties)
             {
                 if (mobileParty.MapFaction == this._clan && !mobileParty.IsDisbanding)
                 {
-                    num2 += mobileParty.Party.TotalStrength;
+                    num2 += mobileParty.Party.GetCustomStrength(BattleSideEnum.Attacker,MapEvent.PowerCalculationContext.PlainBattle);
                 }
             }
             this.ProsperityText = num.ToString();
@@ -332,7 +349,7 @@ namespace StartAsAnyone
         // (get) Token: 0x06001228 RID: 4648 RVA: 0x00047B92 File Offset: 0x00045D92
         // (set) Token: 0x06001229 RID: 4649 RVA: 0x00047B9A File Offset: 0x00045D9A
         [DataSourceProperty]
-        public ImageIdentifierVM Banner
+        public BannerImageIdentifierVM Banner
         {
             get
             {
@@ -343,7 +360,7 @@ namespace StartAsAnyone
                 if (value != this._banner)
                 {
                     this._banner = value;
-                    base.OnPropertyChangedWithValue<ImageIdentifierVM>(value, "Banner");
+                    base.OnPropertyChangedWithValue<BannerImageIdentifierVM>(value, "Banner");
                 }
             }
         }
@@ -629,7 +646,7 @@ namespace StartAsAnyone
         private HeroVM _leader;
 
 
-        private ImageIdentifierVM _banner;
+        private BannerImageIdentifierVM _banner;
 
 
         private string _membersText;

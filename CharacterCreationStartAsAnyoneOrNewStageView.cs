@@ -23,17 +23,17 @@ namespace StartAsAnyone
     [CharacterCreationStageView(typeof(CharacterCreationStartAsAnyoneOrNewStage))]
     public class CharacterCreationStartAsAnyoneOrNewStageView : CharacterCreationStageViewBase
     {
-        private readonly IGauntletMovie _movie;
+        private readonly GauntletMovieIdentifier _movie;
         private GauntletLayer GauntletLayer;
         private CharacterCreationStartAsAnyoneOrNewStageVM _dataSource;
         private SpriteCategory _characterCreationCategory;
         private SpriteCategory _espriteCategory;
-        private readonly CharacterCreation _characterCreation;
+        private readonly CharacterCreationManager _characterCreationManager;
         private EscapeMenuVM _escapeMenuDatasource;
-        private IGauntletMovie _escapeMenuMovie;
+        private GauntletMovieIdentifier _escapeMenuMovie;
 
         public CharacterCreationStartAsAnyoneOrNewStageView(
-            CharacterCreation characterCreation,
+            CharacterCreationManager characterCreationManager,
             ControlCharacterCreationStage affirmativeAction,
             TextObject affirmativeActionText,
             ControlCharacterCreationStage negativeAction,
@@ -51,8 +51,8 @@ namespace StartAsAnyone
                 getFurthestIndexAction,
                 goToIndexAction)
         {
-            this._characterCreation = characterCreation;
-            this.GauntletLayer = new GauntletLayer(1, "GauntletLayer", true)
+            this._characterCreationManager = characterCreationManager;
+            this.GauntletLayer = new GauntletLayer("CharacterCreationStartAsAnyone",1, true)
             {
                 IsFocusLayer = true
             };
@@ -60,7 +60,7 @@ namespace StartAsAnyone
             this.GauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
             ScreenManager.TrySetFocus(this.GauntletLayer);
             this._dataSource = new CharacterCreationStartAsAnyoneOrNewStageVM(
-                this._characterCreation,
+                this._characterCreationManager,
                 new Action(this.NextStage),
                 affirmativeActionText,
                 new Action(this.PreviousStage),
@@ -77,7 +77,7 @@ namespace StartAsAnyone
             
             SpriteData spriteData = UIResourceManager.SpriteData;
             TwoDimensionEngineResourceContext resourceContext = UIResourceManager.ResourceContext;
-            ResourceDepot uiresourceDepot = UIResourceManager.UIResourceDepot;
+            ResourceDepot uiresourceDepot = UIResourceManager.ResourceDepot;
             this._characterCreationCategory = spriteData.SpriteCategories["ui_charactercreation"];
             this._characterCreationCategory.Load(resourceContext, uiresourceDepot);
             this._espriteCategory = spriteData.SpriteCategories["ui_encyclopedia"];

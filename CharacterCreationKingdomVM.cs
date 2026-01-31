@@ -1,6 +1,7 @@
 ﻿using System;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -24,7 +25,7 @@ namespace StartAsAnyone
             this.KingdomColor2 = Color.FromUint((kingdom != null) ? kingdom.Color2 : Color.Black.ToUnsignedInteger());
             this.RulerName = ((kingdom != null && kingdom.Leader != null) ? kingdom.Leader.Name.ToString() : "");
             this.Banner = (kingdom?.Banner);
-            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(kingdom.Banner), true);
+            this.ImageIdentifier = new BannerImageIdentifierVM(this.Banner, true);//new ImageIdentifierVM(BannerCode.CreateFrom(kingdom.Banner), true);
             RefreshValues();
         }
         public CharacterCreationKingdomVM(Action<CharacterCreationKingdomVM> onSelection)
@@ -33,7 +34,7 @@ namespace StartAsAnyone
             this.Name = new TextObject("{=zxdITReik}Non-kingdom clans").ToString();
             this.RulerName = "?";
             this.Banner = Banner.CreateRandomBanner();
-            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(Banner), true);
+            this.ImageIdentifier = new BannerImageIdentifierVM(this.Banner, true);
             RefreshValues();
         }
         public CharacterCreationKingdomVM(Clan clan, Action<CharacterCreationKingdomVM> onSelection)
@@ -43,7 +44,7 @@ namespace StartAsAnyone
             this.Name = clan.Name.ToString();
             this.RulerName = (clan.Leader != null) ? clan.Leader.Name.ToString() : "";
             this.Banner = clan.Banner;
-            this.ImageIdentifier = new ImageIdentifierVM(BannerCode.CreateFrom(clan.Banner), true);
+            this.ImageIdentifier = new BannerImageIdentifierVM(clan.Banner, true);
             RefreshValues();
         }
 
@@ -167,7 +168,7 @@ namespace StartAsAnyone
 
         // Banner property
         private Banner _banner;
-        private ImageIdentifierVM _imageIdentifier;
+        private BannerImageIdentifierVM _imageIdentifier;
 
         [DataSourceProperty]
         public Banner Banner
@@ -186,7 +187,7 @@ namespace StartAsAnyone
             }
         }
         [DataSourceProperty]
-        public ImageIdentifierVM ImageIdentifier
+        public BannerImageIdentifierVM ImageIdentifier
         {
             get
             {

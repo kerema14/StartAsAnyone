@@ -3,6 +3,7 @@ using System.Security.Policy;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.Core;
+using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -20,14 +21,14 @@ namespace StartAsAnyone
             this.Hero = hero;
             if (hero.Clan.Kingdom == null)
             {
-                this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
+                this.ImageIdentifier = new CharacterImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject)); //new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
             }
             else if (hero != null && hero.CharacterObject!=null)
             {
                 //CharacterCode characterCode = CampaignUIHelper.GetCharacterCode(hero.CharacterObject, useCivilian);
-                this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
-                this.ClanBanner = new ImageIdentifierVM(hero.ClanBanner);
-                this.ClanBanner_9 = new ImageIdentifierVM(BannerCode.CreateFrom(hero.ClanBanner), true);
+                this.ImageIdentifier = new CharacterImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
+                this.ClanBanner = new BannerImageIdentifierVM(hero.ClanBanner);
+                this.ClanBanner_9 = new BannerImageIdentifierVM(hero.ClanBanner, true);
                 //this.Relation = HeroVM.GetRelation(hero);
                 this.IsDead = !hero.IsAlive;
                 TextObject textObject;
@@ -44,9 +45,9 @@ namespace StartAsAnyone
             }
             else
             {
-                this.ImageIdentifier = new ImageIdentifierVM(ImageIdentifierType.Null);
-                this.ClanBanner = new ImageIdentifierVM(ImageIdentifierType.Null);
-                this.ClanBanner_9 = new ImageIdentifierVM(ImageIdentifierType.Null);
+                this.ImageIdentifier = new CharacterImageIdentifierVM(CharacterCode.CreateEmpty());
+                this.ClanBanner = new BannerImageIdentifierVM(Banner.CreateRandomClanBanner());
+                this.ClanBanner_9 = new BannerImageIdentifierVM(Banner.CreateRandomClanBanner(),true);
                 this.Relation = 0;
                 this.NameText = "";
                 this.HeroID = "";
@@ -67,9 +68,9 @@ namespace StartAsAnyone
             {
                 //CharacterCode characterCode = CampaignUIHelper.GetCharacterCode(hero.CharacterObject, useCivilian);
 
-                this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
-                this.ClanBanner = new ImageIdentifierVM(hero.ClanBanner);
-                this.ClanBanner_9 = new ImageIdentifierVM(BannerCode.CreateFrom(hero.ClanBanner), true);
+                this.ImageIdentifier = new CharacterImageIdentifierVM(CharacterCode.CreateFrom(hero.CharacterObject));
+                this.ClanBanner = new BannerImageIdentifierVM(hero.ClanBanner);
+                this.ClanBanner_9 = new BannerImageIdentifierVM(hero.ClanBanner, true);
                 this.Relation = HeroVM.GetRelation(hero);
                 this.IsDead = !hero.IsAlive;
                 TextObject textObject;
@@ -85,9 +86,9 @@ namespace StartAsAnyone
             }
             else
             {
-                this.ImageIdentifier = new ImageIdentifierVM(ImageIdentifierType.Null);
-                this.ClanBanner = new ImageIdentifierVM(ImageIdentifierType.Null);
-                this.ClanBanner_9 = new ImageIdentifierVM(ImageIdentifierType.Null);
+                this.ImageIdentifier = new CharacterImageIdentifierVM(CharacterCode.CreateEmpty());
+                this.ClanBanner = new BannerImageIdentifierVM(Banner.CreateRandomClanBanner());
+                this.ClanBanner_9 = new BannerImageIdentifierVM(Banner.CreateRandomClanBanner(),true);
                 this.Relation = 0;
                 this.NameText = "";
                 this.HeroID = "";
@@ -129,7 +130,7 @@ namespace StartAsAnyone
             if (this.Hero != null)
             {
                 this.NameText = this.Hero.Name.ToString();
-                this.ImageIdentifier = new ImageIdentifierVM(CharacterCode.CreateFrom(this.Hero.CharacterObject));
+                this.ImageIdentifier = new CharacterImageIdentifierVM(CharacterCode.CreateFrom(this.Hero.CharacterObject));
                 
             }
         }
@@ -280,9 +281,9 @@ namespace StartAsAnyone
         }
 
         // Image identifier property
-        private ImageIdentifierVM _imageIdentifier;
+        private CharacterImageIdentifierVM _imageIdentifier;
         [DataSourceProperty]
-        public ImageIdentifierVM ImageIdentifier
+        public CharacterImageIdentifierVM ImageIdentifier
         {
             get
             {
@@ -293,15 +294,15 @@ namespace StartAsAnyone
                 if (value != this._imageIdentifier)
                 {
                     this._imageIdentifier = value;
-                    base.OnPropertyChangedWithValue<ImageIdentifierVM>(value, "ImageIdentifier");
+                    base.OnPropertyChangedWithValue<CharacterImageIdentifierVM>(value, "ImageIdentifier");
                 }
             }
         }
 
         // Clan banner properties
-        private ImageIdentifierVM _clanBanner;
+        private BannerImageIdentifierVM _clanBanner;
         [DataSourceProperty]
-        public ImageIdentifierVM ClanBanner
+        public BannerImageIdentifierVM ClanBanner
         {
             get
             {
@@ -312,14 +313,14 @@ namespace StartAsAnyone
                 if (value != this._clanBanner)
                 {
                     this._clanBanner = value;
-                    base.OnPropertyChangedWithValue<ImageIdentifierVM>(value, "ClanBanner");
+                    base.OnPropertyChangedWithValue<BannerImageIdentifierVM>(value, "ClanBanner");
                 }
             }
         }
 
-        private ImageIdentifierVM _clanBanner_9;
+        private BannerImageIdentifierVM _clanBanner_9;
         [DataSourceProperty]
-        public ImageIdentifierVM ClanBanner_9
+        public BannerImageIdentifierVM ClanBanner_9
         {
             get
             {
@@ -330,7 +331,7 @@ namespace StartAsAnyone
                 if (value != this._clanBanner_9)
                 {
                     this._clanBanner_9 = value;
-                    base.OnPropertyChangedWithValue<ImageIdentifierVM>(value, "ClanBanner_9");
+                    base.OnPropertyChangedWithValue<BannerImageIdentifierVM>(value, "ClanBanner_9");
                 }
             }
         }
