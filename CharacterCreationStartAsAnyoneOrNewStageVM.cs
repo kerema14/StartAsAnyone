@@ -117,7 +117,7 @@ namespace StartAsAnyone
             this.SelectionStageText = new TextObject("{=KKt69IHkk}Select a kingdom to choose your character from.").ToString();
             
             isStoryMode = Game.Current.GameType is CampaignStoryMode;
-            InformationManager.DisplayMessage(new InformationMessage("Game type is " + Game.Current.GameType.ToString() + isStoryMode.ToString()));
+            //InformationManager.DisplayMessage(new InformationMessage("Game type is " + Game.Current.GameType.ToString() + isStoryMode.ToString()));
             TextObject empty = TextObject.GetEmpty();
             TextObject storyModeDisabledText = new TextObject("{=IX1nIsFTe}This option is disabled for story mode, play SandBox mode");
             this.StoryModeDisabledHint = new HintViewModel((isStoryMode) ? storyModeDisabledText : empty, null);
