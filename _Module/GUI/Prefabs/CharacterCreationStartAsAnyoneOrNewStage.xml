@@ -50,9 +50,9 @@
 								</Widget>
 								<Widget Id="InnerPanelRight" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!InnerPanelRight.Width" HorizontalAlignment="Right"  VerticalAlignment="Center">
 									<Children>
-										<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalBottomToTop">
+										<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalTopToBottom">
 											<Children>
-												<ListPanel DataSource="{KingdomInfo}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="25"  StackLayout.LayoutMethod="VerticalBottomToTop">
+												<ListPanel DataSource="{KingdomInfo}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="25"  StackLayout.LayoutMethod="VerticalTopToBottom">
 													<Children>
 
 														<!--Kingdom Name-->
@@ -74,7 +74,7 @@
 																				<!--Leader, Members, Allies, Enemies, Settlements-->
 																				<Widget HeightSizePolicy ="CoverChildren" WidthSizePolicy="Fixed" SuggestedWidth="600" DoNotAcceptEvents="true" >
 																					<Children>
-																						<ListPanel HeightSizePolicy ="CoverChildren" DataSource="{KingdomInfo}" WidthSizePolicy="StretchToParent" StackLayout.LayoutMethod = "VerticalBottomToTop" DoNotAcceptEvents="true">
+																						<ListPanel HeightSizePolicy ="CoverChildren" DataSource="{KingdomInfo}" WidthSizePolicy="StretchToParent" StackLayout.LayoutMethod = "VerticalTopToBottom" DoNotAcceptEvents="true">
 																							<Children>
 																								<!--Kingdom Info Text-->
 																								<RichTextWidget HeightSizePolicy="CoverChildren" WidthSizePolicy="StretchToParent" Brush="Encyclopedia.SubPage.Info.Text" Text="@InformationText" MarginTop="25" MarginLeft="5" MarginRight="80"/>
@@ -162,7 +162,7 @@
 													<Children>
 														<NavigatableGridWidget Id="Grid" DataSource="{Heroes}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" DefaultCellWidth="210" DefaultCellHeight="190" ColumnCount="3" HorizontalAlignment="Center" MinIndex="0" MaxIndex="200" >
 															<ItemTemplate>
-																<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Top" StackLayout.LayoutMethod="VerticalBottomToTop">
+																<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Top" StackLayout.LayoutMethod="VerticalTopToBottom">
 																	<Children>
 																		
 																		<ButtonWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="14" IsSelected="@IsSelected" Brush="CharacterCreation.Culture.Banner.SoundBrush"  Command.Click="ExecuteSelectHero" UpdateChildrenStates="true" DoNotPassEventsToChildren="true">
@@ -207,10 +207,10 @@
 								</Widget>
 								<Widget Id="InnerPanelRight" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!InnerPanelRight.Width" HorizontalAlignment="Right"  VerticalAlignment="Center">
 									<Children>
-										<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalBottomToTop">
+										<ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" StackLayout.LayoutMethod="VerticalTopToBottom">
 											<Children>
 												<!--Portrait and Name-->
-												<ListPanel DataSource="{CurrentSelectedHero}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="25"  StackLayout.LayoutMethod="VerticalBottomToTop">
+												<ListPanel DataSource="{CurrentSelectedHero}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="25"  StackLayout.LayoutMethod="VerticalTopToBottom">
 													<Children>
 														
 														<!--Hero Name-->
@@ -240,7 +240,7 @@
 																			<Widget HeightSizePolicy ="CoverChildren" WidthSizePolicy="StretchToParent" DoNotAcceptEvents="true">
 																			<Children>
 
-																				<ListPanel DataSource="{HeroInfo}" HeightSizePolicy ="CoverChildren" WidthSizePolicy="StretchToParent" StackLayout.LayoutMethod = "VerticalBottomToTop"  DoNotAcceptEvents="true">
+																				<ListPanel DataSource="{HeroInfo}" HeightSizePolicy ="CoverChildren" WidthSizePolicy="StretchToParent" StackLayout.LayoutMethod = "VerticalTopToBottom"  DoNotAcceptEvents="true">
 																				<Children>
 
 																					<!--Hero Info Text-->
@@ -272,7 +272,7 @@
 																								</ItemTemplate>
 																							</GridWidget>
 
-																							<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalBottomToTop" HorizontalAlignment="Right" VerticalAlignment="Center">
+																							<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom" HorizontalAlignment="Right" VerticalAlignment="Center">
 																								<Children>
 																									<TextWidget WidthSizePolicy = "CoverChildren" HeightSizePolicy = "CoverChildren" Text="@ClanText" Brush="Encyclopedia.Skill.Text" Brush.FontSize="20" HorizontalAlignment="Center" ClipContents="false"/>
 
@@ -389,7 +389,7 @@
 						<RichTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="576" SuggestedHeight="90" HorizontalAlignment="Right" MarginRight="15" MarginTop="100" Brush="Stage.Description.Text"  Text="@Description" />
 						<Widget Id="InnerPanel" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="573" SuggestedHeight="750" HorizontalAlignment="Center" VerticalAlignment="Center" PositionXOffset="23" PositionYOffset="37">
 							<Children>
-								<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginRight="15" StackLayout.LayoutMethod="VerticalBottomToTop">
+								<ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" MarginRight="15" StackLayout.LayoutMethod="VerticalTopToBottom">
 									<Children>
 
 										<Widget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren">
