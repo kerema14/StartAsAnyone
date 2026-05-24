@@ -49,5 +49,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Bannerlord.ReferenceAssemblies" Version="1.4.5.114927" />
+  </ItemGroup>
   
 </Project>
