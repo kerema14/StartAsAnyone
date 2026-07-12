@@ -14,7 +14,6 @@ using TaleWorlds.Core.ViewModelCollection.ImageIdentifiers;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
-using TaleWorlds.MountAndBlade;
 
 namespace StartAsAnyone
 {
@@ -121,7 +120,7 @@ namespace StartAsAnyone
             for (int i = Campaign.Current.LogEntryHistory.GameActionLogs.Count - 1; i >= 0; i--)
             {
                 IEncyclopediaLog encyclopediaLog;
-                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[i] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf<Kingdom>(this._faction))
+                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[i] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf(_faction))
                 {
                     this.History.Add(new EncyclopediaHistoryEventVM(encyclopediaLog));
                 }
@@ -202,7 +201,7 @@ namespace StartAsAnyone
             for (int i = Campaign.Current.LogEntryHistory.GameActionLogs.Count - 1; i >= 0; i--)
             {
                 IEncyclopediaLog encyclopediaLog;
-                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[i] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf<Clan>(this._clan))
+                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[i] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf(_clan))
                 {
                     this.History.Add(new EncyclopediaHistoryEventVM(encyclopediaLog));
                 }

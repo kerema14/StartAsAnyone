@@ -2,7 +2,7 @@
 
 A Mount & Blade II: Bannerlord mod that allows players to begin their adventure as any existing lord in the game.
 
-![Bannerlord](https://img.shields.io/badge/Bannerlord-1.3.13-blue.svg)
+![Bannerlord](https://img.shields.io/badge/Bannerlord-1.4.7-blue.svg)
 ![Maintenance](https://img.shields.io/badge/Maintained-yes-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -20,7 +20,7 @@ Ever wanted to play as Rhagaea, Derthert, Corein, or any other established chara
 
 ## Requirements
 
-- Mount & Blade II: Bannerlord (1.3.13 or newer recommended)
+- Mount & Blade II: Bannerlord 1.4.7 (for older game versions, use the matching older release of the mod)
 - [Harmony](https://www.nexusmods.com/mountandblade2bannerlord/mods/2006) (required dependency)
 
 ## Installation
@@ -60,7 +60,7 @@ Ever wanted to play as Rhagaea, Derthert, Corein, or any other established chara
 ## Compatibility
 
 This mod has been tested with:
-- Bannerlord version 1.3.13
+- Bannerlord version 1.4.7
 
 
 ## Support

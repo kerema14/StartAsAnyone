@@ -7,3 +7,5 @@ obj/
 modpage/
 # Ignore launch settings file
 Properties/launchSettings.json
+
+.gauntletui-cache/

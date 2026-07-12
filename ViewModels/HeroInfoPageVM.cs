@@ -149,7 +149,7 @@ namespace StartAsAnyone
             for (int num2 = Campaign.Current.LogEntryHistory.GameActionLogs.Count - 1; num2 >= 0; num2--)
             {
                 IEncyclopediaLog encyclopediaLog;
-                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[num2] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf<Hero>(this._hero))
+                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[num2] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf(this._hero))
                 {
                     this.History.Add(new EncyclopediaHistoryEventVM(encyclopediaLog));
                 }
