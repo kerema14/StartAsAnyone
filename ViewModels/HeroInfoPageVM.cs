@@ -1,6 +1,8 @@
 ﻿using Helpers;
 using System.Collections.Generic;
+using System.Linq;
 using TaleWorlds.CampaignSystem;
+using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem.Encyclopedia;
 using TaleWorlds.CampaignSystem.LogEntries;
 using TaleWorlds.CampaignSystem.Settlements;
@@ -13,7 +15,8 @@ using TaleWorlds.Core.ViewModelCollection.Generic;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
-
+using System;
+using TaleWorlds.ObjectSystem;
 namespace StartAsAnyone
 {
     // Token: 0x020000B9 RID: 185
@@ -24,8 +27,8 @@ namespace StartAsAnyone
         public HeroInfoPageVM(Hero hero)
         {
             this._hero = hero;
-            this._relationAscendingComparer = new HeroRelationComparer(this._hero, true,true);
-            this._relationDescendingComparer = new HeroRelationComparer(this._hero, false,true);
+            this._relationAscendingComparer = new CharacterCreationHeroRelationComparer(this._hero, true,true);
+            this._relationDescendingComparer = new CharacterCreationHeroRelationComparer(this._hero, false,true);
             TextObject infoHiddenReasonText;
             this.IsInformationHidden = false;
             this._infoHiddenReasonText = new TextObject("{=zH5vlEtWS}You know this fella very well");
@@ -78,118 +81,145 @@ namespace StartAsAnyone
 
         // Token: 0x06001247 RID: 4679 RVA: 0x000480D4 File Offset: 0x000462D4
         public void Refresh()
-        {
+		{
+			
+			this.Settlements.Clear();
+			this.Dwellings.Clear();
+			this.Allies.Clear();
+			this.Enemies.Clear();
 
-            this.Settlements.Clear();
-            this.Dwellings.Clear();
-            this.Allies.Clear();
-            this.Enemies.Clear();
-            this.Companions.Clear();
-            this.Family.Clear();
-            this.History.Clear();
-            this.Skills.Clear();
-            this.Stats.Clear();
-            this.Traits.Clear();
-            this.NameText = this._hero.Name.ToString();
-            string text = GameTexts.FindText("str_missing_info_indicator", null).ToString();
-
-            this.HasNeutralClan = (this._hero.Clan == null);
-            if (!this.IsInformationHidden)
-            {
-
-                if (this._hero.Age >= (float)Campaign.Current.Models.AgeModel.HeroComesOfAge)
-                {
-                    for (int j = 0; j < Hero.AllAliveHeroes.Count; j++)
-                    {
-                        this.AddHeroToRelatedVMList(Hero.AllAliveHeroes[j]);
-                    }
-                    for (int k = 0; k < Hero.DeadOrDisabledHeroes.Count; k++)
-                    {
-                        this.AddHeroToRelatedVMList(Hero.DeadOrDisabledHeroes[k]);
-                    }
-
-                }
-                if (this._hero.Clan != null && this._hero == this._hero.Clan.Leader)
-                {
-                    for (int l = 0; l < this._hero.Clan.Companions.Count; l++)
-                    {
-                        Hero hero = this._hero.Clan.Companions[l];
-                        this.Companions.Add(new CharacterCreationHeroVM(hero, false));
-                    }
-                }
-                for (int m = 0; m < this._allRelatedHeroes.Count; m++)
-                {
-                    Hero hero2 = this._allRelatedHeroes[m];
-                    if (hero2 != null && hero2.CharacterObject != null)
-                    {
-                        this.Family.Add(new CharacterCreationHeroFamilyVM(hero2, this._hero));
-                    }
-                }
-                for (int n = 0; n < this._hero.OwnedWorkshops.Count; n++)
-                {
-                    this.Dwellings.Add(new EncyclopediaDwellingVM(this._hero.OwnedWorkshops[n].WorkshopType));
-                }
-                EncyclopediaPage pageOf2 = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Settlement));
-                for (int num = 0; num < Settlement.All.Count; num++)
-                {
-                    Settlement settlement = Settlement.All[num];
-                    if (settlement.OwnerClan != null && settlement.OwnerClan.Leader == this._hero && pageOf2.IsValidEncyclopediaItem(settlement))
-                    {
-                        this.Settlements.Add(new EncyclopediaSettlementVM(settlement));
-                    }
-                }
-            }
-            if (this._hero.Culture != null)
-            {
-                string definition = GameTexts.FindText("str_enc_sf_culture", null).ToString();
-                this.Stats.Add(new StringPairItemVM(definition, this._hero.Culture.Name.ToString(), null));
-            }
-            string definition2 = GameTexts.FindText("str_enc_sf_age", null).ToString();
-            this.Stats.Add(new StringPairItemVM(definition2, this.IsInformationHidden ? text : ((int)this._hero.Age).ToString(), null));
-            for (int num2 = Campaign.Current.LogEntryHistory.GameActionLogs.Count - 1; num2 >= 0; num2--)
-            {
-                IEncyclopediaLog encyclopediaLog;
-                if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[num2] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf(this._hero))
-                {
-                    this.History.Add(new EncyclopediaHistoryEventVM(encyclopediaLog));
-                }
-            }
-            if (!this._hero.IsNotable && !this._hero.IsWanderer)
-            {
-                Clan clan = this._hero.Clan;
-                if (((clan != null) ? clan.Kingdom : null) != null)
-                {
-                    this.KingdomRankText = CampaignUIHelper.GetHeroKingdomRank(this._hero);
-                }
-            }
-            string heroOccupationName = CampaignUIHelper.GetHeroOccupationName(this._hero);
-            if (!string.IsNullOrEmpty(heroOccupationName))
-            {
-                string definition3 = GameTexts.FindText("str_enc_sf_occupation", null).ToString();
-                this.Stats.Add(new StringPairItemVM(definition3, this.IsInformationHidden ? text : heroOccupationName, null));
-            }
-
-            this.LastSeenText = ((this._hero == Hero.MainHero) ? "" : HeroHelper.GetLastSeenText(this._hero).ToString());
-            
-            
-            {
-                this.HeroCharacter.FillFrom(this._hero.CharacterObject);
-                this.HeroCharacter.SetEquipment(EquipmentIndex.ArmorItemEndSlot, default(EquipmentElement));
-                this.HeroCharacter.SetEquipment(EquipmentIndex.HorseHarness, default(EquipmentElement));
-                this.HeroCharacter.SetEquipment(EquipmentIndex.NumAllWeaponSlots, default(EquipmentElement));
-            }
-            
-            this.IsCompanion = (this._hero.CompanionOf != null);
-            if (this.IsCompanion)
-            {
-                this.MasterText = GameTexts.FindText("str_companion_of", null).ToString();
-                Clan companionOf = this._hero.CompanionOf;
-                this.Master = new CharacterCreationHeroVM((companionOf != null) ? companionOf.Leader : null, false);
-            }
-            this.IsPregnant = this._hero.IsPregnant;
-            this.IsDead = !this._hero.IsAlive;
-
-        }
+			this.Companions.Clear();
+			this.Family.Clear();
+			this.History.Clear();
+			this.Skills.Clear();
+			this.Stats.Clear();
+			this.Traits.Clear();
+			this.NameText = this._hero.Name.ToString();
+			string text = GameTexts.FindText("str_missing_info_indicator", null).ToString();
+			EncyclopediaPage pageOf = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Hero));
+			this.HasNeutralClan = (this._hero.Clan == null);
+			if (!this.IsInformationHidden)
+			{
+				List<SkillObject> list = TaleWorlds.CampaignSystem.Extensions.Skills.All.ToList<SkillObject>();
+				list.Sort(CampaignUIHelper.SkillObjectComparerInstance);
+				foreach (SkillObject skill in list)
+				{
+					if (this._hero.GetSkillValue(skill) >= 50)
+					{
+						this.Skills.Add(new EncyclopediaSkillVM(skill, this._hero.GetSkillValue(skill)));
+					}
+				}
+				foreach (TraitObject traitObject in CampaignUIHelper.GetHeroTraits())
+				{
+					if (this._hero.GetTraitLevel(traitObject) != 0)
+					{
+						this.Traits.Add(new EncyclopediaTraitItemVM(traitObject, this._hero));
+					}
+				}
+				if (this._hero.Age >= (float)Campaign.Current.Models.AgeModel.HeroComesOfAge)
+				{
+					for (int i = 0; i < Hero.AllAliveHeroes.Count; i++)
+					{
+						this.AddHeroToRelatedVMList(Hero.AllAliveHeroes[i]);
+					}
+					for (int j = 0; j < Hero.DeadOrDisabledHeroes.Count; j++)
+					{
+						this.AddHeroToRelatedVMList(Hero.DeadOrDisabledHeroes[j]);
+					}
+					this.Allies.Sort(this._relationDescendingComparer);
+					this.Enemies.Sort(this._relationAscendingComparer);
+					while (this.Allies.Count > 13)
+					{
+						CharacterCreationHeroVM item = this.Allies[13];
+						this.Allies.Remove(item);
+						
+					}
+					while (this.Enemies.Count > 13)
+					{
+						CharacterCreationHeroVM item2 = this.Enemies[13];
+						this.Enemies.Remove(item2);
+						
+					}
+					
+				}
+				if (this._hero.Clan != null && this._hero == this._hero.Clan.Leader)
+				{
+					for (int k = 0; k < this._hero.Clan.Companions.Count; k++)
+					{
+						Hero hero = this._hero.Clan.Companions[k];
+						this.Companions.Add(new CharacterCreationHeroVM(hero, false));
+					}
+				}
+				for (int l = 0; l < this._allRelatedHeroes.Count; l++)
+				{
+					Hero hero2 = this._allRelatedHeroes[l];
+					if (hero2 != null && pageOf.IsValidEncyclopediaItem(hero2))
+					{
+						this.Family.Add(new CharacterCreationHeroFamilyVM(hero2, this._hero));
+					}
+				}
+				for (int m = 0; m < this._hero.OwnedWorkshops.Count; m++)
+				{
+					this.Dwellings.Add(new EncyclopediaDwellingVM(this._hero.OwnedWorkshops[m].WorkshopType));
+				}
+				EncyclopediaPage pageOf2 = Campaign.Current.EncyclopediaManager.GetPageOf(typeof(Settlement));
+				for (int n = 0; n < Settlement.All.Count; n++)
+				{
+					Settlement settlement = Settlement.All[n];
+					if (settlement.OwnerClan != null && settlement.OwnerClan.Leader == this._hero && pageOf2.IsValidEncyclopediaItem(settlement))
+					{
+						this.Settlements.Add(new EncyclopediaSettlementVM(settlement));
+					}
+				}
+			}
+			
+			if (this._hero.Culture != null)
+			{
+				string definition = GameTexts.FindText("str_enc_sf_culture", null).ToString();
+				this.Stats.Add(new StringPairItemVM(definition, this._hero.Culture.Name.ToString(), null));
+			}
+			string definition2 = GameTexts.FindText("str_enc_sf_age", null).ToString();
+			this.Stats.Add(new StringPairItemVM(definition2, this.IsInformationHidden ? text : ((int)this._hero.Age).ToString(), null));
+			MBObjectBase hero3 = this._hero;
+			for (int num = Campaign.Current.LogEntryHistory.GameActionLogs.Count - 1; num >= 0; num--)
+			{
+				IEncyclopediaLog encyclopediaLog;
+				if ((encyclopediaLog = (Campaign.Current.LogEntryHistory.GameActionLogs[num] as IEncyclopediaLog)) != null && encyclopediaLog.IsVisibleInEncyclopediaPageOf(hero3))
+				{
+					this.History.Add(new EncyclopediaHistoryEventVM(encyclopediaLog));
+				}
+			}
+			if (!this._hero.IsNotable && !this._hero.IsWanderer)
+			{
+				Clan clan = this._hero.Clan;
+				if (((clan != null) ? clan.Kingdom : null) != null)
+				{
+					this.KingdomRankText = CampaignUIHelper.GetHeroKingdomRank(this._hero);
+				}
+			}
+			string heroOccupationName = CampaignUIHelper.GetHeroOccupationName(this._hero);
+			if (!string.IsNullOrEmpty(heroOccupationName))
+			{
+				string definition3 = GameTexts.FindText("str_enc_sf_occupation", null).ToString();
+				this.Stats.Add(new StringPairItemVM(definition3, this.IsInformationHidden ? text : heroOccupationName, null));
+			}
+			
+			this.LastSeenText = ((this._hero == Hero.MainHero) ? "" : HeroHelper.GetLastSeenText(this._hero).ToString());
+			this.HeroCharacter.FillFrom(this._hero, -1, this._hero.IsNotable, true);
+			this.HeroCharacter.SetEquipment(EquipmentIndex.ArmorItemEndSlot, default(EquipmentElement));
+			this.HeroCharacter.SetEquipment(EquipmentIndex.HorseHarness, default(EquipmentElement));
+			this.HeroCharacter.SetEquipment(EquipmentIndex.NumAllWeaponSlots, default(EquipmentElement));
+			this.IsCompanion = (this._hero.CompanionOf != null);
+			if (this.IsCompanion)
+			{
+				this.MasterText = GameTexts.FindText("str_companion_of", null).ToString();
+				Clan companionOf = this._hero.CompanionOf;
+				this.Master = new CharacterCreationHeroVM((companionOf != null) ? companionOf.Leader : null, false);
+			}
+			this.IsPregnant = this._hero.IsPregnant;
+			this.IsDead = !this._hero.IsAlive;
+			
+		}
 
         // Token: 0x06001248 RID: 4680 RVA: 0x0004877C File Offset: 0x0004697C
         private void AddHeroToRelatedVMList(Hero hero)
@@ -1003,10 +1033,10 @@ namespace StartAsAnyone
         private List<Hero> _allRelatedHeroes;
 
         // Token: 0x04000880 RID: 2176
-        private readonly HeroRelationComparer _relationAscendingComparer;
+        private readonly CharacterCreationHeroRelationComparer _relationAscendingComparer;
 
         // Token: 0x04000881 RID: 2177
-        private readonly HeroRelationComparer _relationDescendingComparer;
+        private readonly CharacterCreationHeroRelationComparer _relationDescendingComparer;
 
         // Token: 0x04000882 RID: 2178
         private const int _friendLimit = 40;
