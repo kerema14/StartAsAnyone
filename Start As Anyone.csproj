@@ -33,6 +33,7 @@
   <PropertyGroup>
     <HarmonyVersion>2.4.2</HarmonyVersion>
     <HarmonyExtensionsVersion>3.2.0.77</HarmonyExtensionsVersion>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", ""))</RootNamespace>
     <!--
     <BUTRSharedVersion>3.0.0.135</BUTRSharedVersion>
     <BUTRModuleManagerVersion>5.0.198</BUTRModuleManagerVersion>
