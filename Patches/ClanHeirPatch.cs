@@ -30,9 +30,15 @@ namespace StartAsAnyone
             Dictionary<Hero, int> dictionary = new Dictionary<Hero, int>();
             int heroComesOfAge = Campaign.Current.Models.AgeModel.HeroComesOfAge;
             Hero leader = mainClan.Leader;
+            if (leader.IsAlive && leader.DeathMark == KillCharacterAction.KillCharacterActionDetail.None && !leader.IsNotSpawned && !leader.IsDisabled && !leader.IsWanderer && !leader.IsNotable && leader.Age >= (float)heroComesOfAge)
+            {
+                int value = Campaign.Current.Models.HeirSelectionCalculationModel.CalculateHeirSelectionPoint(leader, mainClan.Leader, ref leader);
+                dictionary.Add(leader, value);
+                return dictionary;
+            }
             foreach (Hero hero in mainClan.Heroes)
-            { //fix this for when clan leader dies when hero is not clan leader
-                if (hero == mainClan.Leader && hero.IsAlive && hero.DeathMark == KillCharacterAction.KillCharacterActionDetail.None && !hero.IsNotSpawned && !hero.IsDisabled && !hero.IsWanderer && !hero.IsNotable && hero.Age >= (float)heroComesOfAge)
+            {
+                if (hero != mainClan.Leader && hero.IsAlive && hero.DeathMark == KillCharacterAction.KillCharacterActionDetail.None && !hero.IsNotSpawned && !hero.IsDisabled && !hero.IsWanderer && !hero.IsNotable && hero.Age >= (float)heroComesOfAge)
                 {
                     int value = Campaign.Current.Models.HeirSelectionCalculationModel.CalculateHeirSelectionPoint(hero, mainClan.Leader, ref leader);
                     dictionary.Add(hero, value);
