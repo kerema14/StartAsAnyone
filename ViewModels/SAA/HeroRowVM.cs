@@ -35,7 +35,8 @@ namespace StartAsAnyone
             Portrait = new CharacterImageIdentifierVM(CharacterCode.CreateFrom(facts.Hero.CharacterObject));
             if (facts.Clan?.Banner != null)
             {
-                ClanBanner = new BannerImageIdentifierVM(facts.Clan.Banner);
+                
+                ClanBanner = new BannerImageIdentifierVM(facts.Clan.Banner, true);
             }
             NameText = facts.Name;
             RoleText = facts.RoleText;
