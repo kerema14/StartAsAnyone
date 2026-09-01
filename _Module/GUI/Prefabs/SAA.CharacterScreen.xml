@@ -1,0 +1,87 @@
+<Prefab>
+  <Constants>
+    <Constant Name="SAA.Rail.Width" Value="330" />
+    <!--The list only ever holds a name, a clan and one number, so width spent here is width
+        taken from the character render, which is the thing worth looking at.-->
+    <Constant Name="SAA.HeroDetail.Width" Value="780" />
+  </Constants>
+  <Window>
+    <!--DataSource: CharacterScreenVM-->
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+
+        <!--Left: search and filters-->
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.Rail.Width" HorizontalAlignment="Left" MarginLeft="50" MarginTop="10" MarginBottom="10">
+          <Children>
+            <SAA.FilterRail WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" />
+          </Children>
+        </Widget>
+
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="5" HorizontalAlignment="Left" MarginLeft="396" DoNotAcceptEvents="true" Sprite="list_divider_9" />
+
+        <!--Centre: result list-->
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="410" MarginRight="!SAA.HeroDetail.Width" MarginTop="10" MarginBottom="10">
+          <Children>
+
+            <!--Column header and sort control-->
+            <Widget Id="ListHeader" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="46" VerticalAlignment="Top">
+              <Children>
+                <TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="230" HorizontalAlignment="Left" MarginLeft="118" Brush="Encyclopedia.ItemList.NameTitle" Text="@NameColumnText" />
+                <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="20" StackLayout.LayoutMethod="HorizontalRightToLeft">
+                  <Children>
+                    <Standard.DropdownWithHorizontalControl Parameter.IsFlatDesign="true" Parameter.ShowNextAndPrevious="false" Parameter.IsCustomWidth="true" Parameter.CustomWidth="190" Parameter.SelectorDataSource="{SortSelection}" UpdateChildrenStates="true" GamepadNavigationIndex="0" />
+                    <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginRight="10" MarginTop="5" Brush="Standard.DropdownItem.Text" Text="@SortByLabel" />
+                  </Children>
+                </ListPanel>
+              </Children>
+            </Widget>
+
+            <!--Empty state-->
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="40" MarginRight="40" Brush="Encyclopedia.SubPage.Info.Text" Brush.TextHorizontalAlignment="Center" Text="@EmptyText" IsVisible="@IsEmpty" />
+
+            <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="52" MarginBottom="40" IsHidden="@IsEmpty">
+              <Children>
+
+                <NavigationScopeTargeter ScopeID="SAAHeroListScope" ScopeParent="..\HeroListClipRect\HeroRows" ScopeMovements="Vertical" HasCircularMovement="true" IsDefaultNavigationScope="true" />
+
+                <ScrollablePanel Id="HeroListScrollablePanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginRight="22" ClipRect="HeroListClipRect" InnerPanel="HeroListClipRect\HeroRows" VerticalScrollbar="..\HeroListScrollbar" MouseScrollAxis="Vertical" AutoHideScrollBars="true">
+                  <Children>
+                    <Widget Id="HeroListClipRect" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ClipContents="true">
+                      <Children>
+                        <NavigatableListPanel Id="HeroRows" DataSource="{Rows}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MinIndex="0" MaxIndex="4000" StackLayout.LayoutMethod="VerticalTopToBottom">
+                          <ItemTemplate>
+                            <SAA.HeroRow />
+                          </ItemTemplate>
+                        </NavigatableListPanel>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ScrollablePanel>
+
+                <ScrollbarWidget Id="HeroListScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Center" AlignmentAxis="Vertical" Handle="HeroListScrollbarHandle" MinValue="0" MaxValue="100">
+                  <Children>
+                    <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="2" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Bed" />
+                    <ImageWidget Id="HeroListScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="8" SuggestedHeight="50" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Handle" />
+                  </Children>
+                </ScrollbarWidget>
+
+              </Children>
+            </Widget>
+
+            <!--Result count-->
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="34" VerticalAlignment="Bottom" DoNotAcceptEvents="true" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="21" Text="@ResultCountText" />
+
+          </Children>
+        </Widget>
+
+        <!--Right: selected character-->
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.HeroDetail.Width" HorizontalAlignment="Right" MarginRight="40" Sprite="SPGeneral\GameMenu\panel_frame">
+          <Children>
+            <SAA.HeroDetail DataSource="{Detail}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="18" MarginBottom="18" />
+          </Children>
+        </Widget>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

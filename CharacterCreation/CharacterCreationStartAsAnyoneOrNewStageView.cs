@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SandBox.View.CharacterCreation;
 using SandBox.View.Missions;
-using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.CharacterCreationContent;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterCreation;
 using TaleWorlds.Core;
@@ -23,14 +22,15 @@ namespace StartAsAnyone
     [CharacterCreationStageView(typeof(CharacterCreationStartAsAnyoneOrNewStage))]
     public class CharacterCreationStartAsAnyoneOrNewStageView : CharacterCreationStageViewBase
     {
-        private readonly GauntletMovieIdentifier _movie;
-        private GauntletLayer GauntletLayer;
-        private CharacterCreationStartAsAnyoneOrNewStageVM _dataSource;
-        private SpriteCategory _characterCreationCategory;
-        private SpriteCategory _espriteCategory;
         private readonly CharacterCreationManager _characterCreationManager;
-        private EscapeMenuVM _escapeMenuDatasource;
-        private GauntletMovieIdentifier _escapeMenuMovie;
+
+        private GauntletLayer? _gauntletLayer;
+        private GauntletMovieIdentifier? _movie;
+        private StartAsAnyoneRootVM? _dataSource;
+        private SpriteCategory? _characterCreationCategory;
+        private SpriteCategory? _encyclopediaCategory;
+        private EscapeMenuVM? _escapeMenuDataSource;
+        private GauntletMovieIdentifier? _escapeMenuMovie;
 
         public CharacterCreationStartAsAnyoneOrNewStageView(
             CharacterCreationManager characterCreationManager,
@@ -51,125 +51,145 @@ namespace StartAsAnyone
                 getFurthestIndexAction,
                 goToIndexAction)
         {
-            this._characterCreationManager = characterCreationManager;
-            this.GauntletLayer = new GauntletLayer("CharacterCreationStartAsAnyone",1, true)
+            _characterCreationManager = characterCreationManager;
+
+            _gauntletLayer = new GauntletLayer("CharacterCreationStartAsAnyone", 1, true)
             {
                 IsFocusLayer = true
             };
-            this.GauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
-            this.GauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
-            ScreenManager.TrySetFocus(this.GauntletLayer);
-            this._dataSource = new CharacterCreationStartAsAnyoneOrNewStageVM(
-                this._characterCreationManager,
-                new Action(this.NextStage),
-                affirmativeActionText,
-                new Action(this.PreviousStage),
-                negativeActionText,
-                getCurrentStageIndexAction(),
-                getTotalStageCountAction(),
-                getFurthestIndexAction(),
-                new Action<int>(this.GoToIndex),
-                new Action<bool>(this.OnStartAsAnyoneSelected));
+            _gauntletLayer.InputRestrictions.SetInputRestrictions(true, InputUsageMask.All);
+            _gauntletLayer.Input.RegisterHotKeyCategory(HotKeyManager.GetCategory("GenericPanelGameKeyCategory"));
+            ScreenManager.TrySetFocus(_gauntletLayer);
 
-            this._movie = this.GauntletLayer.LoadMovie("CharacterCreationStartAsAnyoneOrNewStage", this._dataSource);
-            this._dataSource.SetCancelInputKey(HotKeyManager.GetCategory("GenericPanelGameKeyCategory").GetHotKey("Exit"));
-            this._dataSource.SetDoneInputKey(HotKeyManager.GetCategory("GenericPanelGameKeyCategory").GetHotKey("Confirm"));
-            
+            LoadSpriteCategories();
+
+            _dataSource = new StartAsAnyoneRootVM(
+                _characterCreationManager,
+                NextStage,
+                affirmativeActionText,
+                PreviousStage,
+                negativeActionText);
+
+            _movie = _gauntletLayer.LoadMovie("SAA.Root", _dataSource);
+
+            var panelKeys = HotKeyManager.GetCategory("GenericPanelGameKeyCategory");
+            _dataSource.SetCancelInputKey(panelKeys.GetHotKey("Exit"));
+            _dataSource.SetDoneInputKey(panelKeys.GetHotKey("Confirm"));
+
+#if SAA_CAPTURE
+            CaptureDirector.OnStageReady(_dataSource);
+#endif
+        }
+
+        private void LoadSpriteCategories()
+        {
             SpriteData spriteData = UIResourceManager.SpriteData;
             TwoDimensionEngineResourceContext resourceContext = UIResourceManager.ResourceContext;
-            ResourceDepot uiresourceDepot = UIResourceManager.ResourceDepot;
-            this._characterCreationCategory = spriteData.SpriteCategories["ui_charactercreation"];
-            this._characterCreationCategory.Load(resourceContext, uiresourceDepot);
-            this._espriteCategory = spriteData.SpriteCategories["ui_encyclopedia"];
-            this._espriteCategory.Load(resourceContext, uiresourceDepot);
-            this._dataSource.IsKingdomStage = true;
+            ResourceDepot resourceDepot = UIResourceManager.ResourceDepot;
 
-
-        }
-        public override void GoToIndex(int index)
-        {
-            this._goToIndexAction(index);
-        }
-        protected override void OnFinalize()
-        {
-            base.OnFinalize();
-            this.GauntletLayer = null;
-            CharacterCreationStartAsAnyoneOrNewStageVM dataSource = this._dataSource;
-            if (dataSource != null)
+            if (spriteData.SpriteCategories.TryGetValue("ui_charactercreation", out SpriteCategory characterCreation))
             {
-                dataSource.OnFinalize();
+                _characterCreationCategory = characterCreation;
+                _characterCreationCategory.Load(resourceContext, resourceDepot);
             }
-            this._dataSource = null;
-            this._characterCreationCategory.Unload();
-            this._espriteCategory?.Unload();
-        }
-
-        private void HandleLayerInput()
-        {
-            if (this.GauntletLayer.Input.IsHotKeyReleased("Exit"))
+            if (spriteData.SpriteCategories.TryGetValue("ui_encyclopedia", out SpriteCategory encyclopedia))
             {
-                UISoundsHelper.PlayUISound("event:/ui/panels/next");
-                this._dataSource.OnPreviousStage();
-                return;
-            }
-            if (this.GauntletLayer.Input.IsHotKeyReleased("Confirm") && this._dataSource.CanAdvance)
-            {
-                UISoundsHelper.PlayUISound("event:/ui/panels/next");
-                this._dataSource.OnNextStage();
+                _encyclopediaCategory = encyclopedia;
+                _encyclopediaCategory.Load(resourceContext, resourceDepot);
             }
         }
 
         public override void Tick(float dt)
         {
             base.Tick(dt);
-            if (this._dataSource.IsActive)
+            if (_gauntletLayer == null || _dataSource == null)
             {
-                base.HandleEscapeMenu(this, this.GauntletLayer);
-                this.HandleLayerInput();
+                return;
+            }
+            HandleEscapeMenu(this, _gauntletLayer);
+            HandleLayerInput();
+        }
+
+        private void HandleLayerInput()
+        {
+            if (_gauntletLayer == null || _dataSource == null)
+            {
+                return;
+            }
+            if (_gauntletLayer.Input.IsHotKeyReleased("Exit"))
+            {
+                UISoundsHelper.PlayUISound("event:/ui/panels/next");
+                _dataSource.ExecuteBack();
+                return;
+            }
+            if (_gauntletLayer.Input.IsHotKeyReleased("Confirm") && _dataSource.CanGoForward)
+            {
+                UISoundsHelper.PlayUISound("event:/ui/panels/next");
+                _dataSource.ExecuteForward();
             }
         }
 
-        public override void NextStage()
-        {
-            this._affirmativeAction();
-        }
+        public override void GoToIndex(int index) => _goToIndexAction(index);
 
-        private void OnStartAsAnyoneSelected(bool startAsAnyone)
-        {
-            // Handle the selection of starting as anyone or creating new character
-           
-            InformationManager.DisplayMessage(new InformationMessage("Wow you did it"));
-        }
+        public override void NextStage() => _affirmativeAction();
 
-        public override void PreviousStage()
-        {
-            Game.Current.GameStateManager.PopState(0);
-        }
+        public override void PreviousStage() => Game.Current.GameStateManager.PopState(0);
 
-        public override int GetVirtualStageCount()
-        {
-            return 1;
-        }
+        public override int GetVirtualStageCount() => 1;
 
         public override IEnumerable<ScreenLayer> GetLayers()
         {
-            return new List<ScreenLayer>
+            var layers = new List<ScreenLayer>();
+            if (_gauntletLayer != null)
             {
-                this.GauntletLayer
-            };
+                layers.Add(_gauntletLayer);
+            }
+            return layers;
         }
 
         public override void LoadEscapeMenuMovie()
         {
-            this._escapeMenuDatasource = new EscapeMenuVM(base.GetEscapeMenuItems(this), null);
-            this._escapeMenuMovie = this.GauntletLayer.LoadMovie("EscapeMenu", this._escapeMenuDatasource);
+            if (_gauntletLayer == null)
+            {
+                return;
+            }
+            _escapeMenuDataSource = new EscapeMenuVM(GetEscapeMenuItems(this), null);
+            _escapeMenuMovie = _gauntletLayer.LoadMovie("EscapeMenu", _escapeMenuDataSource);
         }
 
         public override void ReleaseEscapeMenuMovie()
         {
-            this.GauntletLayer.ReleaseMovie(this._escapeMenuMovie);
-            this._escapeMenuDatasource = null;
-            this._escapeMenuMovie = null;
+            if (_gauntletLayer != null && _escapeMenuMovie != null)
+            {
+                _gauntletLayer.ReleaseMovie(_escapeMenuMovie);
+            }
+            _escapeMenuDataSource = null;
+            _escapeMenuMovie = null;
+        }
+
+        protected override void OnFinalize()
+        {
+            base.OnFinalize();
+
+#if SAA_CAPTURE
+            CaptureDirector.OnStageClosed();
+#endif
+
+            if (_gauntletLayer != null && _movie != null)
+            {
+                _gauntletLayer.ReleaseMovie(_movie);
+            }
+            _movie = null;
+
+            _dataSource?.OnFinalize();
+            _dataSource = null;
+
+            _characterCreationCategory?.Unload();
+            _characterCreationCategory = null;
+            _encyclopediaCategory?.Unload();
+            _encyclopediaCategory = null;
+
+            _gauntletLayer = null;
         }
     }
-} 
+}

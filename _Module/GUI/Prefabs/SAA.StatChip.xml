@@ -1,0 +1,18 @@
+<Prefab>
+  <Parameters>
+    <Parameter Name="Icon" DefaultValue="General\Icons\Coin@2x" />
+    <Parameter Name="Value" DefaultValue="" />
+    <Parameter Name="IconSize" DefaultValue="30" />
+    <Parameter Name="FontSize" DefaultValue="25" />
+  </Parameters>
+  <Window>
+    <!--An icon and a number, sat over the character render. The icon is the label: writing
+        "Gold" next to a coin says the same thing twice and costs a line of width.-->
+    <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" MarginBottom="14" DoNotAcceptEvents="true" StackLayout.LayoutMethod="HorizontalLeftToRight">
+      <Children>
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="*IconSize" SuggestedHeight="*IconSize" VerticalAlignment="Center" Sprite="*Icon" />
+        <TextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="9" Brush="Encyclopedia.Stat.ValueText" Brush.FontSize="*FontSize" Text="*Value" />
+      </Children>
+    </ListPanel>
+  </Window>
+</Prefab>

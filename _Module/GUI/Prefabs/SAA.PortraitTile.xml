@@ -1,0 +1,32 @@
+<Prefab>
+  <Parameters>
+    <Parameter Name="ShowSubText" DefaultValue="true" />
+  </Parameters>
+  <Constants>
+    <Constant Name="SubText.Height" BooleanCheck="*ShowSubText" OnTrue="24" OnFalse="0" />
+    <!--Portrait frames are not square; take the real dimensions from the brush the way
+        the vanilla encyclopedia elements do rather than guessing at them.-->
+    <Constant Name="Portrait.Width" BrushName="Encyclopedia.SubPage.Element" BrushLayer="Default" BrushValueType="Width" />
+    <Constant Name="Portrait.Height" BrushName="Encyclopedia.SubPage.Element" BrushLayer="Default" BrushValueType="Height" />
+  </Constants>
+  <Window>
+    <!--DataSource: PortraitTileVM. Used for leaders, family, friends and rivals.-->
+    <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!Portrait.Width" SuggestedHeight="!Portrait.Height" HorizontalAlignment="Center" Brush="Encyclopedia.SubPage.Element" Command.Click="ExecuteSelect" IsSelected="@IsSelected" UpdateChildrenStates="true">
+      <Children>
+
+        <ImageIdentifierWidget DataSource="{Portrait}" DoNotAcceptEvents="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="3" MarginTop="3" MarginBottom="3" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
+
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="3" MarginTop="3" MarginBottom="3" HorizontalAlignment="Center" DoNotAcceptEvents="true" Sprite="Encyclopedia\portrait_baby" IsVisible="@IsChild" />
+
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="16" SuggestedHeight="14" HorizontalAlignment="Right" VerticalAlignment="Top" MarginTop="3" MarginRight="3" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" IsVisible="@IsLeader" />
+
+        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" VerticalAlignment="Bottom" PositionYOffset="34" DoNotAcceptEvents="true" Brush="Encyclopedia.SubPage.Element.Name.Text" Brush.TextVerticalAlignment="Top" Text="@NameText" />
+
+        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!SubText.Height" VerticalAlignment="Bottom" PositionYOffset="60" DoNotAcceptEvents="true" Brush="Encyclopedia.SubPage.Element.Name.Text" Brush.FontSize="17" Brush.FontColor="#C6AC8DFF" Text="@SubText" />
+
+        <HintWidget DataSource="{Hint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
+
+      </Children>
+    </ButtonWidget>
+  </Window>
+</Prefab>

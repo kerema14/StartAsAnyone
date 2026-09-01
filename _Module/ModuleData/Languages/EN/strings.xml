@@ -16,9 +16,66 @@
         <string id="zNtAJNcNF" text="No one" />
         <string id="rMvK6r195" text="Absolutely no one" /> <!-- practically not used -->
         <string id="nYUmgcTKc" text="Continue to select non kingdom clans" />
-		<string id="=OTxI8CVPp" text="Continue to select non kingdom clans" />
         <string id="CJFeItmnG" text="Create a New Character" />
         <string id="AHA80TyDA" text="Start as an existing Hero" />
         <string id="xWS4WB54I" text="Next" />
+        <string id="SAA_age_adult" text="Adult (30 to 50)" />
+        <string id="SAA_age_veteran" text="Veteran (50 and over)" />
+        <string id="SAA_age_young" text="Young (under 30)" />
+        <string id="SAA_begin" text="Begin" />
+        <string id="SAA_card_existing" text="Take over any living lord or lady in Calradia. Their clan, fiefs, army and relationships become yours." />
+        <string id="SAA_card_new" text="The standard beginning. Build your own backstory and rise from nothing." />
+        <string id="SAA_clan_tier" text="Clan tier" />
+        <string id="SAA_filter_age" text="Age" />
+        <string id="SAA_filter_renown" text="Renown" />
+        <string id="SAA_filter_role" text="Role" />
+        <string id="SAA_filter_sex" text="Sex" />
+        <string id="SAA_filter_skill" text="Best skill" />
+        <string id="SAA_filter_status" text="Status" />
+        <string id="SAA_gold" text="Gold" />
+        <string id="SAA_influence" text="Influence" />
+        <string id="SAA_level" text="Level" />
+        <string id="SAA_no_characters" text="No characters match your filters." />
+        <string id="SAA_no_factions" text="No factions are available here." />
+        <string id="SAA_party" text="Party" />
+        <string id="SAA_pick_faction" text="Select a faction to see its details." />
+        <string id="SAA_pick_hero" text="Select a character to see their details." />
+        <string id="SAA_playable" text="Playable characters" />
+        <string id="SAA_reset_filters" text="Reset filters" />
+        <string id="SAA_result_count" text="{SHOWN} of {TOTAL} characters" />
+        <string id="SAA_role_clan_leader" text="Clan leaders" />
+        <string id="SAA_role_noble" text="Nobles" />
+        <string id="SAA_role_ruler" text="Rulers" />
+        <string id="SAA_ruled_by" text="Ruled by {RULER}" />
+        <string id="SAA_search" text="Search by name..." />
+        <string id="SAA_sort_age" text="Age" />
+        <string id="SAA_sort_by" text="Sort by" />
+        <string id="SAA_sort_fiefs" text="Fiefs" />
+        <string id="SAA_sort_gold" text="Gold" />
+        <string id="SAA_sort_level" text="Level" />
+        <string id="SAA_sort_name" text="Name" />
+        <string id="SAA_sort_renown" text="Renown" />
+        <string id="SAA_sort_skill" text="Best skill" />
+        <string id="SAA_sort_tier" text="Clan tier" />
+        <string id="SAA_status_fief" text="Holds a fief" />
+        <string id="SAA_status_landless" text="Landless" />
+        <string id="SAA_status_married" text="Married" />
+        <string id="SAA_status_party" text="Leads a party" />
+        <string id="SAA_status_single" text="Unmarried" />
+        <string id="SAA_strength" text="Strength" />
+        <string id="SAA_sub_path" text="How do you want to enter the world of Calradia?" />
+        <string id="SAA_tab_kingdoms" text="Kingdoms" />
+        <string id="SAA_tab_minor" text="Minor factions" />
+        <string id="SAA_threshold" text="{VALUE} and above" />
+        <string id="SAA_title_character" text="Choose Your Character" />
+        <string id="SAA_title_faction" text="Choose a Faction" />
+        <string id="SAA_troops" text="{COUNT} troops" />
+        <string id="SAA_wealth" text="Wealth" />
+        <string id="SAA_female" text="Female" />
+        <string id="SAA_male" text="Male" />
+        <string id="SAA_minor_faction" text="Minor faction" />
+        <string id="SAA_renown" text="Renown" />
+        <string id="SAA_role_head" text="Clan leader" />
+        <string id="SAA_role_ruler_one" text="Ruler" />
     </strings>
 </base>

@@ -1,0 +1,74 @@
+<Prefab>
+  <Constants>
+    <Constant Name="SAA.FactionDetail.Width" Value="620" />
+  </Constants>
+  <Window>
+    <!--DataSource: FactionScreenVM-->
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+
+        <!--Left: tabs and banner grid-->
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="70" MarginRight="!SAA.FactionDetail.Width">
+          <Children>
+
+            <ListPanel Id="Tabs" WidthSizePolicy="CoverChildren" HeightSizePolicy="Fixed" SuggestedHeight="54" HorizontalAlignment="Left" VerticalAlignment="Top" StackLayout.LayoutMethod="HorizontalLeftToRight">
+              <Children>
+                <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="240" Brush="Header.Tab.Left" Command.Click="ExecuteSelectKingdomsTab" IsSelected="@IsKingdomsTab" UpdateChildrenStates="true" GamepadNavigationIndex="0">
+                  <Children>
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Clan.TabControl.Text" Text="@KingdomsTabText" />
+                  </Children>
+                </ButtonWidget>
+                <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="240" Brush="Header.Tab.Right" Command.Click="ExecuteSelectMinorFactionsTab" IsSelected="@IsMinorFactionsTab" UpdateChildrenStates="true" GamepadNavigationIndex="1">
+                  <Children>
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" HorizontalAlignment="Center" VerticalAlignment="Center" Brush="Clan.TabControl.Text" Text="@MinorFactionsTabText" />
+                  </Children>
+                </ButtonWidget>
+              </Children>
+            </ListPanel>
+
+            <!--Empty state-->
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" Brush="Encyclopedia.SubPage.Info.Text" Brush.TextHorizontalAlignment="Center" Text="@EmptyText" IsVisible="@IsEmpty" />
+
+            <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="70" IsHidden="@IsEmpty">
+              <Children>
+
+                <NavigationScopeTargeter ScopeID="SAAFactionGridScope" ScopeParent="..\FactionGridClipRect\FactionGrid" ScopeMovements="Horizontal" AlternateScopeMovements="Vertical" AlternateMovementStepSize="5" IsDefaultNavigationScope="true" />
+
+                <ScrollablePanel Id="FactionScrollablePanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginRight="20" ClipRect="FactionGridClipRect" InnerPanel="FactionGridClipRect\FactionGrid" VerticalScrollbar="..\FactionScrollbar" MouseScrollAxis="Vertical" AutoHideScrollBars="true">
+                  <Children>
+                    <Widget Id="FactionGridClipRect" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ClipContents="true">
+                      <Children>
+                        <NavigatableGridWidget Id="FactionGrid" DataSource="{VisibleFactions}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" DefaultCellWidth="214" DefaultCellHeight="286" ColumnCount="5" MinIndex="0" MaxIndex="400" AutoScrollTopOffset="35" AutoScrollBottomOffset="35">
+                          <ItemTemplate>
+                            <SAA.FactionTile />
+                          </ItemTemplate>
+                        </NavigatableGridWidget>
+                      </Children>
+                    </Widget>
+                  </Children>
+                </ScrollablePanel>
+
+                <ScrollbarWidget Id="FactionScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Center" AlignmentAxis="Vertical" Handle="FactionScrollbarHandle" MinValue="0" MaxValue="100">
+                  <Children>
+                    <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="2" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Bed" />
+                    <ImageWidget Id="FactionScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="8" SuggestedHeight="50" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Handle" />
+                  </Children>
+                </ScrollbarWidget>
+
+              </Children>
+            </Widget>
+
+          </Children>
+        </Widget>
+
+        <!--Right: selected faction detail-->
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.FactionDetail.Width" HorizontalAlignment="Right" MarginRight="40" Sprite="SPGeneral\GameMenu\panel_frame">
+          <Children>
+            <SAA.FactionDetail DataSource="{Detail}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="20" MarginBottom="20" />
+          </Children>
+        </Widget>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

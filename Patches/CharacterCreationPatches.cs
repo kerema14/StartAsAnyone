@@ -213,29 +213,23 @@ namespace StartAsAnyone
         {
             // Call the RemoveMount method from the original class
             MethodInfo removeMount = AccessTools.Method(typeof(CharacterCreationOptionsStageView), "RemoveMount");
-            removeMount.Invoke(__instance, null);
+            removeMount?.Invoke(__instance, null);
 
-            // Add your custom condition
-            if (SubModule.startAsAnyone)
-            {
-                CharacterCreationState ccs = getCharacterCreationState();
-                ccs.CharacterCreationManager.GoToStage(0);
-
-
-            }
-            else
+            if (!SubModule.startAsAnyone)
             {
                 return true;
             }
 
-            // Return false to skip the original method
-            return false;
-        }
-        private static CharacterCreationState getCharacterCreationState()
-        {
-            GameState gm = GameStateManager.Current.ActiveState;
-            CharacterCreationState characterCreationState = (gm.GetType().Equals(typeof(CharacterCreationState))) ? (CharacterCreationState)gm : null;
-            return characterCreationState;
+            // `as` rather than an exact type check: another mod may subclass the state.
+            if (GameStateManager.Current?.ActiveState is CharacterCreationState ccs
+                && ccs.CharacterCreationManager != null)
+            {
+                ccs.CharacterCreationManager.GoToStage(0);
+                return false;
+            }
+
+            // Could not reach our stage; let the original run so the player is not stuck.
+            return true;
         }
     }
 }

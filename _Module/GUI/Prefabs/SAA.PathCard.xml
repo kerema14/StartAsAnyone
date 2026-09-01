@@ -1,0 +1,31 @@
+<Prefab>
+  <Window>
+    <!--DataSource: PathCardVM-->
+    <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="460" SuggestedHeight="580" MarginLeft="25" MarginRight="25" VerticalAlignment="Center" Brush="FaceGen.Generic.Button" Brush.GlobalAlphaFactor="0.5" Command.Click="ExecuteSelect" IsSelected="@IsSelected" IsDisabled="@IsDisabled" UpdateChildrenStates="true" GamepadNavigationIndex="0">
+      <Children>
+
+        <!--Selection frame-->
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" MarginLeft="-6" MarginRight="-6" MarginTop="-6" MarginBottom="-6" Sprite="SelectionBorder@2x_9" Color="#EDBD71FF" IsVisible="@IsSelected" />
+
+        <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Top" DoNotAcceptEvents="true" StackLayout.LayoutMethod="VerticalTopToBottom">
+          <Children>
+
+            <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="190" SuggestedHeight="190" HorizontalAlignment="Center" MarginTop="55" Sprite="@IconSprite" />
+            
+
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="80" MarginTop="30" MarginLeft="25" MarginRight="25" Brush="Stage.Text" Brush.FontSize="34" Brush.TextHorizontalAlignment="Center" Text="@TitleText" />
+
+            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="320" SuggestedHeight="9" HorizontalAlignment="Center" MarginTop="5" DoNotAcceptEvents="true" Sprite="General\CharacterCreation\stone_divider_thin" />
+
+            <RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="20" MarginLeft="35" MarginRight="35" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="24" Brush.TextHorizontalAlignment="Center" Text="@DescriptionText" />
+
+          </Children>
+        </ListPanel>
+
+        <!--Reason this option is unavailable, if any-->
+        <HintWidget DataSource="{DisabledHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
+
+      </Children>
+    </ButtonWidget>
+  </Window>
+</Prefab>

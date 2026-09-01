@@ -1,0 +1,11 @@
+<Prefab>
+  <Window>
+    <!--DataSource: StringPairItemVM-->
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" DoNotAcceptEvents="true">
+      <Children>
+        <AutoHideRichTextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Left" VerticalAlignment="Center" Brush="Encyclopedia.Stat.DefinitionText" Text="@Definition" />
+        <AutoHideRichTextWidget WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Center" Brush="Encyclopedia.Stat.ValueText" Text="@Value" />
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

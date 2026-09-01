@@ -1,0 +1,52 @@
+<Prefab>
+  <Constants>
+    <Constant Name="SAA.Header.Height" Value="150" />
+    <Constant Name="SAA.Footer.Height" Value="100" />
+  </Constants>
+  <Window>
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000FF">
+      <Children>
+
+        <Standard.Background Parameter.SmokeColorFactor="1.3" Parameter.ParticleOpacity="0.8" IsHidden="false" />
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="382" VerticalAlignment="Bottom" DoNotAcceptEvents="true" Sprite="General\CharacterCreation\character_creation_background_gradient" />
+        <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="VerticalTopToBottom">
+          <Children>
+            <!--Header: title and subtitle, shared by all three screens-->
+            <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" SuggestedHeight="!SAA.Header.Height" VerticalAlignment="Top" DoNotAcceptEvents="true" StackLayout.LayoutMethod="VerticalTopToBottom">
+              <Children>
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="52" MarginTop="8" Brush="Stage.Title.Text" Brush.TextHorizontalAlignment="Center" Text="@ScreenTitle" />
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="25" Brush="Stage.Description.Text" Brush.TextHorizontalAlignment="Center" Brush.FontSize="26" Text="@ScreenSubtitle" />
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="900" SuggestedHeight="9" HorizontalAlignment="Center" MarginTop="8" DoNotAcceptEvents="true" Sprite="General\CharacterCreation\stone_divider_thin" />
+              </Children>
+            </ListPanel>
+
+            <!--Screen 1: path-->
+            <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="20" MarginBottom="!SAA.Footer.Height" IsVisible="@IsPathScreen">
+              <Children>
+                <SAA.PathScreen DataSource="{Path}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" />
+              </Children>
+            </Widget>
+
+            <!--Screen 2: faction-->
+            <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="20" MarginBottom="!SAA.Footer.Height" IsVisible="@IsFactionScreen">
+              <Children>
+                <SAA.FactionScreen DataSource="{Factions}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" />
+              </Children>
+            </Widget>
+
+            <!--Screen 3: character-->
+            <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="20" MarginBottom="!SAA.Footer.Height" IsVisible="@IsCharacterScreen">
+              <Children>
+                <SAA.CharacterScreen DataSource="{Characters}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" />
+              </Children>
+            </Widget>
+          </Children>
+        </ListPanel>
+        
+
+        <SAA.Footer />
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

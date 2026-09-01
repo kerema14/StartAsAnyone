@@ -1,0 +1,19 @@
+<Prefab>
+  <Window>
+    <!--DataSource: PathScreenVM-->
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+
+        <NavigationScopeTargeter ScopeID="SAAPathScope" ScopeParent="..\Cards" ScopeMovements="Horizontal" IsDefaultNavigationScope="true" />
+
+        <ListPanel Id="Cards" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" StackLayout.LayoutMethod="HorizontalLeftToRight">
+          <Children>
+            <SAA.PathCard DataSource="{ExistingHeroCard}" />
+            <SAA.PathCard DataSource="{NewCharacterCard}" />
+          </Children>
+        </ListPanel>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

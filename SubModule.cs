@@ -36,7 +36,19 @@ namespace StartAsAnyone
                 _harmony.PatchAll(Assembly.GetExecutingAssembly());
                 _isInitialized = true;
             }
+
+#if SAA_CAPTURE
+            CaptureDirector.Initialize();
+#endif
         }
+
+#if SAA_CAPTURE
+        protected override void OnBeforeInitialModuleScreenSetAsRoot()
+        {
+            base.OnBeforeInitialModuleScreenSetAsRoot();
+            CaptureDirector.OnMainMenuReady();
+        }
+#endif
         public override void OnNewGameCreated(Game game, object initializerObject)
         {
             base.OnNewGameCreated(game, initializerObject);
@@ -61,7 +73,9 @@ namespace StartAsAnyone
         protected override void OnApplicationTick(float dt)
         {
             base.OnApplicationTick(dt);
-
+#if SAA_CAPTURE
+            CaptureDirector.Tick();
+#endif
         }
         protected override void InitializeGameStarter(Game game, IGameStarter starterObject)
         {

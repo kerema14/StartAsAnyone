@@ -1,0 +1,17 @@
+<Prefab>
+  <Window>
+    <!--DataSource: FactionTileVM-->
+    <ButtonWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  HorizontalAlignment="Center" VerticalAlignment="Top" MarginLeft="14" MarginTop="14" IsSelected="@IsSelected" Sprite="Encyclopedia\banner"  Command.Click="ExecuteSelect" UpdateChildrenStates="true" DoNotPassEventsToChildren="true">
+      <Children>
+        
+        <MaskedTextureWidget DataSource="{Banner}"  DoNotAcceptEvents="true" Brush="Culture.Banner.Icon" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent"  Brush.GlobalColorFactor="0.65" CircularClipEnabled="true" CircularClipRadius="162" CircularClipSmoothingRadius="1" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName"/>
+        
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedHeight="185" SuggestedWidth="222" PositionXOffset="0" HorizontalAlignment="Center" MarginLeft="0" PositionYOffset="-10" Sprite="General\CharacterCreation\culture_flag_small_selection" IsVisible="@IsSelected" />
+        
+        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="34" VerticalAlignment="Bottom" MarginBottom="4" MarginLeft="6" MarginRight="6" Brush="Encyclopedia.SubPage.Element.Name.Text" Brush.FontSize="22" Brush.TextHorizontalAlignment="Center" Text="@NameText" />
+
+        <HintWidget DataSource="{Hint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
+      </Children>
+    </ButtonWidget>
+  </Window>
+</Prefab>

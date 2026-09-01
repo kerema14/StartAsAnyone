@@ -1,0 +1,77 @@
+<Prefab>
+  <Window>
+    <!--DataSource: FactionDetailVM-->
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+      <Children>
+
+        <!--Empty state-->
+        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginLeft="30" MarginRight="30" Brush="Encyclopedia.SubPage.Info.Text" Brush.TextHorizontalAlignment="Center" Text="@EmptyText" IsVisible="@IsEmpty" />
+
+        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsHidden="@IsEmpty">
+          <Children>
+
+            <!--Banner and name-->
+            <ListPanel Id="Header" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Top" DoNotAcceptEvents="true" StackLayout.LayoutMethod="VerticalTopToBottom">
+              <Children>
+                <MaskedTextureWidget DataSource="{Banner}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="180" HorizontalAlignment="Center" MarginTop="20" Brush="Kingdom.TornBanner.Big" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="56" MarginTop="10" MarginLeft="20" MarginRight="20" Brush="Encyclopedia.SubPage.Title.Text" Brush.FontSize="38" Brush.TextHorizontalAlignment="Center" Text="@NameText" />
+                <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="22" Brush.TextHorizontalAlignment="Center" Text="@DescriptorText" />
+                <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="420" SuggestedHeight="9" HorizontalAlignment="Center" MarginTop="10" DoNotAcceptEvents="true" Sprite="General\CharacterCreation\stone_divider_thin" />
+              </Children>
+            </ListPanel>
+
+            <!--Scrolling body-->
+            <ScrollablePanel Id="DetailScrollablePanel" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="372" MarginBottom="20" MarginLeft="30" MarginRight="30" ClipRect="DetailClipRect" InnerPanel="DetailClipRect\DetailList" VerticalScrollbar="..\DetailScrollbar" MouseScrollAxis="Vertical" AutoHideScrollBars="true">
+              <Children>
+                <Widget Id="DetailClipRect" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ClipContents="true">
+                  <Children>
+                    <ListPanel Id="DetailList" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom">
+                      <Children>
+
+                        <!--Ruler-->
+                        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" Brush="Encyclopedia.Skill.Text" Brush.FontSize="22" Brush.TextHorizontalAlignment="Center" Text="@LeaderText" IsVisible="@HasLeader" />
+                        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="6" MarginBottom="34" IsVisible="@HasLeader">
+                          <Children>
+                            <SAA.PortraitTile DataSource="{Leader}" />
+                          </Children>
+                        </Widget>
+
+                        <!--Numbers-->
+                        <ListPanel DataSource="{Stats}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="10" StackLayout.LayoutMethod="VerticalTopToBottom">
+                          <ItemTemplate>
+                            <SAA.StatLine />
+                          </ItemTemplate>
+                        </ListPanel>
+
+                        <!--Wars-->
+                        <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="30" MarginTop="20" Brush="Encyclopedia.Skill.Text" Brush.FontSize="22" Text="@WarsText" IsVisible="@HasWars" />
+                        <NavigatableGridWidget DataSource="{Wars}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" DefaultCellWidth="100" DefaultCellHeight="100" ColumnCount="5" HorizontalAlignment="Left" MarginTop="8" AutoScrollTopOffset="35" AutoScrollBottomOffset="35">
+                          <ItemTemplate>
+                            <EncyclopediaClanSubPageElement />
+                          </ItemTemplate>
+                        </NavigatableGridWidget>
+
+                        <!--Blurb-->
+                        <RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="24" MarginBottom="20" Brush="Encyclopedia.SubPage.Info.Text" Text="@InformationText" />
+
+                      </Children>
+                    </ListPanel>
+                  </Children>
+                </Widget>
+              </Children>
+            </ScrollablePanel>
+
+            <ScrollbarWidget Id="DetailScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="10" MarginTop="372" MarginBottom="20" AlignmentAxis="Vertical" Handle="DetailScrollbarHandle" MinValue="0" MaxValue="100">
+              <Children>
+                <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="2" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Bed" />
+                <ImageWidget Id="DetailScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="8" SuggestedHeight="50" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Handle" />
+              </Children>
+            </ScrollbarWidget>
+
+          </Children>
+        </Widget>
+
+      </Children>
+    </Widget>
+  </Window>
+</Prefab>

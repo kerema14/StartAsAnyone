@@ -10,3 +10,5 @@ Properties/launchSettings.json
 
 .gauntletui-cache/
 Start As Anyone.csproj.user
+# Screenshots produced by tools/saa-capture.ps1
+.saa-shots/

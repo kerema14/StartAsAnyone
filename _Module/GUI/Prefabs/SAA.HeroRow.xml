@@ -1,0 +1,40 @@
+<Prefab>
+  <Constants>
+    <!--Banner sizing lifted from GameMenuTournamentLeaderboard, which is the same job: one
+        small clan banner beside a hero's name in a list. Sizing it by hand cropped the
+        sigil, because the mask sprite decides the shape, not the rectangle.-->
+    <Constant Name="SAA.Banner.Width" BrushName="Flat.Tuple.Banner.Small" BrushLayer="Default" BrushValueType="Width" />
+    <Constant Name="SAA.Banner.Height" BrushName="Flat.Tuple.Banner.Small" BrushLayer="Default" BrushValueType="Height" />
+    <Constant Name="SAA.Row.Banner.Width" MultiplyResult="0.20" Value="!SAA.Banner.Width" />
+    <Constant Name="SAA.Row.Banner.Height" MultiplyResult="0.28" Value="!SAA.Banner.Height" />
+  </Constants>
+  <Window>
+    <!--DataSource: HeroRowVM-->
+    <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="54" Brush="Encyclopedia.ListButton" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" IsSelected="@IsSelected" IsHidden="@IsFiltered" UpdateChildrenStates="true">
+      <Children>
+
+        <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" StackLayout.LayoutMethod="HorizontalLeftToRight">
+          <Children>
+
+            <!--Character renders are 4:3, not square.-->
+            <ImageIdentifierWidget DataSource="{Portrait}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="45" VerticalAlignment="Center" MarginLeft="8" MarginRight="6" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
+
+            <MaskedTextureWidget DataSource="{ClanBanner}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!SAA.Row.Banner.Width" SuggestedHeight="!SAA.Row.Banner.Height" VerticalAlignment="Center" MarginRight="10" Brush="Flat.Tuple.Banner.Small.Hero" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
+
+            <ScrollingTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="230" VerticalAlignment="Center" Brush="EncyclopediaList.Filter.Name.Text" Brush.FontSize="24" Text="@NameText" />
+
+            <TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="160" VerticalAlignment="Center" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="21" Text="@RoleText" />
+
+            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginRight="20" Brush="Encyclopedia.Stat.ValueText" Brush.TextHorizontalAlignment="Right" Text="@SortValueText" />
+
+          </Children>
+        </ListPanel>
+
+        <!--Rank markers: gold for the ruler, pale blue for a clan head.-->
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="16" SuggestedHeight="14" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="52" MarginTop="5" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" IsVisible="@IsFactionLeader" />
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="12" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="53" MarginTop="6" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" Color="#9EC4FFFF" IsVisible="@IsClanLeaderOnly" />
+
+      </Children>
+    </ButtonWidget>
+  </Window>
+</Prefab>
