@@ -48,10 +48,10 @@
                   </Children>
                 </ScrollablePanel>
 
-                <ScrollbarWidget Id="FactionScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Center" AlignmentAxis="Vertical" Handle="FactionScrollbarHandle" MinValue="0" MaxValue="100">
+                <ScrollbarWidget Id="FactionScrollbar" WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" MarginRight="40" SuggestedWidth="8" HorizontalAlignment="Right" VerticalAlignment="Center" AlignmentAxis="Vertical" Handle="FactionScrollbarHandle" MinValue="0" MaxValue="100">
                   <Children>
                     <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="2" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Bed" />
-                    <ImageWidget Id="FactionScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="8" SuggestedHeight="50" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Handle" />
+                    <ImageWidget Id="FactionScrollbarHandle" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="6" SuggestedHeight="50" HorizontalAlignment="Center" Brush="Encyclopedia.Scrollbar.Flat.Handle" />
                   </Children>
                 </ScrollbarWidget>
 
@@ -62,7 +62,7 @@
         </Widget>
 
         <!--Right: selected faction detail-->
-        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.FactionDetail.Width" HorizontalAlignment="Right" MarginRight="40" Sprite="SPGeneral\GameMenu\panel_frame">
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.FactionDetail.Width" HorizontalAlignment="Right" MarginRight="40" >
           <Children>
             <SAA.FactionDetail DataSource="{Detail}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="20" MarginBottom="20" />
           </Children>

@@ -1,7 +1,7 @@
 <Prefab>
   <Constants>
     <Constant Name="SAA.Header.Height" Value="150" />
-    <Constant Name="SAA.Footer.Height" Value="100" />
+    <Constant Name="SAA.Footer.Height" Value="50" />
   </Constants>
   <Window>
     <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="BlankWhiteSquare_9" Color="#000000FF">

@@ -4,11 +4,11 @@
         this height and nothing else: widening the panel does not enlarge it, and
         CustomRenderScale only changes the texture resolution. Everything else in the upper
         panel is laid out over the render.-->
-    <Constant Name="SAA.Tableau.Height" Value="520" />
+    <Constant Name="SAA.Tableau.Height" Value="720" />
   </Constants>
   <Window>
     <!--DataSource: HeroDetailVM-->
-    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="20">
       <Children>
 
         <!--Empty state-->
@@ -21,8 +21,7 @@
             <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="!SAA.Tableau.Height" VerticalAlignment="Top" ClipContents="true" IsEnabled="false" IsVisible="@HasTableau">
               <Children>
                 <EncyclopediaCharacterTableauWidget DataSource="{HeroCharacter}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" IsEnabled="false" BodyProperties="@BodyProperties" IsFemale="@IsFemale" EquipmentCode="@EquipmentCode" CharStringId="@CharStringId" StanceIndex="@StanceIndex" BannerCodeText="@BannerCodeText" MountCreationKey="@MountCreationKey" IsDead="@IsDead" ArmorColor1="@ArmorColor1" ArmorColor2="@ArmorColor2" IdleAction="@IdleAction" IdleFaceAnim="@IdleFaceAnim" Race="@Race" />
-                <ParallaxItemBrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="582" SuggestedHeight="380" HorizontalAlignment="Center" VerticalAlignment="Bottom" PositionYOffset="1" Brush="Encyclopedia.Character.Smoke" OneDirectionDuration="5" OneDirectionDistance="100" InitialDirection="Right" IsEaseInOutEnabled="true" />
-                <ParallaxItemBrushWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="582" SuggestedHeight="380" HorizontalAlignment="Center" VerticalAlignment="Bottom" PositionYOffset="1" Brush="Encyclopedia.Character.Smoke2" OneDirectionDuration="5" OneDirectionDistance="100" InitialDirection="Left" IsEaseInOutEnabled="true" />
+                
               </Children>
             </Widget>
 
@@ -82,8 +81,19 @@
               <Children>
                 <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Bottom" StackLayout.LayoutMethod="VerticalTopToBottom">
                   <Children>
+                    <!--Traits close the block. Between the character and the skills they read
+                        as belt fittings, because they land on the armour at hip height.-->
+                    <ListPanel DataSource="{Traits}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Top" MarginTop="4" StackLayout.LayoutMethod="HorizontalLeftToRight">
+                      <ItemTemplate>
+                        <EncyclopediaHeroTraitVisualWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="58" SuggestedHeight="59" MarginLeft="-6" MarginRight="-6" TraitId="@TraitId" TraitValue="@Value">
+                          <Children>
+                            <HintWidget DataSource="{Hint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
+                          </Children>
+                        </EncyclopediaHeroTraitVisualWidget>
+                      </ItemTemplate>
+                    </ListPanel>
                     <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="28" DoNotAcceptEvents="true" Brush="Encyclopedia.Skill.Text" Brush.FontSize="22" Brush.TextHorizontalAlignment="Center" Text="@SkillsText" IsVisible="@HasAnySkills" />
-                    <GridWidget DataSource="{Skills}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="4" DefaultCellWidth="62" DefaultCellHeight="64" ColumnCount="9" LayoutImp.VerticalLayoutMethod="TopToBottom">
+                    <GridWidget DataSource="{Skills}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginRight="180" MarginLeft="180" HorizontalAlignment="Center" MarginTop="4" DefaultCellWidth="48" DefaultCellHeight="60" ColumnCount="9" LayoutImp.VerticalLayoutMethod="TopToBottom">
                       <ItemTemplate>
                         <SkillIconVisualWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginLeft="3" MarginRight="3" MarginBottom="20" SkillId="@SkillId" UseSmallestVariation="true">
                           <Children>
@@ -94,17 +104,7 @@
                       </ItemTemplate>
                     </GridWidget>
 
-                    <!--Traits close the block. Between the character and the skills they read
-                        as belt fittings, because they land on the armour at hip height.-->
-                    <ListPanel DataSource="{Traits}" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" MarginTop="4" StackLayout.LayoutMethod="HorizontalLeftToRight">
-                      <ItemTemplate>
-                        <EncyclopediaHeroTraitVisualWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="58" SuggestedHeight="59" MarginLeft="-6" MarginRight="-6" TraitId="@TraitId" TraitValue="@Value">
-                          <Children>
-                            <HintWidget DataSource="{Hint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
-                          </Children>
-                        </EncyclopediaHeroTraitVisualWidget>
-                      </ItemTemplate>
-                    </ListPanel>
+                    
                   </Children>
                 </ListPanel>
               </Children>

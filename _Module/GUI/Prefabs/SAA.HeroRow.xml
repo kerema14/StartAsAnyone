@@ -8,18 +8,34 @@
     <Constant Name="SAA.Row.Banner.Width" MultiplyResult="0.20" Value="!SAA.Banner.Width" />
     <Constant Name="SAA.Row.Banner.Height" MultiplyResult="0.28" Value="!SAA.Banner.Height" />
   </Constants>
+  <VisualDefinitions>
+    <VisualDefinition Name="ListButtonVisualDef" TransitionDuration="0.2" EaseType="EaseOut">
+      <VisualState State="Default" SuggestedHeight="54" />
+      <VisualState State="Hovered" SuggestedHeight="74"/>
+      <VisualState State="Pressed" SuggestedHeight="54"  />
+      <VisualState State="Disabled" SuggestedHeight="54" />
+      <VisualState State="Selected" AlphaFactor="0.3" SuggestedHeight="114" />
+      
+    </VisualDefinition>
+  </VisualDefinitions>
   <Window>
     <!--DataSource: HeroRowVM-->
-    <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="54" Brush="Encyclopedia.ListButton" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" IsSelected="@IsSelected" IsHidden="@IsFiltered" UpdateChildrenStates="true">
+    <ButtonWidget VisualDefinition="ListButtonVisualDef" DoNotPassEventsToChildren="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="54" Brush="Encyclopedia.FilterListButton" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" IsSelected="@IsSelected" IsHidden="@IsFiltered" UpdateChildrenStates="true">
       <Children>
 
         <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" StackLayout.LayoutMethod="HorizontalLeftToRight">
           <Children>
 
             <!--Character renders are 4:3, not square.-->
-            <ImageIdentifierWidget DataSource="{Portrait}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="45" VerticalAlignment="Center" MarginLeft="8" MarginRight="6" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
+            <ImageIdentifierWidget DataSource="{Portrait}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="60" SuggestedHeight="45" VerticalAlignment="Center" MarginLeft="9" MarginRight="8" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" >
+              <Children>
+                <!--Rank markers: gold for the ruler, pale blue for a clan head.-->
+                <Widget DataSource="{..}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="16" SuggestedHeight="14" HorizontalAlignment="Right" VerticalAlignment="Top" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" IsVisible="@IsFactionLeader" />
+                <Widget DataSource="{..}" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="12" HorizontalAlignment="Right" VerticalAlignment="Top" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" Color="#9EC4FFFF" IsVisible="@IsClanLeaderOnly" />
+              </Children>
+            </ImageIdentifierWidget>
 
-            <MaskedTextureWidget DataSource="{ClanBanner}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="!SAA.Row.Banner.Width" SuggestedHeight="!SAA.Row.Banner.Height" VerticalAlignment="Center" MarginRight="10" Brush="Flat.Tuple.Banner.Small.Hero" AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
+            <MaskedTextureWidget DataSource="{ClanBanner}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="30" SuggestedHeight="45" VerticalAlignment="Center" MarginRight="10" Brush="Review.Stage.Banner"  AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
 
             <ScrollingTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="230" VerticalAlignment="Center" Brush="EncyclopediaList.Filter.Name.Text" Brush.FontSize="24" Text="@NameText" />
 
@@ -30,9 +46,7 @@
           </Children>
         </ListPanel>
 
-        <!--Rank markers: gold for the ruler, pale blue for a clan head.-->
-        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="16" SuggestedHeight="14" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="52" MarginTop="5" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" IsVisible="@IsFactionLeader" />
-        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="14" SuggestedHeight="12" HorizontalAlignment="Left" VerticalAlignment="Top" MarginLeft="53" MarginTop="6" DoNotAcceptEvents="true" Sprite="SPGeneral\SPScoreboard\leader_crown_icon" Color="#9EC4FFFF" IsVisible="@IsClanLeaderOnly" />
+        
 
       </Children>
     </ButtonWidget>

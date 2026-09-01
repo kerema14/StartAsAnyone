@@ -1,7 +1,7 @@
 <Prefab>
   <Window>
     <!--Bound directly to the root view model.-->
-    <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Bottom" MarginBottom="40" MarginRight="70" StackLayout.LayoutMethod="HorizontalLeftToRight">
+    <ListPanel WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Right" VerticalAlignment="Bottom" MarginBottom="30" MarginRight="70" StackLayout.LayoutMethod="HorizontalLeftToRight">
       <Children>
 
         <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="125" SuggestedHeight="64" VerticalAlignment="Center" MarginRight="25" Brush="Standard.BackButton" Command.Click="ExecuteBack" IsEnabled="@CanGoBack" UpdateChildrenStates="true">

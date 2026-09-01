@@ -75,7 +75,7 @@
         </Widget>
 
         <!--Right: selected character-->
-        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.HeroDetail.Width" HorizontalAlignment="Right" MarginRight="40" Sprite="SPGeneral\GameMenu\panel_frame">
+        <Widget WidthSizePolicy="Fixed" HeightSizePolicy="StretchToParent" SuggestedWidth="!SAA.HeroDetail.Width" HorizontalAlignment="Right" MarginRight="40">
           <Children>
             <SAA.HeroDetail DataSource="{Detail}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" MarginTop="18" MarginBottom="18" />
           </Children>
