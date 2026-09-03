@@ -6,8 +6,10 @@
 
         <!--Search box-->
         <NavigationScopeTargeter ScopeID="SAASearchScope" ScopeParent="..\SearchBox" ScopeMovements="Vertical" NavigateFromScopeEdges="true" />
-        <Widget Id="SearchBox" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="70" VerticalAlignment="Top" Sprite="Encyclopedia\search_bar">
+        <Widget Id="SearchBox" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="70" VerticalAlignment="Top">
           <Children>
+            
+            <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="gradient_texture" MarginTop="10" MarginBottom="10" MarginRight="10"/>
             <EditableTextWidget Id="SearchInput" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="40" VerticalAlignment="Center" MarginLeft="22" MarginRight="52" Brush="Encyclopedia.Search.TextBox" Text="@SearchText" GamepadNavigationIndex="0" />
             <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="40" VerticalAlignment="Center" MarginLeft="24" MarginRight="52" DoNotAcceptEvents="true" Brush="Encyclopedia.Search.TextBox" Brush.AlphaFactor="0.45" Text="@SearchPlaceholderText" IsVisible="@IsSearchEmpty" />
             <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="25" SuggestedHeight="24" HorizontalAlignment="Right" VerticalAlignment="Center" MarginRight="22" DoNotAcceptEvents="true" Sprite="Encyclopedia\icon_search" />
@@ -19,7 +21,7 @@
           <Children>
             <Widget Id="FilterClipRect" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" ClipContents="true">
               <Children>
-                <ListPanel Id="FilterList" DataSource="{FilterGroups}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom">
+                <ListPanel Id="FilterList" DataSource="{FilterGroups}" WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" StackLayout.LayoutMethod="VerticalTopToBottom" MarginLeft="20">
                   <ItemTemplate>
                     <EncyclopediaFilterGroup MarginBottom="26" />
                   </ItemTemplate>

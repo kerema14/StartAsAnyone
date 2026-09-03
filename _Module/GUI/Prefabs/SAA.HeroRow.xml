@@ -10,11 +10,11 @@
   </Constants>
   <VisualDefinitions>
     <VisualDefinition Name="ListButtonVisualDef" TransitionDuration="0.2" EaseType="EaseOut">
-      <VisualState State="Default" SuggestedHeight="54" />
+      <VisualState State="Default" SuggestedHeight="60" />
       <VisualState State="Hovered" SuggestedHeight="74"/>
-      <VisualState State="Pressed" SuggestedHeight="54"  />
-      <VisualState State="Disabled" SuggestedHeight="54" />
-      <VisualState State="Selected" AlphaFactor="0.3" SuggestedHeight="114" />
+      <VisualState State="Pressed" SuggestedHeight="60"  />
+      <VisualState State="Disabled" SuggestedHeight="60" />
+      <VisualState State="Selected" SuggestedHeight="114" />
       
     </VisualDefinition>
   </VisualDefinitions>
@@ -22,6 +22,7 @@
     <!--DataSource: HeroRowVM-->
     <ButtonWidget VisualDefinition="ListButtonVisualDef" DoNotPassEventsToChildren="true" WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="54" Brush="Encyclopedia.FilterListButton" Command.Click="ExecuteSelect" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" IsSelected="@IsSelected" IsHidden="@IsFiltered" UpdateChildrenStates="true">
       <Children>
+        <ImageWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Sprite="horizontal_gradient_divider" Brush.AlphaFactor="0.2" Brush.Color="#FFFF90FF" IsVisible="@IsSelected" />
 
         <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" StackLayout.LayoutMethod="HorizontalLeftToRight">
           <Children>
@@ -35,10 +36,10 @@
               </Children>
             </ImageIdentifierWidget>
 
+            
+
+            <ScrollingTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="150" VerticalAlignment="Center" Brush="EncyclopediaList.Filter.Name.Text" Brush.FontSize="24" Text="@NameText" MarginLeft="10" />
             <MaskedTextureWidget DataSource="{ClanBanner}" DoNotAcceptEvents="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="30" SuggestedHeight="45" VerticalAlignment="Center" MarginRight="10" Brush="Review.Stage.Banner"  AdditionalArgs="@AdditionalArgs" ImageId="@Id" TextureProviderName="@TextureProviderName" />
-
-            <ScrollingTextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="230" VerticalAlignment="Center" Brush="EncyclopediaList.Filter.Name.Text" Brush.FontSize="24" Text="@NameText" />
-
             <TextWidget WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" SuggestedWidth="160" VerticalAlignment="Center" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="21" Text="@RoleText" />
 
             <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Center" MarginRight="20" Brush="Encyclopedia.Stat.ValueText" Brush.TextHorizontalAlignment="Right" Text="@SortValueText" />

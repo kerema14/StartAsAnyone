@@ -23,7 +23,7 @@ namespace StartAsAnyone
 
         public Hero? Hero { get; }
 
-        public PortraitTileVM(Hero? hero, string subText = "", Action<PortraitTileVM>? onSelect = null)
+        public PortraitTileVM(Hero? hero, string subText = "", Action<PortraitTileVM>? onSelect = null, HintViewModel? hint = null)
         {
             Hero = hero;
             _onSelect = onSelect;
@@ -35,12 +35,12 @@ namespace StartAsAnyone
                 NameText = hero.Name?.ToString() ?? string.Empty;
                 IsLeader = hero.IsFactionLeader || hero.IsClanLeader;
                 IsChild = FaceGen.GetMaturityTypeWithAge(hero.Age) <= BodyMeshMaturityType.Child;
-                Hint = new HintViewModel(new TextObject(NameText), null);
+                Hint = hint ?? new HintViewModel(new TextObject(NameText), null);
             }
             else
             {
                 Portrait = new CharacterImageIdentifierVM(CharacterCode.CreateEmpty());
-                Hint = new HintViewModel(TextObject.GetEmpty(), null);
+                Hint = hint ?? new HintViewModel(TextObject.GetEmpty(), null);
             }
         }
 

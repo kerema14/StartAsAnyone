@@ -1,15 +1,14 @@
 <Prefab>
+  
   <Window>
     <!--DataSource: PathScreenVM-->
-    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent">
+    <Widget>
       <Children>
 
-        <NavigationScopeTargeter ScopeID="SAAPathScope" ScopeParent="..\Cards" ScopeMovements="Horizontal" IsDefaultNavigationScope="true" />
-
-        <ListPanel Id="Cards" WidthSizePolicy="CoverChildren" HeightSizePolicy="CoverChildren" HorizontalAlignment="Center" VerticalAlignment="Center" StackLayout.LayoutMethod="HorizontalLeftToRight">
+        <ListPanel Id="Cards" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" StackLayout.LayoutMethod="HorizontalLeftToRight">
           <Children>
-            <SAA.PathCard DataSource="{ExistingHeroCard}" />
-            <SAA.PathCard DataSource="{NewCharacterCard}" />
+            <SAA.PathCard DataSource="{ExistingHeroCard}" Parameter.IconSprite="SPGeneral\SPScoreboard\leader_crown_icon" Parameter.IsLeft="true"/>
+            <SAA.PathCard DataSource="{NewCharacterCard}" Parameter.IconSprite="Encyclopedia\hero_silhouette" Parameter.IsLeft="false"/>
           </Children>
         </ListPanel>
 

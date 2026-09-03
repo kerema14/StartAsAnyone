@@ -1,31 +1,58 @@
 <Prefab>
+  <Parameters>
+    <Parameter Name="IconSprite" DefaultValue="SPGeneral\SPScoreboard\leader_crown_icon" />
+    <Parameter Name="IsLeft" DefaultValue="true"/>
+  </Parameters>
+  <Constants>
+    <Constant Name="ButtonAlignment" OnTrue="Right" OnFalse="Left" BooleanCheck="*IsLeft" />
+    <Constant Name="CardMargin" Value="0"/>
+    <Constant Name="CardMarginLeft" BooleanCheck="*IsLeft" OnTrue="0" OnFalse="!CardMargin"/>
+    <Constant Name="CardMarginRight" BooleanCheck="*IsLeft" OnTrue="!CardMargin" OnFalse="0"/>
+  </Constants>
+  <VisualDefinitions>
+    <VisualDefinition Name="CardVisualDef" TransitionDuration="0.15" EaseType="EaseOut">
+      <VisualState State="Default" SuggestedHeight="580" SuggestedWidth="460" />
+      <VisualState State="Hovered" SuggestedHeight="600" SuggestedWidth="476"/>
+      <VisualState State="Pressed" SuggestedHeight="590" SuggestedWidth="470"  />
+      <VisualState State="Disabled" SuggestedHeight="580" SuggestedWidth="460" />
+      <VisualState State="Selected" SuggestedHeight="600" SuggestedWidth="476" />
+    </VisualDefinition>
+  </VisualDefinitions>
   <Window>
-    <!--DataSource: PathCardVM-->
-    <ButtonWidget DoNotPassEventsToChildren="true" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="460" SuggestedHeight="580" MarginLeft="25" MarginRight="25" VerticalAlignment="Center" Brush="FaceGen.Generic.Button" Brush.GlobalAlphaFactor="0.5" Command.Click="ExecuteSelect" IsSelected="@IsSelected" IsDisabled="@IsDisabled" UpdateChildrenStates="true" GamepadNavigationIndex="0">
+    <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" >
       <Children>
-
-        <!--Selection frame-->
-        <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" MarginLeft="-6" MarginRight="-6" MarginTop="-6" MarginBottom="-6" Sprite="SelectionBorder@2x_9" Color="#EDBD71FF" IsVisible="@IsSelected" />
-
-        <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Top" DoNotAcceptEvents="true" StackLayout.LayoutMethod="VerticalTopToBottom">
+        <Widget HeightSizePolicy="StretchToParent" WidthSizePolicy="Fixed" SuggestedWidth="500" MarginRight="!CardMarginRight" MarginLeft="!CardMarginLeft" HorizontalAlignment="!ButtonAlignment" >
           <Children>
+            <!--DataSource: PathCardVM-->
+            <ButtonWidget DoNotPassEventsToChildren="true" VisualDefinition="CardVisualDef" HorizontalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="460" SuggestedHeight="580" MarginLeft="25" MarginRight="25" VerticalAlignment="Center" Brush="FaceGen.Generic.Button" Brush.GlobalAlphaFactor="0.35" Command.Click="ExecuteSelect" IsSelected="@IsSelected" IsDisabled="@IsDisabled" UpdateChildrenStates="true" GamepadNavigationIndex="0">
+              <Children>
 
-            <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="190" SuggestedHeight="190" HorizontalAlignment="Center" MarginTop="55" Sprite="@IconSprite" />
-            
+                <!--Selection frame-->
+                <Widget WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" DoNotAcceptEvents="true" MarginLeft="-6" MarginRight="-6" MarginTop="-6" MarginBottom="-6" Sprite="SelectionBorder@2x_9" Color="#EDBD71FF" IsVisible="@IsSelected" />
 
-            <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="80" MarginTop="30" MarginLeft="25" MarginRight="25" Brush="Stage.Text" Brush.FontSize="34" Brush.TextHorizontalAlignment="Center" Text="@TitleText" />
+                <ListPanel WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" VerticalAlignment="Top" DoNotAcceptEvents="true" StackLayout.LayoutMethod="VerticalTopToBottom">
+                  <Children>
 
-            <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="320" SuggestedHeight="9" HorizontalAlignment="Center" MarginTop="5" DoNotAcceptEvents="true" Sprite="General\CharacterCreation\stone_divider_thin" />
+                    <ImageWidget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="150" SuggestedHeight="190" HorizontalAlignment="Center" MarginTop="55" Sprite="*IconSprite"/>
+                    
 
-            <RichTextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="CoverChildren" MarginTop="20" MarginLeft="35" MarginRight="35" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="24" Brush.TextHorizontalAlignment="Center" Text="@DescriptionText" />
+                    <TextWidget WidthSizePolicy="StretchToParent" HeightSizePolicy="Fixed" SuggestedHeight="80" MarginTop="30" MarginLeft="25" MarginRight="25" Brush="Stage.Text" Brush.FontSize="34" Brush.TextHorizontalAlignment="Center" Text="@TitleText" />
 
+                    <Widget WidthSizePolicy="Fixed" HeightSizePolicy="Fixed" SuggestedWidth="320" SuggestedHeight="9" HorizontalAlignment="Center" MarginTop="5" DoNotAcceptEvents="true" Sprite="General\CharacterCreation\stone_divider_thin" />
+
+                    <RichTextWidget VerticalAlignment="Center" HorizontalAlignment="Center" WidthSizePolicy="Fixed" HeightSizePolicy="CoverChildren" MaxWidth="460" SuggestedWidth="400" MarginTop="20" MarginLeft="35" MarginRight="35" Brush="Encyclopedia.SubPage.Info.Text" Brush.FontSize="24" Brush.TextHorizontalAlignment="Center" Text="@DescriptionText" />
+
+                  </Children>
+                </ListPanel>
+
+                <!--Reason this option is unavailable, if any-->
+                <HintWidget DataSource="{DisabledHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
+
+              </Children>
+            </ButtonWidget>
           </Children>
-        </ListPanel>
-
-        <!--Reason this option is unavailable, if any-->
-        <HintWidget DataSource="{DisabledHint}" WidthSizePolicy="StretchToParent" HeightSizePolicy="StretchToParent" Command.HoverBegin="ExecuteBeginHint" Command.HoverEnd="ExecuteEndHint" />
-
+        </Widget>
       </Children>
-    </ButtonWidget>
+    </Widget>
   </Window>
 </Prefab>

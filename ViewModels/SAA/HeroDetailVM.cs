@@ -9,6 +9,7 @@ using TaleWorlds.CampaignSystem.ViewModelCollection.Encyclopedia.Items;
 using TaleWorlds.Core;
 using TaleWorlds.Core.ViewModelCollection;
 using TaleWorlds.Core.ViewModelCollection.Generic;
+using TaleWorlds.Core.ViewModelCollection.Information;
 using TaleWorlds.Library;
 using TaleWorlds.Localization;
 
@@ -266,7 +267,7 @@ namespace StartAsAnyone
                 {
                     // Fall back to no label rather than dropping the relative.
                 }
-                Family.Add(new PortraitTileVM(relative, role, OnTileSelected));
+                Family.Add(new PortraitTileVM(relative, role, OnTileSelected, new HintViewModel(new TextObject(relative.Name?.ToString() ?? string.Empty), null)));
             }
             OnPropertyChangedWithValue(HasFamily, nameof(HasFamily));
         }
@@ -344,11 +345,11 @@ namespace StartAsAnyone
 
             foreach (var entry in friends.OrderByDescending(e => e.Value).Take(MaxRelatedShown))
             {
-                Friends.Add(new PortraitTileVM(entry.Key, entry.Value.ToString(), OnTileSelected));
+                Friends.Add(new PortraitTileVM(entry.Key, "", OnTileSelected, new HintViewModel(new TextObject((entry.Key.Name?.ToString() + " (" + entry.Value.ToString() + ")") ?? string.Empty), null)));
             }
             foreach (var entry in rivals.OrderBy(e => e.Value).Take(MaxRelatedShown))
             {
-                Rivals.Add(new PortraitTileVM(entry.Key, entry.Value.ToString(), OnTileSelected));
+                Rivals.Add(new PortraitTileVM(entry.Key, "", OnTileSelected, new HintViewModel(new TextObject((entry.Key.Name?.ToString() + " (" + entry.Value.ToString() + ")") ?? string.Empty), null)));
             }
 
             OnPropertyChangedWithValue(HasFriends, nameof(HasFriends));
